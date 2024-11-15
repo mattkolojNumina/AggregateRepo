@@ -1,0 +1,114 @@
+#!/usr/bin/perl
+#
+# ERSC control words
+
+require Trk;
+require trakbase;
+require dp;
+require rp;
+require timer;
+
+
+my @code;
+
+Trk::dp_adddriver('extern:ersc','extern ersc') ;
+
+sub erscControlIO
+   {
+   my ($name,$ersc_data) = @_ ;
+   my $type = 'io' ;
+
+   my $ip = $ersc_data->{'ip'} ;
+
+   # create the device
+   Trk::dp_adddevice($name.'_dev',
+                     $name.' device',
+                     'extern:ersc',
+                     'type='.$type.'&'.'side='.$side.'&'.'ip='.$ip) ;
+  Trk::dp_new($name.'_lft_inp1',$name.'_dev','left_in-a',$name . ' left in') ;
+  Trk::dp_new($name.'_lft_inp2',$name.'_dev','left_in-b',$name . ' left in') ;
+  Trk::dp_new($name.'_rgt_inp1',$name.'_dev','right_in-a',$name . ' right in') ;
+  Trk::dp_new($name.'_rgt_inp2',$name.'_dev','right_in-b',$name . ' right in') ;
+  Trk::dp_new($name.'_lft_out',$name.'_dev','left_out',$name . ' left out') ;
+  Trk::dp_new($name.'_rgt_out',$name.'_dev','right_out',$name . ' rght out') ;
+
+   }
+
+sub erscTwoMotors 
+   {
+   my ($name,$ersc_data) = @_ ;
+   my $ip = $ersc_data->{ip} ;
+   my $type = 'zone' ;
+  
+  
+   Trk::dp_adddevice($name.'_dev',
+                     $name.' device',
+                     'extern:ersc',
+                     'type='.$type.'&'.'side='.'l'.'&'.'ip='.$ip) ;
+   Trk::dp_adddevice($name.'_odev',
+                     $name.' device',
+                     'extern:ersc',
+                     'type='.$type.'&'.'side='.'r'.'&'.'ip='.$ip) ;
+
+   
+   if ($ersc_data->{'motor'} ne 'reverse') 
+     {
+     Trk::dp_new($name.'_mtr1',$name.'_dev','motor',$name.' motor') ;
+     Trk::dp_new($name.'_mtr2',$name.'_odev','motor',$name.' motor') ;
+     } 
+   else 
+     {
+     Trk::dp_new($name.'_mtr1',$name.'_dev','revmotor',$name.' motor') ;
+     Trk::dp_new($name.'_mtr2',$name.'_odev','revmotor',$name.' motor') ;
+     }
+   
+   }
+
+sub erscBiMotor
+  {
+   my ($name,$ersc_data) = @_ ;
+   my $ip = $ersc_data->{ip} ;
+   my $type = 'zone' ;
+  
+   Trk::dp_adddevice($name.'_xdev',
+                     $name.' device',
+                     'extern:ersc',
+                     'type='.$type.'&'.'side='.'l'.'&'.'ip='.$ip) ;
+   Trk::dp_adddevice($name.'_xxdev',
+                     $name.' device',
+                     'extern:ersc',
+                     'type='.$type.'&'.'side='.'l'.'&'.'ip='.$ip) ;
+
+     Trk::dp_new($name.'_mtr',$name.'_xdev','motor',$name.' motor') ;
+     Trk::dp_new($name.'_rmtr',$name.'_xxdev','revmotor',$name.' motor') ;
+   
+
+  }
+
+sub erscEyes
+  {
+   my ($name,$ersc_data) = @_ ;
+   my $ip = $ersc_data->{ip} ;
+   my $type = 'eye' ;
+
+   my $side = 'l' ;
+   if($ersc_data->{side} ne '')
+      {
+      $side = $ersc_data->{'side'} ;
+      }
+     Trk::dp_adddevice($name.'_dev',
+                     $name.' device',
+                     'extern:ersc',
+                     'type='.$type.'&'.'side=r'.'&'.'ip='.$ip) ; 
+   Trk::dp_adddevice($name.'_odev',
+                     $name.' device',
+                     'extern:ersc',
+                     'type='.$type.'&'.'side=l'.'&'.'ip='.$ip) ;
+     Trk::dp_new($name.'_reye',  $name.'_dev','eye',  $name.' right eye'  ) ;
+     Trk::dp_new($name.'_leye',  $name.'_odev','eye',  $name.' left eye'  ) ;
+  }
+
+   
+
+
+1 ;

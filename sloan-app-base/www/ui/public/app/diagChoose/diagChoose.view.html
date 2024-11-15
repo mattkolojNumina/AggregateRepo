@@ -1,0 +1,19 @@
+<div class="container-fluid" ng-cloak>
+  <div class="container-fluid" ng-cloak>
+    <!--<canvas id='diag' style="border: black solid 1px"></canvas>-->
+    <canvas id='diag'></canvas>
+  </div>
+
+  <div class="main" layout="row" layout-padding layout-wrap layout-fill>
+    <md-button ng-repeat="tile in tiles"
+         ng-style="{'background': tile.background}"
+         class="tile"
+         href="{{tile.href}}"
+		 target="_blank" 
+         md-whiteframe="5" layout="column" layout-align="center center">
+      <div><md-icon class="icon" md-svg-src="{{tile.icon}}"></md-icon></div>
+      <div>{{tile.title}}</div> 
+      <md-tooltip>{{tile.tooltip}}</md-tooltip>
+    </md-button>
+  </div>
+</div>

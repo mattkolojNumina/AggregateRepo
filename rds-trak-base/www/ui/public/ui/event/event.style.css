@@ -1,0 +1,36 @@
+.event td {
+  padding: 10px 10px ;
+  margin: 0px 5px ;
+}
+
+.event-alarm {
+  background-color: #ffc0c0 ;
+  }
+
+.event-alert {
+  background-color: #ffcc99 ;
+}
+
+.event-trace {
+  background-color: #ffff80 ;
+}
+
+.event-info {
+  background-color: #d0d0ff ;
+}
+
+.event-code {
+  width: 15% ;
+  color: #888 ;
+}
+
+.event-desc {
+  width: 70% ;
+  color: black ;
+}
+
+.event-time {
+  width: 20% ;
+  text-align: right ; 
+  color: black ;
+}

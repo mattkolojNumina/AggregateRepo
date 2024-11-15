@@ -1,0 +1,623 @@
+/*
+ * ComponentPrintable.java
+ * 
+ * Created from code located in javax.swing.JTable and
+ * javax.swing.TablePrintable, as well as from various online resources.
+ */
+
+package rds;
+
+import java.awt.*;
+import java.awt.print.*;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Rectangle2D;
+import java.text.MessageFormat;
+import javax.print.PrintService;
+import javax.print.attribute.HashPrintRequestAttributeSet;
+import javax.print.attribute.PrintRequestAttributeSet;
+import javax.swing.JComponent;
+import javax.swing.SwingUtilities;
+import sun.swing.PrintingStatus;
+
+
+/**
+ * An implementation of {@code Printable} for printing {@code Component}s.
+ */
+public class ComponentPrintable
+      implements Printable {
+
+   /*
+    * --- constants ---
+    */
+
+   /** Vertical space between component and header/footer text. */
+   private static final int HEADER_FOOTER_GAP = 8;
+
+   /** Default font size for the header text. */
+   private static final float DEFAULT_HEADER_SIZE = 18.0f;
+
+   /** Default font size for the footer text. */
+   private static final float DEFAULT_FOOTER_SIZE = 12.0f;
+
+   /**
+    * Printing modes.
+    */
+   public enum PrintMode {
+      /**
+       * Printing mode that prints the component at its current size.
+       */
+      NORMAL,
+
+      /**
+       * Printing mode that scales the output to fit the entire width or
+       * height on the page; the aspect ratio is unchanged.
+       */
+      FIT_PAGE
+   }
+
+
+   /*
+    * --- class variables ---
+    */
+
+   /** The component to print. */
+   private Component component;
+
+   /** The printing mode of this printable. */
+   private PrintMode printMode;
+
+   /** The header text format. */
+   private MessageFormat headerFormat;
+
+   /** The footer text format. */
+   private MessageFormat footerFormat;
+
+   /** The font to use in rendering header text. */
+   private Font headerFont;
+
+   /** The font to use in rendering footer text. */
+   private Font footerFont;
+
+   /** Storage for communicating errors between threads. */
+   private Throwable printError;
+
+
+   /*
+    * --- constructors ---
+    */
+
+   /**
+    * Creates a new {@code Printable} for the given {@code Component}
+    * with default printing parameters.
+    * 
+    * @param component the {@code Component} to print
+    */
+   public ComponentPrintable( Component component ) {
+      this( component, PrintMode.FIT_PAGE, null, null );
+   }
+
+   /**
+    * Creates a new {@code Printable} for the given {@code Component}.
+    * Header and footer text can be specified, in which case each format
+    * is given the current page number to substitue, if appropriate.
+    * 
+    * @param component the {@code Component} to print
+    * @param printMode the printing mode for this printable
+    * @param headerFormat a {@code MessageFormat} specifying the text to
+    *        be used in printing a header, or {@code null} for none
+    * @param footerFormat a {@code MessageFormat} specifying the text to
+    *        be used in printing a footer, or {@code null} for none
+    */
+   public ComponentPrintable( Component component, PrintMode printMode,
+         MessageFormat headerFormat, MessageFormat footerFormat ) {
+      this.component = component;
+      this.printMode = printMode;
+      this.headerFormat = headerFormat;
+      this.footerFormat = footerFormat;
+
+      // derive the header and footer font from the component's font
+      headerFont = component.getFont().deriveFont(
+            Font.BOLD, DEFAULT_HEADER_SIZE );
+      footerFont = component.getFont().deriveFont(
+            Font.PLAIN, DEFAULT_FOOTER_SIZE );
+   }
+
+   /*
+    * --- printing methods ---
+    */
+
+   /**
+    * Prints a {@code Component} using default settings.
+    * 
+    * @param   component  the {@code Component} to print
+    * @return  {@code true}, unless printing is cancelled by the user
+    * @throws  SecurityException  if a security manager exists and it
+    *          disallows this thread from creating a print job request
+    * @throws  PrinterException  if an error in the print system causes
+    *          the job to be aborted
+    */
+   public static boolean printComponent( Component component )
+         throws PrinterException {
+      ComponentPrintable componentPrintable = new ComponentPrintable(
+            component );
+      return componentPrintable.handlePrint();
+   }
+
+   /**
+    * Prints a {@code Component}, along with a header and footer.
+    * <p>
+    * The header and footer text strings are each passed as a format pattern
+    * to a {@code MessageFormat} with a single parameter, the current page
+    * number (which will always be "1" for printing performed by this class).
+    * 
+    * @param   component  the {@code Component} to print
+    * @param   header     the header text string
+    * @param   footer     the footer text string
+    * @return  {@code true}, unless printing is cancelled by the user
+    * @throws  SecurityException  if a security manager exists and it
+    *          disallows this thread from creating a print job request
+    * @throws  PrinterException  if an error in the print system causes
+    *          the job to be aborted
+    */
+   public static boolean printComponent(
+         Component component,
+         String header,
+         String footer )
+         throws PrinterException {
+      MessageFormat headerFormat = new MessageFormat( header );
+      MessageFormat footerFormat = new MessageFormat( footer );
+      return printComponent( component, PrintMode.FIT_PAGE,
+            headerFormat, footerFormat );
+   }
+
+   /**
+    * Prints a {@code Component}, along with a header and footer, in
+    * the specified mode.
+    * 
+    * @param   component     the {@code Component} to print
+    * @param   printMode     the desired printing mode
+    * @param   headerFormat  a {@code MessageFormat} specifying the text
+    *          to be used in printing a header, or {@code null} for none
+    * @param   footerFormat  a {@code MessageFormat} specifying the text
+    *          to be used in printing a footer, or {@code null} for none
+    * @return  {@code true}, unless printing is cancelled by the user
+    * @throws  SecurityException  if a security manager exists and it
+    *          disallows this thread from creating a print job request
+    * @throws  PrinterException  if an error in the print system causes
+    *          the job to be aborted
+    */
+   public static boolean printComponent(
+         Component component,
+         PrintMode printMode,
+         MessageFormat headerFormat,
+         MessageFormat footerFormat )
+         throws PrinterException {
+      ComponentPrintable componentPrintable = new ComponentPrintable(
+            component, printMode, headerFormat, footerFormat );
+      return componentPrintable.handlePrint();
+   }
+
+   /**
+    * Handles printing of this {@code Component}, using the default
+    * printer and running interactively if applicable.
+    * 
+    * @return  {@code true}, unless printing is cancelled by the user
+    * @throws  SecurityException  if a security manager exists and it
+    *          disallows this thread from creating a print job request
+    * @throws  PrinterException  if an error in the print system causes
+    *          the job to be aborted
+    */
+   public boolean handlePrint()
+         throws PrinterException {
+      boolean showDialogs = !GraphicsEnvironment.isHeadless();
+      return handlePrint( showDialogs, null, showDialogs );
+   }
+
+   /**
+    * Handles printing of this {@code Component}, using the default printer.
+    * 
+    * @param   showPrintDialog  whether or not to display a print dialog
+    * @param   attr             a {@code PrintRequestAttributeSet} specifying
+    *          any printing attributes, or {@code null} for none
+    * @param   interactive      whether or not to print in an interactive mode
+    * @return  {@code true}, unless printing is cancelled by the user
+    * @throws  HeadlessException  if the method is specified to display a
+    *          printing dialog or to run interactively in a headless
+    *          environment
+    * @throws  SecurityException  if a security manager exists and it
+    *          disallows this thread from creating a print job request
+    * @throws  PrinterException  if an error in the print system causes
+    *          the job to be aborted
+    */
+   public boolean handlePrint(
+         boolean showPrintDialog,
+         PrintRequestAttributeSet attr,
+         boolean interactive )
+         throws PrinterException, HeadlessException {
+      return handlePrint( showPrintDialog, attr, interactive, null );
+   }
+
+
+   /**
+    * Handles printing of this {@code Component}.
+    * 
+    * @param   showPrintDialog  whether or not to display a print dialog
+    * @param   attr             a {@code PrintRequestAttributeSet} specifying
+    *          any printing attributes, or {@code null} for none
+    * @param   interactive      whether or not to print in an interactive mode
+    * @param   service          the destination {@code PrintService}, or
+    *          {@code null} to use the default printer
+    * @return  {@code true}, unless printing is cancelled by the user
+    * @throws  HeadlessException  if the method is specified to display a
+    *          printing dialog or to run interactively in a headless
+    *          environment
+    * @throws  SecurityException  if a security manager exists and it
+    *          disallows this thread from creating a print job request
+    * @throws  PrinterException  if an error in the print system causes
+    *          the job to be aborted
+    */
+   public boolean handlePrint(
+         boolean showPrintDialog,
+         PrintRequestAttributeSet attr,
+         boolean interactive,
+         PrintService service )
+         throws PrinterException, HeadlessException {
+
+      // complain early if an invalid parameter is specified for headless mode
+      boolean isHeadless = GraphicsEnvironment.isHeadless();
+      if (isHeadless) {
+         if (showPrintDialog)
+            throw new HeadlessException( "Unable to display print dialog." );
+         if (interactive)
+            throw new HeadlessException( "Unable to print interactively." );
+      }
+
+      // get a PrinterJob; do this before anything with side-effects since
+      // it may throw a security exception
+      final PrinterJob job = PrinterJob.getPrinterJob();
+
+      // get the Printable for this component (reflexive, but may need
+      // to be wrapped for thread safety)
+      Printable printable = this;
+
+      final PrintingStatus printingStatus;
+      if (interactive) {
+         // wrap the Printable for printing on another thread
+         printable = new ThreadSafePrintable( printable );
+         printingStatus = PrintingStatus.createPrintingStatus(
+               component, job );
+         printable = printingStatus.createNotificationPrintable( printable );
+      } else {
+         printingStatus = null;
+      }
+
+      job.setPrintable( printable );
+      if (service != null)
+         job.setPrintService( service );
+
+      if (attr == null)
+         attr = new HashPrintRequestAttributeSet();
+
+      // if requested, show the print dialog
+      if (showPrintDialog && !job.printDialog( attr )) {
+         // the user cancelled the print dialog
+         return false;
+      }
+
+      // if not interactive, just print on this thread (no dialog) and return
+      if (!interactive) {
+         job.print( attr );
+         return true;
+      }
+
+      // clear any errors before proceeding
+      printError = null;
+
+      // an object to synchronize on
+      final Object lock = new Object();
+
+      // copy the attributes for access from the inner class
+      final PrintRequestAttributeSet copyAttr = attr;
+
+      // this runnable will be used to do the printing
+      // (and save any throwables) on another thread
+      Runnable printRunnable = new Runnable() {
+         public void run() {
+            try {
+               // do the printing
+               job.print( copyAttr );
+            } catch (Throwable t) {
+               // save any Throwable to be rethrown
+               synchronized (lock) {
+                  printError = t;
+               }
+            } finally {
+               // close the dialog
+               printingStatus.dispose();
+            }
+         }
+      };
+
+      // start printing on another thread
+      (new Thread( printRunnable )).start();
+
+      printingStatus.showModal( true );
+
+      // check for any error that the printing may have generated
+      Throwable t;
+      synchronized (lock) {
+         t = printError;
+         printError = null;
+      }
+
+      // handle the error
+      if (t != null) {
+         if (t instanceof PrinterAbortException) {
+            // a subclass of PrinterException meaning the job was aborted,
+            // in this case, by the user
+            return false;
+         } else if (t instanceof PrinterException) {
+            throw (PrinterException)t;
+         } else if (t instanceof RuntimeException) {
+            throw (RuntimeException)t;
+         } else if (t instanceof Error) {
+            throw (Error)t;
+         }
+
+         // unreachable since all applicable Throwables were checked
+         throw new AssertionError( t );
+      }
+
+      return true;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   public int print( Graphics graphics, PageFormat pageFormat,
+         int pageIndex )
+         throws PrinterException {
+      if (pageIndex > 0)
+         return NO_SUCH_PAGE;
+
+      // store component and page dimensions for repeated access
+      final int componentWidth = component.getWidth();
+      final int componentHeight = component.getHeight();
+      final int pageWidth = (int)pageFormat.getImageableWidth();
+      final int pageHeight = (int)pageFormat.getImageableHeight();
+
+      if (pageWidth <= 0 || pageHeight <= 0)
+         throw new PrinterException(
+               "Invalid dimension(s) for printable area." );
+
+      // to pass the page number when formatting the header and footer text
+      Object[] pageNumber = new Object[] { new Integer( pageIndex + 1 ) };
+
+      // assign the formatted header and footer text
+      String headerText = null;
+      if (headerFormat != null)
+         headerText = headerFormat.format( pageNumber );
+      String footerText = null;
+      if (footerFormat != null)
+         footerText = footerFormat.format( pageNumber );
+
+      // store the bounds of the header and footer text
+      Rectangle2D headerRect = null;
+      Rectangle2D footerRect = null;
+
+      // the amount of vertical space needed for the header and footer text
+      int headerTextHeight = 0;
+      int footerTextHeight = 0;
+
+      // the amount of vertical space available for printing the component
+      int availableHeight = pageHeight;
+
+      // if header exists, subtract its height from the available space
+      if (headerText != null) {
+         graphics.setFont( headerFont );
+         headerRect = graphics.getFontMetrics().getStringBounds(
+               headerText, graphics );
+         headerTextHeight = (int)Math.ceil( headerRect.getHeight() );
+         availableHeight -= headerTextHeight + HEADER_FOOTER_GAP;
+      }
+
+      // if footer exists, subtract its height from the available space
+      if (footerText != null) {
+         graphics.setFont( footerFont );
+         footerRect = graphics.getFontMetrics().getStringBounds(
+               footerText, graphics );
+         footerTextHeight = (int)Math.ceil( footerRect.getHeight() );
+         availableHeight -= footerTextHeight + HEADER_FOOTER_GAP;
+      }
+
+      if (availableHeight <= 0)
+         throw new PrinterException(
+               "Height of printable area is too small." );
+
+      // translate into the coordinate system of the pageFormat
+      Graphics2D g2d = (Graphics2D)graphics;
+      g2d.translate( pageFormat.getImageableX(),
+            pageFormat.getImageableY() );
+
+      // print footer at the bottom of the imageable area
+      if (footerText != null) {
+         AffineTransform oldTrans = g2d.getTransform();
+         g2d.translate( 0, pageHeight - footerTextHeight );
+         printText( g2d, footerText, footerRect, footerFont, pageWidth );
+         g2d.setTransform( oldTrans );
+      }
+
+      // print header at the top of the imageable area and translate down
+      if (headerText != null) {
+         printText( g2d, headerText, headerRect, headerFont, pageWidth );
+         g2d.translate( 0, headerTextHeight + HEADER_FOOTER_GAP );
+      }
+
+      // if applicable, scale the graphics object to fit the page
+      double scaleFactor = 1.0;
+      int scaledWidth = componentWidth;
+      int scaledHeight = componentHeight;
+      if (printMode == PrintMode.FIT_PAGE) {
+         scaleFactor = Math.min(
+               pageWidth / (double)componentWidth,
+               availableHeight / (double)componentHeight );
+         g2d.scale( scaleFactor, scaleFactor );
+         scaledWidth *= scaleFactor;
+         scaledHeight *= scaleFactor;
+      }
+
+      // center the component horizontally and/or vertically
+      if (scaledWidth < pageWidth) {
+         int dx = (pageWidth - scaledWidth) / 2;
+         g2d.translate( dx, 0 );
+      }
+      if (scaledHeight < availableHeight) {
+         int dy = (availableHeight - scaledHeight) / 2;
+         g2d.translate( 0, dy );
+      }
+
+      // perform the actual rendering of the component
+      boolean wasBuffered = disableDoubleBuffering( component );
+      component.print( g2d );
+      restoreDoubleBuffering( component, wasBuffered );
+
+      return PAGE_EXISTS;
+   }
+
+   /**
+    * Renders text into a {@code Graphics2D} context.  If possible, the
+    * text is centered within the specified imageable width.
+    * 
+    * @param   g2d       the graphics to draw into
+    * @param   text      the text to render
+    * @param   rect      the bounding rectangle for this text, as calculated
+    *          in the calling routine
+    * @param   font      the font to draw the text in, or {@code null}
+    *          to preserve the current font
+    * @param   imgWidth  the width of the imageable area to draw into
+    */
+   private void printText( Graphics2D g2d, String text, Rectangle2D rect,
+         Font font, int imgWidth ) {
+      if (text == null || text.isEmpty() || rect == null)
+         return;
+
+      int tx;
+
+      if (rect.getWidth() < imgWidth) {
+         // if the text is small enough to fit, center it
+         tx = (int)((imgWidth - rect.getWidth()) / 2);
+      } else if (component.getComponentOrientation().isLeftToRight()) {
+         // otherwise, if the component is LTR, ensure the left side of
+         // the text shows; the right can be clipped
+         tx = 0;
+      } else {
+         // otherwise, ensure the right side of the text shows
+         tx = -(int)(Math.ceil( rect.getWidth() ) - imgWidth);
+      }
+
+      int ty = (int)Math.ceil( Math.abs( rect.getY() ) );
+
+      if (font != null)
+         g2d.setFont( font );
+      g2d.setColor( Color.BLACK );
+      g2d.drawString( text, tx, ty );
+   }
+
+   /** Ensures that the component is not double buffered prior to printing. */
+   private boolean disableDoubleBuffering( Component c ) {
+      if (!(c instanceof JComponent))
+         return false;
+      JComponent jc = (JComponent)c;
+      boolean wasBuffered = jc.isDoubleBuffered();
+      jc.setDoubleBuffered( false );
+      return wasBuffered;
+   }
+
+   /** Restores a component's double-buffering state after printing. */
+   private void restoreDoubleBuffering( Component c, boolean wasBuffered ) {
+      if (c instanceof JComponent)
+         ((JComponent)c).setDoubleBuffered( wasBuffered );
+   }
+
+   /**
+    * A generic implementation of {@code Printable} that is safe for
+    * printing on another thread.
+    */
+   private class ThreadSafePrintable
+         implements Printable {
+
+      /** The delegate {@code Printable}. */
+      private Printable printDelegate;
+
+      /** A holder for communicating a return value when delegating. */
+      private int delegateReturn;
+
+      /** A holder for errors thrown during delegated printing. */
+      private Throwable delegateThrowable;
+
+      /**
+       * Constructs a thread-safe {@code Printable} around the given
+       * delegate.
+       * 
+       * @param   printDelegate  the {@code Printable} to delegate to
+       */
+      public ThreadSafePrintable( Printable printDelegate ) {
+         this.printDelegate = printDelegate;
+      }
+
+      /**
+       * {@inheritDoc}
+       */
+      public int print( final Graphics graphics, final PageFormat pageFormat,
+            final int pageIndex )
+            throws PrinterException {
+
+         // the delegated runnable
+         Runnable runnable = new Runnable() {
+            public synchronized void run() {
+               try {
+                  // call into the delegate and save the return value
+                  delegateReturn = printDelegate.print(
+                        graphics, pageFormat, pageIndex );
+               } catch (Throwable throwable) {
+                  // save any Throwable to be rethrown
+                  delegateThrowable = throwable;
+               } finally {
+                  // notify the caller that printing is complete
+                  notifyAll();
+               }
+            }
+         };
+
+         synchronized (runnable) {
+            // initialization using invalid print() return value
+            delegateReturn = -1;
+            delegateThrowable = null;
+
+            // call into the EDT
+            SwingUtilities.invokeLater( runnable );
+
+            // wait for the runnable to finish
+            while (delegateReturn == -1 && delegateThrowable == null) {
+               try {
+                  runnable.wait();
+               } catch (InterruptedException ex) {}
+            }
+
+            // if the delegate threw a throwable, rethrow it here
+            if (delegateThrowable != null) {
+               if (delegateThrowable instanceof PrinterException) {
+                  throw (PrinterException)delegateThrowable;
+               } else if (delegateThrowable instanceof RuntimeException) {
+                  throw (RuntimeException)delegateThrowable;
+               } else if (delegateThrowable instanceof Error) {
+                  throw (Error)delegateThrowable;
+               }
+            }
+
+            return delegateReturn;
+         }
+      }
+   } // end ThreadSafePrintable inner class
+
+} // end ComponentPrintable class

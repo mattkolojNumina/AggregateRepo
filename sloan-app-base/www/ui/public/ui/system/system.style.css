@@ -1,0 +1,13 @@
+.tableButton {
+  border: none;
+  color: #e6e8f5;
+  text-transform: none;
+  background-color: #3f51b5;
+  box-shadow: 2px 2px #777;
+  -webkit-appearance: none;
+}
+
+.tableButton:disabled {
+  background-color: #bbb;
+  box-shadow: 2px 2px #999;
+}

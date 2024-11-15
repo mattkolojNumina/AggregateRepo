@@ -1,0 +1,612 @@
+<div class="container-fluid" ng-cloak>
+  <md-tabs md-dynamic-height md-selected="selected">
+
+    <md-tab label="Waves" md-on-select="refresh()">
+
+      <div layout="row">
+        <md-content class="md-padding">
+          <md-input-container class='md-block'>
+            <label>Display</label>
+            <md-select ng-model="stepSelect"
+                       ng-change="display()">
+              <md-option ng-repeat="step in steps"
+                         ng-value="step.id">
+                {{step.name}}
+              </md-option>
+            </md-select>
+          </md-input-container>
+        </md-content>
+      </div>
+
+      <md-content class="md-padding">
+         <table id="wave" class="display compact" width="100%"></table>
+      </md-content>
+
+    </md-tab>
+
+    <md-tab label="Wave Details" md-on-select="refresh()">
+      <div layout="column">
+        <md-content class="md-padding">
+          <div layout="row" flex>
+
+            <div flex>
+              <table class="detail" ng-show="waveDetail.wave">
+                <tr>
+                  <td class='detail-field'>Wave:</td>
+                  <td class='detail-data'>{{waveDetail.wave}}</td>
+                </tr>
+
+                <tr>
+                  <td class='detail-field'>Estimated Length:</td>
+                  <td class='detail-data'>
+                    {{waveDetail.estLength}}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td class='detail-field'>Comment</td>
+                  <td class='detail-data'>
+                    {{waveDetail.comment}}
+                  </td>
+                </tr>
+
+              </table>
+            </div>
+
+            <div flex>
+              <table class='detail' ng-show="waveDetail.wave">
+                <tr>
+                  <td class='detail-field'>Created:</td>
+                  <td class='detail-data'>
+                    {{waveDetail.created | date:'medium'}}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td class='detail-field'>Picking Authorized:</td>
+                  <td class='detail-data'>
+                    {{waveDetail.pickingAuthorized | date:'medium'}}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td class='detail-field'>Picking Started:</td>
+                  <td class='detail-data'>
+                    {{waveDetail.pickingStarted | date:'medium'}}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td class='detail-field'>Picking Complete:</td>
+                  <td class='detail-data'>
+                    {{waveDetail.pickingCompleted | date:'medium'}}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td class='detail-field'>Released:</td>
+                  <td class='detail-data'>
+                    {{waveDetail.waveReleased | date:'medium'}}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td class='detail-field'>Lanes Assigned:</td>
+                  <td class='detail-data'>
+                    {{waveDetail.lanesAssigned | date:'medium'}}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td class='detail-field'>Length Set:</td>
+                  <td class='detail-data'>
+                    {{waveDetail.lengthSet | date:'medium'}}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td class='detail-field'>Changed:</td>
+                  <td class='detail-data'>
+                    {{waveDetail.stamp | date:'medium'}}
+                  </td>
+                </tr>
+
+              </table>
+            </div>
+
+            <div flex>
+              <div layout="column">
+                <div>
+                  <form ng-submit="doWaveLookup()">
+                    <md-input-container md-no-float class='md-block'>
+                      <label>Lookup Wave</label>
+                      <input ng-model='waveLookup'>
+                    </md-input-container>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <div flex ng-show="waveDetail.wave">
+            <md-tabs md-dynamic-height>
+
+              <md-tab label="Deliveries">
+                <md-content class="md-padding">
+                  <table id="delivery" class="display compact nowrap" width="100%">
+                  </table>
+                </md-content>
+              </md-tab>
+
+              <md-tab label="History">
+                <table id="waveHistory" class="display compact nowrap" width="100%">
+                </table>
+              </md-tab>
+            </md-tabs>
+          </div>
+
+        </md-content>
+      </div>
+    </md-tab>
+
+    <md-tab label="Deliveries" md-on-select="refresh()">
+
+      <div layout="row">
+        <md-content class="md-padding">
+          <md-input-container class='md-block'>
+            <label>Display</label>
+            <md-select ng-model="delStepSelect"
+                       ng-change="deliveriesDisplay()">
+              <md-option ng-repeat="delStep in delSteps"
+                         ng-value="delStep.id">
+                {{delStep.name}}
+              </md-option>
+            </md-select>
+          </md-input-container>
+        </md-content>
+      </div>
+
+      <md-content class="md-padding">
+         <table id="deliveries" class="display compact" width="100%"></table>
+      </md-content>
+
+    </md-tab>
+
+    <md-tab label="Delivery Details" md-on-select="refresh()">
+      <div layout="column">
+        <md-content class="md-padding">
+
+          <div layout="row" flex>
+
+            <div flex>
+              <table class="detail" ng-show="deliveryDetail.wave">
+                <tr>
+                  <td class='detail-field'>Wave:</td>
+                  <td class='detail-data'>{{deliveryDetail.wave}}</td>
+                </tr>
+
+                <tr>
+                  <td class='detail-field'>Delivery:</td>
+                  <td class='detail-data'>{{deliveryDetail.delivery}}</td>
+                </tr>
+
+                <tr>
+                  <td class='detail-field'>Created:</td>
+                  <td class='detail-data'>
+                    {{deliveryDetail.created | date:'medium'}}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td class='detail-field'>Picking Started:</td>
+                  <td class='detail-data'>
+                    {{deliveryDetail.pickingStarted | date:'medium'}}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td class='detail-field'>Picking Completed:</td>
+                  <td class='detail-data'>
+                    {{deliveryDetail.pickingCompleted | date:'medium'}}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td class='detail-field'>Pack Completed:</td>
+                  <td class='detail-data'>
+                    {{deliveryDetail.packingCompleted | date:'medium'}}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td class='detail-field'>Pallet Pack:</td>
+                  <td class='detail-data'>
+                    {{deliveryDetail.isPalletPack}}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td class='detail-field'>Live Load:</td>
+                  <td class='detail-data'>
+                    {{deliveryDetail.isLiveLoad}}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td class='detail-field'>Parcel:</td>
+                  <td class='detail-data'>
+                    {{deliveryDetail.isParcel}}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td class='detail-field'>Commited:</td>
+                  <td class='detail-data'>
+                    {{deliveryDetail.isCommittedOrder}}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td class='detail-field'>Length:</td>
+                  <td class='detail-data'>
+                    {{deliveryDetail.deliveryLength}}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td class='detail-field'>Carton Count:</td>
+                  <td class='detail-data'>
+                    {{deliveryDetail.cartonCount}}
+                  </td>
+                </tr>
+
+              </table>
+            </div>
+
+            <div flex>
+              <table class="detail" ng-show="deliveryDetail.wave">
+
+                <tr>
+                  <td class='detail-field'>Door:</td>
+                  <td class='detail-data'>{{deliveryDetail.dockDoorId}}</td>
+                </tr>
+
+                <tr>
+                  <td class='detail-field'>Dock Type:</td>
+                  <td class='detail-data'>{{deliveryDetail.dockDestinationType}}</td>
+                </tr>
+
+                <tr>
+                  <td class='detail-field'>Pack Type:</td>
+                  <td class='detail-data'>{{deliveryDetail.packStationType}}</td>
+                </tr>
+
+                <tr>
+                  <td class='detail-field'>Ship Lane Assigned:</td>
+                  <td class='detail-data'>
+                    {{deliveryDetail.shipLaneAssigned | date:'medium'}}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td class='detail-field'>Ship Sorter:</td>
+                  <td class='detail-data'>
+                    {{deliveryDetail.shipSorter}}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td class='detail-field'>Ship Lane:</td>
+                  <td class='detail-data'>
+                    {{deliveryDetail.shipLane}}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td class='detail-field'>OTM Shipment:</td>
+                  <td class='detail-data'>
+                    {{deliveryDetail.otmShipment}}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td class='detail-field'>OTM Releasing:</td>
+                  <td class='detail-data'>
+                    {{deliveryDetail.otmReleasing | date:'medium'}}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td class='detail-field'>OTM On Ship Lane:</td>
+                  <td class='detail-data'>
+                    {{deliveryDetail.otmOnShipLane | date:'medium'}}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td class='detail-field'>Comment:</td>
+                  <td class='detail-data'>
+                    {{deliveryDetail.comment}}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td class='detail-field'>Deleted:</td>
+                  <td class='detail-data'>
+                    {{deliveryDetail.deleted | date:'medium'}}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td class='detail-field'>Changed:</td>
+                  <td class='detail-data'>
+                    {{deliveryDetail.stamp | date:'medium'}}
+                  </td>
+                </tr>
+
+              </table>
+            </div>
+
+            <div flex>
+              <div layout="column">
+                <div>
+                  <form ng-submit="doDeliveryLookup()">
+                    <md-input-container md-no-float class='md-block'>
+                      <label>Lookup Delivery</label>
+                      <input ng-model='deliveryLookup'>
+                    </md-input-container>
+                  </form>
+                </div>
+                <div ng-hide="!deliveryDetail.seq ||
+                              deliveryDetail.packingCompleted">
+                  <md-button class="md-raised"
+                             ng-disabled="!permit('deliveryEdit')"
+                             ng-click="packingCompleted(true)">
+                    Manual Pack Complete SET
+                  </md-button>
+                </div>
+                <div ng-hide="!deliveryDetail.seq ||
+                !deliveryDetail.packingCompleted">
+                  <md-button class="md-raised"
+                             ng-disabled="!permit('deliveryEdit')"
+                             ng-click="packingCompleted(false)">
+                    Manual Pack Complete Clear
+                  </md-button>
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+          <div flex ng-show="deliveryDetail.wave">
+            <md-tabs md-dynamic-height>
+
+              <md-tab label="All Cartons">
+                <md-content class="md-padding">
+                  <table id="allCarton" class="display compact nowrap" width="100%">
+                  </table>
+                </md-content>
+              </md-tab>
+
+              <md-tab label="Pick Cartons">
+                <md-content class="md-padding">
+                  <table id="pickCarton" class="display compact nowrap" width="100%">
+                  </table>
+                </md-content>
+              </md-tab>
+
+              <md-tab label="Ship Cartons">
+                <md-content class="md-padding">
+                  <table id="shipCarton" class="display compact nowrap" width="100%">
+                  </table>
+                </md-content>
+              </md-tab>
+
+              <md-tab label="History">
+                <table id="deliveryHistory" class="display compact nowrap" width="100%">
+                </table>
+              </md-tab>
+
+            </md-tabs>
+          </div>
+        </md-content>
+      </div>
+
+    </md-tab>
+
+    <md-tab label="Carton Details" md-on-select="refresh()">
+      <div layout="column">
+        <md-content class="md-padding">
+
+          <div layout="row" flex>
+
+            <div flex>
+              <table class="detail" ng-show="cartonDetail.seq">
+                <tr>
+                  <td class='detail-field'>Delivery:</td>
+                  <td class='detail-data'>{{cartonDetail.delivery}}</td>
+                </tr>
+
+                <tr>
+                  <td class='detail-field'>Sub Order:</td>
+                  <td class='detail-data'>{{cartonDetail.subOrder}}</td>
+                </tr>
+
+                <tr>
+                  <td class='detail-field'>Pick LPN:</td>
+                  <td class='detail-data'>
+                    {{cartonDetail.pickLPN}}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td class='detail-field'>OTM Shipment:</td>
+                  <td class='detail-data'>
+                    {{cartonDetail.otmShipment}}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td class='detail-field'>Pick to Dock:</td>
+                  <td class='detail-data'>
+                    {{cartonDetail.isPickToDock}}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td class='detail-field'>Print Apply:</td>
+                  <td class='detail-data'>
+                    {{cartonDetail.isPrintApply}}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td class='detail-field'>Part #:</td>
+                  <td class='detail-data'>
+                    {{cartonDetail.partNumber}}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td class='detail-field'>Part Quantity:</td>
+                  <td class='detail-data'>
+                    {{cartonDetail.partQty}}
+                  </td>
+                </tr>
+
+              </table>
+            </div>
+
+            <div flex>
+              <table class="detail" ng-show="cartonDetail.seq">
+
+                <tr>
+                  <td class='detail-field'>Duct:</td>
+                  <td class='detail-data'>{{cartonDetail.isDuct}}</td>
+                </tr>
+
+                <tr>
+                  <td class='detail-field'>Length:</td>
+                  <td class='detail-data'>{{cartonDetail.length}}</td>
+                </tr>
+
+                <tr>
+                  <td class='detail-field'>Width:</td>
+                  <td class='detail-data'>{{cartonDetail.width}}</td>
+                </tr>
+
+                <tr>
+                  <td class='detail-field'>Height:</td>
+                  <td class='detail-data'>
+                    {{cartonDetail.height}}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td class='detail-field'>Created:</td>
+                  <td class='detail-data'>
+                    {{cartonDetail.created | date:'medium'}}
+                  </td>
+                </tr>
+
+                <tr ng-hide="!cartonDetail.manualRejectSet">
+                  <td class='detail-field'>Manual Reject:</td>
+                  <td class='detail-data'>
+                    {{cartonDetail.manualRejectSet | date:'medium'}}
+                  </td>
+                </tr>
+                <tr ng-hide="cartonDetail.manualRejectSet">
+                  <td class='detail-field'>Manual Reject:</td>
+                  <td class='detail-data'>
+                    Off
+                  </td>
+                </tr>
+
+                <tr>
+                  <td class='detail-field'>Deleted:</td>
+                  <td class='detail-data'>
+                    {{cartonDetail.deleted | date:'medium'}}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td class='detail-field'>Comment:</td>
+                  <td class='detail-data'>
+                    {{cartonDetail.comment}}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td class='detail-field'>Changed:</td>
+                  <td class='detail-data'>
+                    {{cartonDetail.stamp | date:'medium'}}
+                  </td>
+                </tr>
+
+              </table>
+            </div>
+
+            <div flex>
+              <div layout="column">
+                <div>
+                  <form ng-submit="doCartonLookup()">
+                    <md-input-container md-no-float class='md-block'>
+                      <label>Lookup LPN</label>
+                      <input ng-model='cartonLookup'>
+                    </md-input-container>
+                  </form>
+                </div>
+
+                <div ng-hide="!cartonDetail.seq || cartonDetail.manualRejectSet">
+                  <md-button class="md-raised"
+                             ng-disabled="!permit('cartonEdit')"
+                             ng-click="manualReject(true)">
+                    Manual Reject SET
+                  </md-button>
+                </div>
+                <div ng-hide="!cartonDetail.seq || !cartonDetail.manualRejectSet">
+                  <md-button class="md-raised"
+                             ng-disabled="!permit('cartonEdit')"
+                             ng-click="manualReject(false)">
+                    Manual Reject CLEAR
+                  </md-button>
+                </div>
+                <div ng-hide="!cartonDetail.seq">
+                  <md-button class="md-raised"
+                             ng-disabled="!permit('cartonEdit')"
+                             ng-click="cartonIgnore(seq)">
+                    Set Ignore
+                  </md-button>
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+          <div flex ng-show="cartonDetail.seq">
+            <md-tabs md-dynamic-height>
+
+              <md-tab label="History">
+                <table id="cartonHistory" class="display compact nowrap" width="100%">
+                </table>
+              </md-tab>
+
+            </md-tabs>
+          </div>
+        </md-content>
+      </div>
+    </md-tab>
+
+    <md-tab label="Staging" md-on-select="refresh()">
+      <md-content class="md-padding">
+        <table id="stage" class="display compact nowrap" width="100%"></table>
+      </md-content>
+    </md-tab>
+
+  </md-tabs>
+</div>

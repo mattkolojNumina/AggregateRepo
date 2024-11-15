@@ -1,0 +1,13 @@
+blib
+Changes
+Makefile
+Makefile.PL
+MANIFEST
+pm_to_blib
+Tag.bs
+Tag.c
+Tag.o
+Tag.pm
+Tag.xs
+test.pl
+typemap

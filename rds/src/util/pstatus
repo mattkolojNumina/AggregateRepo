@@ -1,0 +1,16 @@
+#!/bin/sh
+# pstatus	Checks if the specified process is running
+
+if [ "$#" != 1 ] ; then
+  echo $"Usage: $0 <process>"
+  exit 1
+fi
+
+pid=$(/sbin/pidof -o $$ -o $PPID -o %PPID -x $1)
+if [ -n "$pid" ]; then
+  echo $"process $1 (pid $pid) running"
+  exit 0
+fi
+
+echo $"process $1 stopped!!!"
+exit 2

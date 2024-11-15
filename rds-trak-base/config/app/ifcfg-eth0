@@ -1,0 +1,3 @@
+DEVICE=eth0
+ONBOOT=no
+NM_CONTROLLED=no

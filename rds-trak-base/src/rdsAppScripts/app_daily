@@ -1,0 +1,61 @@
+#!/bin/bash
+
+### this script is run nightly via cron
+
+ulimit -c 10000000
+HOST=`hostname`
+
+
+### purge expired database entries and optimize (defragment) tables
+
+# add tables to this list for standard purging
+# NB: eventLog has special logic below
+TABLES="
+   execute
+   notifications
+"
+EXPIRE=30  # days before database entries expire
+
+# add large tables to this list for aggressive purging
+LARGE_TABLES="
+"
+LARGE_EXPIRE=7  # days before database entries expire
+
+# add archive tables to this list for long-term storage
+ARCHIVE_TABLES="
+"
+ARCHIVE_EXPIRE=365  # days before database entries expire
+
+
+for i in $TABLES ; do 
+   echo purging/optimizing $i table...
+   time /usr/bin/mysql -urds -prds -Drds -e "DELETE FROM $i WHERE stamp < DATE_SUB(NOW(),INTERVAL $EXPIRE DAY);OPTIMIZE TABLE $i;"
+done
+
+for i in $LARGE_TABLES ; do 
+   echo purging/optimizing $i table...
+   time /usr/bin/mysql -urds -prds -Drds -e "DELETE FROM $i WHERE stamp < DATE_SUB(NOW(),INTERVAL $LARGE_EXPIRE DAY);OPTIMIZE TABLE $i;"
+done
+
+for i in $ARCHIVE_TABLES ; do 
+   echo purging/optimizing $i table...
+   time /usr/bin/mysql -urds -prds -Drds -e "DELETE FROM $i WHERE stamp < DATE_SUB(NOW(),INTERVAL $ARCHIVE_EXPIRE DAY);OPTIMIZE TABLE $i;"
+done
+
+
+# eventLog table uses "start" rather than "stamp"
+time /usr/bin/mysql -urds -prds -Drds -e "DELETE FROM eventLog WHERE start < DATE_SUB(NOW(),INTERVAL $EXPIRE DAY);OPTIMIZE TABLE eventLog;"
+
+
+# compress production counts
+$HOME/app/bin/count_compress
+
+
+### purge voice logs
+RETAIN=30
+find $HOME/vftp/Server/share/logs -ctime +$RETAIN -delete
+find $HOME/vftp/Server/resource/log -ctime +$RETAIN -delete
+
+
+/usr/bin/mysql -urds -prds -Drds -e "REPLACE INTO runtime SET name='/$HOST/app_daily', value=NOW();"
+

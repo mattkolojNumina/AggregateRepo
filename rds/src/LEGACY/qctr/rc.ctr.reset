@@ -1,0 +1,4 @@
+#!/bin/bash
+
+mysql -urds -prds -Drds -e "LOCK TABLES counter WRITE, counter_log WRITE;INSERT INTO counter_log SELECT zone,code,value,description,NOW() FROM counter ORDER BY zone,code;UPDATE counter SET value=0;REPLACE counter SET zone='system',code='last_reset',value=1,description='Timestamp of last counter reset';UNLOCK TABLES;"
+

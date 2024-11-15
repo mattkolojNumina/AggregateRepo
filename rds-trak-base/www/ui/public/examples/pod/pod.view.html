@@ -1,0 +1,511 @@
+<div class="container-fluid" ng-cloak>
+  <div layout="row">
+    <div flex></div>
+    <div flex>
+      <div>
+        <md-input-container class="md-block">
+          <label>Choose Pod:</label>
+          <md-select ng-model="pod" ng-change="podChange()">
+            <md-option value="02P">Pod 2</md-option>
+            <md-option value="03P">Pod 3</md-option>
+            <md-option value="04P">Pod 4</md-option>
+            <md-option value="05P">Pod 5</md-option>
+            <md-option value="06P">Pod 6</md-option>
+            <md-option value="07P">Pod 7</md-option>
+            <md-option value="08P">Pod 8</md-option>
+            <md-option value="09P">Pod 9</md-option>
+            <md-option value="10P">Pod 10</md-option>
+            <md-option value="11P">Pod 11</md-option>
+            <md-option value="12P">Pod 12</md-option>
+            <md-option value="13P">Pod 13</md-option>
+          </md-select>
+        </md-input>
+      </div>
+    </div>
+    <div flex layout="row">
+      <div>
+        <md-button class="md-raised"
+                   ng-disabled="!permit('podRestart')"
+                   ng-click="podRestart($event)">
+          Restart
+        </md-button>
+      </div>
+      <div>
+        <md-button class="md-raised"
+                   ng-disabled="!permit('podClear')"
+                   ng-click="podClear($event)">
+          Clear
+        </md-button>
+      </div>
+    </div>
+    <div flex></div>
+  </div>
+
+  <div>
+    <div layout="row">
+
+      <div flex></div>
+
+      <div layout="column" class="pod">
+
+        <div layout="row">
+          <md-button id="01" class="bin" 
+                     ng-style="bins['01'].style"
+                     ng-click="binClick('01')">
+            <div>{{bins['01'].name}}</div>
+          </md-button>
+          <md-button id="02" class="bin" 
+                     ng-style="bins['02'].style"
+                     ng-click="binClick('02')">
+            <div>{{bins['02'].name}}</div>
+          </md-button>
+          <md-button id="03" class="bin" 
+                     ng-style="bins['03'].style"
+                     ng-click="binClick('03')">
+            <div>{{bins['03'].name}}</div>
+          </md-button>
+          <md-button id="04" class="bin" 
+                     ng-style="bins['04'].style"
+                     ng-click="binClick('04')">
+            <div>{{bins['04'].name}}</div>
+          </md-button>
+          <md-button id="05" class="bin" 
+                     ng-style="bins['05'].style"
+                     ng-click="binClick('05')">
+            <div>{{bins['05'].name}}</div>
+          </md-button>
+          <md-button id="06" class="bin" 
+                     ng-style="bins['06'].style"
+                     ng-click="binClick('06')">
+            <div>{{bins['06'].name}}</div>
+          </md-button>
+        </div>
+
+        <div layout="row">
+          <md-button id="07" class="bin" 
+                     ng-style="bins['07'].style"
+                     ng-click="binClick('07')">
+            <div>{{bins['07'].name}}</div>
+          </md-button>
+          <md-button id="08" class="bin" 
+                     ng-style="bins['08'].style"
+                     ng-click="binClick('08')">
+            <div>{{bins['08'].name}}</div>
+          </md-button>
+          <md-button id="09" class="bin" 
+                     ng-style="bins['09'].style"
+                     ng-click="binClick('09')">
+            <div>{{bins['09'].name}}</div>
+          </md-button>
+          <md-button id="10" class="bin" 
+                     ng-style="bins['10'].style"
+                     ng-click="binClick('10')">
+            <div>{{bins['10'].name}}</div>
+          </md-button>
+          <md-button id="11" class="bin" 
+                     ng-style="bins['11'].style"
+                     ng-click="binClick('11')">
+            <div>{{bins['11'].name}}</div>
+          </md-button>
+          <md-button id="12" class="bin" 
+                     ng-style="bins['12'].style"
+                     ng-click="binClick('12')">
+            <div>{{bins['12'].name}}</div>
+          </md-button>
+        </div>
+
+        <div layout="row">
+          <md-button id="13" class="bin" 
+                     ng-style="bins['13'].style"
+                     ng-click="binClick('13')">
+            <div>{{bins['13'].name}}</div>
+          </md-button>
+          <md-button id="14" class="bin" 
+                     ng-style="bins['14'].style"
+                     ng-click="binClick('14')">
+            <div>{{bins['14'].name}}</div>
+          </md-button>
+          <md-button id="15" class="bin" 
+                     ng-style="bins['15'].style"
+                     ng-click="binClick('15')">
+            <div>{{bins['15'].name}}</div>
+          </md-button>
+          <md-button id="16" class="bin" 
+                     ng-style="bins['16'].style"
+                     ng-click="binClick('16')">
+            <div>{{bins['16'].name}}</div>
+          </md-button>
+          <md-button id="17" class="bin" 
+                     ng-style="bins['17'].style"
+                     ng-click="binClick('17')">
+            <div>{{bins['17'].name}}</div>
+          </md-button>
+          <md-button id="18" class="bin" 
+                     ng-style="bins['18'].style"
+                     ng-click="binClick('18')">
+            <div>{{bins['18'].name}}</div>
+          </md-button>
+        </div>
+
+        <div layout="row">
+          <md-button id="19" class="bin" 
+                     ng-style="bins['19'].style"
+                     ng-click="binClick('19')">
+            <div>{{bins['19'].name}}</div>
+          </md-button>
+          <md-button id="20" class="bin" 
+                     ng-style="bins['20'].style"
+                     ng-click="binClick('20')">
+            <div>{{bins['20'].name}}</div>
+          </md-button>
+          <md-button id="21" class="bin" 
+                     ng-style="bins['21'].style"
+                     ng-click="binClick('21')">
+            <div>{{bins['21'].name}}</div>
+          </md-button>
+          <md-button id="22" class="bin" 
+                     ng-style="bins['22'].style"
+                     ng-click="binClick('22')">
+            <div>{{bins['22'].name}}</div>
+          </md-button>
+          <md-button id="23" class="bin" 
+                     ng-style="bins['23'].style"
+                     ng-click="binClick('23')">
+            <div>{{bins['23'].name}}</div>
+          </md-button>
+          <md-button id="24" class="bin" 
+                     ng-style="bins['24'].style"
+                     ng-click="binClick('24')">
+            <div>{{bins['24'].name}}</div>
+          </md-button>
+        </div>
+      </div>
+
+      <div flex=5> </div>
+
+      <div layout="column" class="pod">
+        <md-button id="v5" class="vas" 
+                   ng-click="vasClick('v5')" 
+                   ng-style="vases['v5'].style">
+          <div>{{vases['v5'].name}}</div>
+        </md-button>
+        <md-button id="v4" class="vas" 
+                   ng-click="vasClick('v4')" 
+                   ng-style="vases['v4'].style">
+          <div>{{vases['v4'].name}}</div>
+        </md-button>
+        <md-button id="v3" class="vas" 
+                   ng-click="vasClick('v3')" 
+                   ng-style="vases['v3'].style">
+          <div>{{vases['v3'].name}}</div>
+        </md-button>
+        <md-button id="v2" class="vas" 
+                   ng-click="vasClick('v2')" 
+                   ng-style="vases['v2'].style">
+          <div>{{vases['v2'].name}}</div>
+        </md-button>
+        <md-button id="v1" class="vas" 
+                   ng-click="vasClick('v1')"
+                   ng-style="vases['v1'].style">
+          <div>{{vases['v1'].name}}</div>
+        </md-button>
+      </div>
+
+      <div flex=5> </div>
+
+      <div layout="column" class="pod">
+
+        <div layout="row">
+          <md-button id="25" class="bin" 
+                     ng-style="bins['25'].style"
+                     ng-click="binClick('25')">
+            <div>{{bins['25'].name}}</div>
+          </md-button>
+          <md-button id="26" class="bin" 
+                     ng-style="bins['26'].style"
+                     ng-click="binClick('26')">
+            <div>{{bins['26'].name}}</div>
+          </md-button>
+          <md-button id="27" class="bin" 
+                     ng-style="bins['27'].style"
+                     ng-click="binClick('27')">
+            <div>{{bins['27'].name}}</div>
+          </md-button>
+          <md-button id="28" class="bin" 
+                     ng-style="bins['28'].style"
+                     ng-click="binClick('28')">
+            <div>{{bins['28'].name}}</div>
+          </md-button>
+          <md-button id="29" class="bin" 
+                     ng-style="bins['29'].style"
+                     ng-click="binClick('29')">
+            <div>{{bins['29'].name}}</div>
+          </md-button>
+          <md-button id="30" class="bin" 
+                     ng-style="bins['30'].style"
+                     ng-click="binClick('30')">
+            <div>{{bins['30'].name}}</div>
+          </md-button>
+        </div>
+
+        <div layout="row">
+          <md-button id="31" class="bin" 
+                     ng-style="bins['31'].style"
+                     ng-click="binClick('31')">
+            <div>{{bins['31'].name}}</div>
+          </md-button>
+          <md-button id="32" class="bin" 
+                     ng-style="bins['32'].style"
+                     ng-click="binClick('32')">
+            <div>{{bins['32'].name}}</div>
+          </md-button>
+          <md-button id="33" class="bin" 
+                     ng-style="bins['33'].style"
+                     ng-click="binClick('33')">
+            <div>{{bins['33'].name}}</div>
+          </md-button>
+          <md-button id="34" class="bin" 
+                     ng-style="bins['34'].style"
+                     ng-click="binClick('34')">
+            <div>{{bins['34'].name}}</div>
+          </md-button>
+          <md-button id="35" class="bin" 
+                     ng-style="bins['35'].style"
+                     ng-click="binClick('35')">
+            <div>{{bins['35'].name}}</div>
+          </md-button>
+          <md-button id="36" class="bin" 
+                     ng-style="bins['36'].style"
+                     ng-click="binClick('36')">
+            <div>{{bins['36'].name}}</div>
+          </md-button>
+        </div>
+
+        <div layout="row">
+          <md-button id="37" class="bin" 
+                     ng-style="bins['37'].style"
+                     ng-click="binClick('37')">
+            <div>{{bins['37'].name}}</div>
+          </md-button>
+          <md-button id="38" class="bin" 
+                     ng-style="bins['38'].style"
+                     ng-click="binClick('38')">
+            <div>{{bins['38'].name}}</div>
+          </md-button>
+          <md-button id="39" class="bin" 
+                     ng-style="bins['39'].style"
+                     ng-click="binClick('39')">
+            <div>{{bins['39'].name}}</div>
+          </md-button>
+          <md-button id="40" class="bin" 
+                     ng-style="bins['40'].style"
+                     ng-click="binClick('40')">
+            <div>{{bins['40'].name}}</div>
+          </md-button>
+          <md-button id="41" class="bin" 
+                     ng-style="bins['41'].style"
+                     ng-click="binClick('41')">
+            <div>{{bins['41'].name}}</div>
+          </md-button>
+          <md-button id="42" class="bin" 
+                     ng-style="bins['42'].style"
+                     ng-click="binClick('42')">
+            <div>{{bins['42'].name}}</div>
+          </md-button>
+        </div>
+
+        <div layout="row">
+          <md-button id="43" class="bin" 
+                     ng-style="bins['43'].style"
+                     ng-click="binClick('43')">
+            <div>{{bins['43'].name}}</div>
+          </md-button>
+          <md-button id="44" class="bin" 
+                     ng-style="bins['44'].style"
+                     ng-click="binClick('44')">
+            <div>{{bins['44'].name}}</div>
+          </md-button>
+          <md-button id="45" class="bin" 
+                     ng-style="bins['45'].style"
+                     ng-click="binClick('45')">
+            <div>{{bins['45'].name}}</div>
+          </md-button>
+          <md-button id="46" class="bin" 
+                     ng-style="bins['46'].style"
+                     ng-click="binClick('46')">
+            <div>{{bins['46'].name}}</div>
+          </md-button>
+          <md-button id="47" class="bin" 
+                     ng-style="bins['47'].style"
+                     ng-click="binClick('47')">
+            <div>{{bins['47'].name}}</div>
+          </md-button>
+          <md-button id="48" class="bin" 
+                     ng-style="bins['48'].style"
+                     ng-click="binClick('48')">
+            <div>{{bins['48'].name}}</div>
+          </md-button>
+        </div>
+      </div>
+
+      <div flex></div>
+
+    </div>
+  </div>
+
+  <div ng-hide="!showVas" layout="row">
+    <div class='md-padding' flex>
+      <table class='detail display compact'>
+        <tr>
+          <td class='detail-field'>VAS bin:</td>
+          <td class='detail-data'>{{vas.name}}</td>
+        </tr>
+        <tr ng-hide="vas.bin==5">
+          <td class='detail-field'>
+            <a href="#/vas?pod={{pod}}&vasBin={{vas.bin}}">
+              Code:
+            </a>
+            <md-tooltip>Click to Edit</md-tooltip>
+          </td>
+          <td class='detail-data'>
+            {{vas.vasCode}}
+          </td>
+        </tr>
+        <tr ng-hide="vas.bin==5">
+          <td class='detail-field'>Description:</td>
+          <td class='detail-data'>{{vas.vasDesc}}</td>
+        </tr>
+      </table>
+    </div>
+    <div class='md-padding' flex>
+      <table class='detail display compact'>
+        <tr>
+          <td class='detail-field'>Enabled:</td>
+          <td class='detail-data' ng-click="enableVas($event)">
+            {{vas.enabled}}
+            <md-tooltip>Click to edit</md-tooltip>
+          </td>
+        </tr>
+
+        <tr>
+          <td class='detail-field'>VAS Device:</td>
+          <td class='detail-data'>
+            <div class="tooltip">
+              {{vas.vasDevice}}
+              <span class="tooltiptext">
+                Status: {{vas.vasStatus}}
+                Service: {{vas.vasService}}
+              </span>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div flex></div>
+
+  </div>
+
+  <div ng-hide="!showBin" layout="row">
+
+    <div class='md-padding' flex>
+      <table class='detail display compact'>
+        <tr>
+          <td class='detail-field'>Cubby:</td>
+          <td class='detail-data'>{{bin.cubby}}</td>
+        </tr>
+
+        <tr>
+          <td class='detail-field'>Carton:</td>
+          <td class='detail-data'>
+            <a href="#/wave?carton={{bin.carton}}">
+              {{bin.carton}}
+            </a>
+          </td>
+        </tr>
+
+        <tr>
+          <td class='detail-field'>Pack Wave:</td>
+          <td class='detail-data'>
+            <a href="#/wave?packWave={{bin.packWave}}">
+              {{bin.packWave}}
+            </a>
+          </td>
+        </tr>
+
+        <tr>
+          <td class='detail-field'>Carton Size:</td>
+          <td class='detail-data'>{{bin.cartonSize}}</td>
+        </tr>
+
+        <tr>
+          <td class='detail-field'>Cubbies:</td>
+          <td class='detail-data'>{{bin.cubbies}}</td>
+        </tr>
+
+        <tr>
+          <td class='detail-field'>Idle Time:</td>
+          <td class='detail-data'>{{bin.idle | number:0}} minutes</td>
+        </tr>
+
+      </table>
+    </div>
+
+    <div class='md-padding' flex>
+      <table class='detail display compact'>
+        <tr ng-click="sequenceEdit()">
+          <td class='detail-field'>Cubby Sequence:</td>
+          <td class='detail-data'>
+            <a href="#/sequence?cubby={{bin.cubby}}">
+              {{bin.cubbySeq}}
+            </a>
+            <md-tooltip>Click to Edit</md-tooltip>
+          </td>
+        </tr>
+
+        <tr>
+          <td class='detail-field'>Enabled:</td>
+          <td class='detail-data' ng-click="enableBin($event)">
+            {{bin.enabled}}
+            <md-tooltip>Click to edit</md-tooltip>
+          </td>
+        </tr>
+
+        <tr>
+          <td class='detail-field'>Put Wall:</td>
+          <td class='detail-data'>{{bin.putWall}} </td>
+        </tr>
+
+        <tr>
+          <td class='detail-field'>Put Device:</td>
+          <td class='detail-data'>
+            <div class="tooltip">
+              {{bin.putDevice}}
+              <span class="tooltiptext">
+                Status: {{bin.putStatus}}
+                Service: {{bin.putService}}
+              </span>
+            </div>
+          </td>
+        </tr>
+
+        <tr>
+          <td class='detail-field'>Pack Device:</td>
+          <td class='detail-data'>
+            <div class="tooltip">
+              {{bin.packDevice}}
+              <span class="tooltiptext">
+                Status: {{bin.packStatus}}
+                Service: {{bin.packService}}
+              </span>
+            </div>
+          </td>
+        </tr>
+
+      </table>
+    </div>
+
+    <div flex>
+    </div>
+  </div>
+</div>

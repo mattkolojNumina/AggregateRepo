@@ -1,0 +1,26 @@
+<div ng-controller="LeftController as left" ng-cloak>
+  <md-sidenav md-component-id="left"
+              class="md-sidenav-left">
+    <md-toolbar>
+      <div class="md-toolbar-tools">
+        <h2>Menu</h2>
+        <span flex></span>
+        <md-button class="md-icon-button" aria-label="Close Menu"
+                   ng-click="leftToggle()">
+          <md-icon md-svg-icon="icons/close.svg"></md-icon>
+          <md-tooltip>Close Menu</md-tooltip>
+        </md-button>    
+      </div>
+    </md-toolbar>
+  
+    <md-content>
+      <ul class="navigation">
+        <li ng-repeat="menu in menus" 
+            ng-click="leftToggle()"
+            class="navigation-items">
+          <a href="{{menu.href}}">{{menu.title}}</a>
+        </li>
+      </ul>
+   </md-content>
+  </md-sidenav>
+</div>

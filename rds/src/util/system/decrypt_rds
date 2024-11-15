@@ -1,0 +1,6 @@
+#!/bin/bash
+
+echo "decrypting rds src archive... "
+cd $HOME/archive
+gpg -q -d rds.tgz.gpg > rds.tgz
+echo "done"

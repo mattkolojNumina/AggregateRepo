@@ -1,0 +1,8 @@
+#!/home/rds/bin/kermit +
+if not defined \%1 define \%1 /dev/ttyS0    # default device
+if not defined \%2 define \%2 9600          # default baud rate
+set modem type none
+set line \%1
+set speed \%2
+set carrier-watch off
+connect

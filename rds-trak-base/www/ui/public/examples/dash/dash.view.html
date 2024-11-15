@@ -1,0 +1,28 @@
+<div class="container-fluid" ng-cloak>
+  <div layout="row" layout-wrap layout-margin layout-align="center">
+
+    <div flex=30>
+      <table>
+        <tr> 
+          <th>Pod</th>
+          <th>Pack Wave</th>
+        </tr> 
+        <tr ng-repeat="wave in waves">
+          <td>{{wave.pod}}</td>
+          <td>{{wave.packWave}}</td>
+        </tr>
+      </table>
+    </div>
+
+    <div flex=30>
+      <div id="put"></div>
+      <center><h2>Puts / Hour</h2></center>
+    </div>
+
+    <div flex=30>    
+      <div id="pack"></div>
+      <center><h2>Packs / Hour</h2></center>
+    </div>
+
+  </div>
+</div>

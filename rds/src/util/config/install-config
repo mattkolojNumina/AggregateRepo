@@ -1,0 +1,143 @@
+#!/bin/bash
+
+###
+#
+# install script for app/config
+#
+###
+
+###
+# config variables
+###
+
+USER=rds
+GROUP=rds
+HOMEDIR=/home/$USER
+
+
+###
+# installation functions
+###
+
+install_app() {
+   [ $APP ] && return
+   APP="app"
+   echo "installing application-specific configuration files..."
+   install -o $USER -g $GROUP -pm 644 app/bashrc $HOMEDIR/.bashrc
+   crontab -u rds app/crontab
+   install -pm 644 app/hosts       /etc/
+   install -pm 644 app/*.yaml      /etc/netplan/
+   install -pm 644 app/hostname    /etc/
+   install -pm 644 app/ethercat.conf /etc/
+   install -pm 644 app/resolv.conf /etc/
+   ln -sf `cat app/timezone.txt`   /etc/localtime
+}
+
+install_recover() {
+   [ $REC ] && return
+   REC="rec"
+   echo "installing configuration files for recovery..."
+   install -o $USER -g $GROUP -pm 644 app/bashrc $HOMEDIR/.bashrc
+   crontab -u rds app/crontab
+   install -pm 644 app/hosts       /etc/
+   install -pm 644 app/*.yaml      /etc/netplan/
+   install -pm 644 app/hostname    /etc/
+   install -pm 644 app/ethercat.conf /etc/
+   install -pm 644 app/resolv.conf /etc/
+   ln -sf `cat app/timezone.txt`   /etc/localtime
+}
+
+install_sys() {
+   [ $SYS ] && return
+   SYS="sys"
+   echo "installing system configuration files..."
+   install -pm 644 sys/20-mei.rules /etc/udev/rules.d/
+   install -pm 644 sys/99-CIF.rules /etc/udev/rules.d/
+   install -pm 644 sys/99-EtherCAT.rules /etc/udev/rules.d/
+   install -o rds -g rds -pm 644 sys/bash_profile  $HOMEDIR/.bash_profile
+   install -pm 644 sys/grub         /etc/default/ && update-grub
+   install -pm 644 sys/rds.service  /etc/systemd/system/
+   install -pm 644 sys/apache2.conf /etc/apache2/
+   install -pm 644 sys/ports.conf   /etc/apache2/
+   install -pm 644 sys/000-default.conf /etc/apache2/sites-enabled/
+   install -pm 644 sys/mysqld@.service /etc/systemd/system/
+   install -pm 644 sys/rds.cnf      /etc/mysql/conf.d/
+   install -pm 644 sys/50-server.cnf /etc/mysql/mariadb.conf.d/
+   install -pm 644 sys/50-client.cnf /etc/mysql/mariadb.conf.d/
+   install -pm 644 sys/ethercat.service /etc/systemd/system/
+   install -pm 644 sys/cif.service      /etc/systemd/system/
+   install -pm 644 sys/rds.conf     /etc/ld.so.conf.d/ && /sbin/ldconfig
+   install -pm 644 sys/limits.conf  /etc/security/
+   install -pm 644 sys/rules.v4     /etc/iptables/
+}
+
+install_ntp() {
+   [ $NTP ] && return
+   NTP="ntp"
+   echo "configuring/running ntp..."
+   install -pm 644 ntp/ntp.conf /etc/
+   systemctl start ntp
+   systemctl enable ntp
+}
+
+install_ups() {
+   [ $UPS ] && return
+   UPS="ups"
+   echo "configuring/running ups software..."
+   install -pm 644 ups/apcupsd.conf /etc/apcupsd/
+   systemctl start apcupsd
+   systemctl enable apcupsd
+}
+
+
+###
+# begin script
+###
+
+if [ $# -eq 0 ] ; then
+   echo "usage: $0 [args]"
+   echo "where 'args' is any combination of the following:"
+   echo "   app -- install application-specific config files"
+   echo "   recover -- install config files during recovery"
+   echo "   sys -- install system configuration files"
+   echo "   ntp -- configure and run ntp"
+   echo "   ups -- configure and run ups software"
+   echo "   all -- all of the above"
+   exit 1
+fi
+
+if [ $UID -ne 0 ] ; then
+   echo "Administrator privileges required"
+   su -c "$0 $*"
+   exit
+fi
+
+while (( $# )) ; do
+   case "$1" in
+      app)
+         install_app
+         ;;
+      recover)
+         install_recover
+         ;;
+      sys)
+         install_sys
+         ;;
+      ntp)
+         install_ntp
+         ;;
+      ups)
+         install_ups
+         ;;
+      all)
+         install_app
+         install_sys
+         install_ntp
+         install_ups
+         ;;
+      *)
+         echo "unknown argument '$1'"
+         ;;
+   esac
+   shift
+done

@@ -1,0 +1,344 @@
+<div class="container-fluid" ng-cloak>
+  <md-content>
+    <md-tabs md-dynamic-height md-selected="selected">
+    
+      <md-tab label="Unreleased" md-on-select="refresh()">
+        <md-content class="md-padding"> 		  
+      		<table id="unreleasedOrder" class="display" width="100%"></table>
+        </md-content>
+      </md-tab>  
+	  
+      <md-tab label="Started" md-on-select="refresh()">	  	  
+        <md-content class="md-padding">
+          <table id="startedOrder" class="display" width="100%"></table>
+        </md-content>
+      </md-tab>	 
+
+      <md-tab label="Completed" md-on-select="displayTodayCompleted()">
+        <section layout="row" layout-wrap>
+          <div layout="row">
+            <md-button>From:</md-button>
+            <mdp-date-picker ng-model='date1'
+                   ng-change='changeStart()'></mdp-date-picker>
+          </div>
+          <div layout="row">
+            <md-button>To:</md-button>
+            <mdp-date-picker ng-model='date2'
+                 ng-change='changeEnd()'></mdp-date-picker>
+          </div>
+          <md-input-container>
+            <md-button class='md-raised' ng-click='displayCompleted()'>Display</md-button>
+          </md-input-container>
+        </section>  	  
+        <md-content class="md-padding">
+          <table id="completedOrder" class="display" width="100%"></table>
+        </md-content>
+      </md-tab>	  	 	  
+
+      <md-tab label="Error" md-on-select="refresh()">	
+        <md-content ng-show='working'>
+        <div layout="row">
+          <span flex></span>
+          <div layout="column" layout-align="center center">
+          <h2>WORKING</h2>
+          <md-progress-circular md-mode="indeterminate"></md-progress-circular>
+          <h3></h3>
+          </div>
+          <span flex></span>
+        </div>
+        </md-content >		    
+        <md-content class="md-padding" ng-show='!working'>
+          <table id="errorOrder" class="display" width="100%"></table>
+        </md-content>
+      </md-tab>		  
+         
+      <md-tab label="Order Details" md-on-select="">
+        <md-content ng-show='working'>
+          <div layout="row">
+            <span flex></span>
+            <div layout="column" layout-align="center center">
+            <h2>WORKING</h2>
+            <md-progress-circular md-mode="indeterminate"></md-progress-circular>
+            <h3></h3>
+            </div>
+            <span flex></span>
+          </div>
+        </md-content >		
+        <div ng-hide='editingLines'>		
+			<md-content class="md-padding" ng-show='!working'>
+			  <div layout="row">
+				<div flex=80 layout="column">
+				  <h3>OrderId(Invoice): {{order.orderId}}</h3> 
+				  <md-tabs md-dynamic-height ng-show="order.orderId">	  
+					<md-tab label='Basic'>
+					  <table>
+						<tr>
+						   <td class='order-field'>Batch ID:</td>
+						   <td class='order-data'>                                               
+							 <a href="#/waves?waveSeq={{order.waveSeq}}">
+							   {{order.waveName}}
+							 </a>	
+						   </td>
+						</tr>                   
+						
+						<tr>
+						  <td class='order-field'>Carton Type:</td>
+						  <td class='order-data'>{{order.orderType}}</td>				  
+						</tr>					  
+						
+						<tr>
+						  <td class='order-field'>Status:</td>
+						  <td class='order-data'>{{order.status}}</td>
+						</tr>	
+
+						<tr>
+						  <td class='order-field'>Demand Date:</td>
+						  <td class='order-data'>{{order.demandDate}}</td>
+						</tr>
+
+						<tr ng-show="order.errorMsg && order.errMsg!=''">
+						  <td class='order-field'>Error:</td>
+						  <td class='orders-alert'>{{order.errorMsg}}</td>
+						</tr>				  
+
+					  </table>
+					</md-tab>					  
+					
+					<md-tab label='Progress'>
+					  <table>
+						<tr>
+						  <td class='order-field'>Downloaded:</td>
+						  <td class='order-data'>
+							{{order.downloadStamp|date:'y-MM-dd HH:mm:ss'}}
+						  </td>
+						</tr>
+						
+						<tr>
+						  <td class='order-field'>Released:</td>
+						  <td class='order-data'>
+							{{order.releaseStamp|date:'y-MM-dd HH:mm:ss'}}
+						  </td>
+						</tr>					  
+
+						<tr>
+						  <td class='order-field'>Pick Started:</td>
+						  <td class='order-data'>
+							{{order.pickStartStamp|date:'y-MM-dd HH:mm:ss'}}
+						  </td>
+						</tr>
+
+						<tr>
+						  <td class='order-field'>Picked:</td>
+						  <td class='order-data'>
+							{{order.pickEndStamp|date:'y-MM-dd HH:mm:ss'}}
+						  </td>
+						</tr>
+
+						<tr>
+						  <td class='order-field'>Labeled:</td>
+						  <td class='order-data'>
+							{{order.labelStamp|date:'y-MM-dd HH:mm:ss'}}
+						  </td>
+						</tr>
+						
+						<tr>
+						  <td class='order-field'>Completed:</td>
+						  <td class='order-data'>
+							{{order.completeStamp|date:'y-MM-dd HH:mm:ss'}}
+						  </td>
+						</tr>                    
+
+						<tr>
+						  <td class='order-field'>Cancelled:</td>
+						  <td class='order-data'>
+							{{order.cancelStamp|date:'y-MM-dd HH:mm:ss'}}
+						  </td>
+						</tr>
+					  </table>
+					</md-tab>
+					
+					<md-tab label='Extra Data'>
+					  <table>
+						<tr>
+						<td class='order-field'>Customer:</td>
+						<td class='order-data'>{{order.customerNumber}}</td>
+						</tr>
+				  
+						<tr>
+						<td class='order-field'>Truck:</td>
+						<td class='order-data'>{{order.truckNumber}}</td>
+						</tr>
+				  
+						<tr>
+						<td class='order-field'>Door:</td>
+						<td class='order-data'>{{order.door}}</td>
+						</tr>
+				  
+						<tr>
+						<td class='order-field'>Stop:</td>
+						<td class='order-data'>{{order.stop}}</td>
+						</tr>
+			  
+						<tr>
+						<td class='order-field'>PO Number:</td>
+						<td class='order-data'>{{order.poId}}</td>
+						</tr>
+				  
+						<tr>
+						<td class='order-field'>PO Numbers:</td>
+						<td class='order-data'>{{order.poNumbers}}</td>
+						</tr>
+			  
+						<tr>
+						<td class='order-field'>QPA Group:</td>
+						<td class='order-data'>{{order.QPAGroup}}</td>
+						</tr>
+				  
+					  </table>
+					</md-tab>
+					
+					
+				  </md-tabs>
+				</div>
+				<div flex> <!-- layout="row"-->
+				  <md-toolbar>
+					<div class="md-toolbar-tools" ng-show="order.orderId">
+					  <md-button aria-label="Cancel"
+						ng-show="(order.status!='canceled')"
+						ng-disabled="!permit('ordersEdit')"
+						ng-click="cancelOrder()">Cancel Order</md-button>
+					  <span>
+					  <md-button aria-label="Cancel"
+						ng-show="(order.status!='canceled')"
+						ng-disabled="!permit('ordersEdit')"
+						ng-click="editLine()">Edit Lines</md-button>	
+                      </span>						
+					</div>
+				  </md-toolbar>
+				  <br/>   
+				  <form ng-submit="lookupOrderId()">
+					<md-input-container>
+					  <label>Look up order</label>
+					  <md-tooltip md-direction="bottom">orderId</md-tooltip>
+					  <input ng-model="orderId">
+					</md-input-container>
+				  </form>
+				</div>
+			  </div>
+			  
+			  <div ng-show="order.orderId">
+				<md-tabs md-dynamic-height class="md-padding">
+				  <md-tab label="Lines">
+					<table id="lines" class="display" width="100%"></table>       
+				  </md-tab>
+				
+				  <md-tab label="Repack Cartons">
+					<table id="cartons" class="display" width="100%"></table>
+				  </md-tab>				  	
+				  
+				  <md-tab label="Fullcase Cartons">
+					<table id="fullcases" class="display" width="100%"></table>
+				  </md-tab>				  	
+				  
+				  <md-tab label="Picks">
+					<table id="picks" class="display" width="100%"></table>
+				  </md-tab>
+
+				  <md-tab label="History">
+					<table id="orderHistory" class="display" width="100%"></table>
+				  </md-tab>	    
+			  
+				</md-tabs>
+			  </div>
+
+			</md-content>
+		</div>
+		<div ng-show='editingLines'>	
+			<md-toolbar class="md-hue-1">
+				<div class="md-toolbar-tools" layout="row">
+				  <span>
+					Editing lines for order {{order.orderId}}
+				  </span>
+				  <span>
+					<md-button ng-click="editingLines=false"
+						class="md-raised md-primary">
+					Cancel Editing
+					</md-button>
+				  </span>
+				  <span>
+					<md-button ng-click="updateOrderLineQty()"
+						ng-disabled="!hasChange"
+						class="md-raised md-primary">
+					Save Change
+					</md-button>
+				  </span>			  
+				</div>
+			</md-toolbar>		
+			<md-content class="md-padding" >
+			  <table id="editLines" class="display" width="100%"></table>
+			</md-content>		
+		</div>
+      </md-tab>
+      
+    </md-tabs>
+  </md-content>
+</div>
+
+<script type="text/ng-template" id="lookup.html">
+  <md-dialog ng-cloak>
+    <form>
+      <md-toolbar>
+        <div class="md-toolbar-tools">
+          <h2>Select a record</h2>              
+        </div>
+      </md-toolbar>	
+      <md-dialog-content>
+          <div class="md-dialog-content">
+            <table>
+              <thead>
+                <tr>
+                  <th>Order ID(Invoice) &nbsp;</th>
+                  <th>Batch ID &nbsp;</th>
+                  <th>Status &nbsp;</th>					  
+                  <th>Select &nbsp;</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="order in candidates">
+                  <td> {{order.orderId}} </td>
+                  <td> {{order.waveName}} </td>
+                  <td> {{order.status}} </td>				  
+                  <td>
+                    <md-button class="md-raised md-primary"
+                         ng-click="selectOrder(order)">
+                    Select
+                    </md-button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+      </md-dialog-content>
+    </form>
+  </md-dialog>
+</script>
+<script type="text/ng-template" id="changeQty.html">
+  <md-dialog ng-cloak>
+    <form>
+      <md-dialog-content>
+        <div class="md-dialog-content">
+          <h2>Change qty for {{selectedLine}}</h2>
+        </div>
+      </md-dialog-content>
+      
+      <md-dialog-actions>
+	    <md-input-container>
+	      <label>Origin Qty {{originQty}}, new Qty (minimum value {{labeledQty}})</label>
+	      <input ng-model="newQty" type='number' step='1'>
+	    </md-input-container>
+		<md-button ng-click="doChangeQty()" ng-disabled="newQty<labeledQty || newQty>originQty">Change Qty</md-button>
+		<md-button ng-click="cancelChangeQty()">Cancel</md-button>
+      </md-dialog-actions>
+    </form>
+  </md-dialog>
+</script>

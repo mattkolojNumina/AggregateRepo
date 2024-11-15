@@ -1,0 +1,83 @@
+<div class="container-fluid" ng-cloak>
+
+  <md-content class="md-padding">
+    <div layout="row">
+      <div flex>
+        <md-content class="md-padding"> 
+          <table id="destChoose" class="display"></table>
+        </md-content>
+      </div>
+
+      <div flex>
+        <md-toolbar>
+          <div class="md-toolbar-tools">
+            <span flex>{{edit.seq}}</span>
+            <span flex></span>
+            <md-button aria-label="New"
+                       ng-click="editNew()">New</md-button>
+            <md-button aria-label="Update"
+                       ng-click="editUpdate()">Save</md-button>
+            <md-button aria-label="Delete"
+                       ng-click="editDelete()">Delete</md-button>
+          </div>
+        </md-toolbar>
+        <md-content class="md-padding">
+          <div layout="column">
+            <div layout="row">
+              <md-input-container md-no-float class="md-block">
+                <label>Destination</label>
+                <input ng-model="edit.Destination">
+              </md-input-container>
+              
+              <md-input-container md-no-float class="md-block">
+                <label>Country code</label>
+                <input ng-model="edit.countryCode">
+              </md-input-container>
+              
+              <md-input-container md-no-float class="md-block">
+                <label>Incotm2</label>
+                <input ng-model="edit.incotm2">
+              </md-input-container>
+            </div>
+            
+            <div layout="row">
+              <md-input-container md-no-float class="md-block">
+                <label>Name</label>
+                <input ng-model="edit.name">
+              </md-input-container>
+              
+              <md-input-container md-no-float class="md-block">
+                <label>Ship to</label>
+                <input ng-model="edit.shipTo">
+              </md-input-container>
+              
+              <md-input-container md-no-float class="md-block">
+                <label>Region code</label>
+                <input ng-model="edit.regionCode">
+              </md-input-container>
+            </div>
+            
+            <div layout="row">
+              <md-input-container md-no-float class="md-block">
+                <label>City</label>
+                <input ng-model="edit.city">
+              </md-input-container>
+              
+              <md-input-container md-no-float class="md-block">
+                <label>Purchase order number</label>
+                <input ng-model="edit.purchaseOrderNo">
+              </md-input-container>
+              
+              <md-input-container md-no-float class="md-block">
+                <label>Expected cartons</label>
+                <input ng-model="edit.expectedCartons">
+              </md-input-container>
+            </div>
+            
+          </div>
+        </md-content>
+      </div>
+    </div>
+  </md-content>
+    
+</div>

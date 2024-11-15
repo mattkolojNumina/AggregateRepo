@@ -1,0 +1,281 @@
+<div class="container-fluid" ng-cloak>
+  <md-content>
+    <md-tabs md-dynamic-height md-selected="selected">
+      
+      <md-tab label="All" md-on-select="">
+        <md-button class="md-opause"
+                   ng-click="pauseRefresh()"
+                   ng-disabled="!orderRefreshEnabled">Pause refresh</md-button>
+        <md-content class="md-padding">
+          <table id="wavesAll" class="display" width="100%"></table>
+        </md-content>
+      </md-tab>
+      
+      <md-tab label="Released" md-on-select="">
+        <md-button class="md-opause"
+                   ng-click="pauseRefresh()"
+                   ng-disabled="!orderRefreshEnabled">Pause refresh</md-button>
+        <md-content class="md-padding">
+          <table id="wavesReleased" class="display" width="100%"></table>
+        </md-content>
+      </md-tab>
+      
+      <md-tab label="Not Released" md-on-select="">
+        <md-button class="md-opause"
+                   ng-click="pauseRefresh()"
+                   ng-disabled="!orderRefreshEnabled">Pause refresh</md-button>
+        <md-content class="md-padding">
+          <table id="wavesNotReleased" class="display" width="100%"></table>
+        </md-content>
+      </md-tab>
+      
+      <md-tab label="Error" md-on-select="">
+        <md-button class="md-opause"
+                   ng-click="pauseRefresh()"
+                   ng-disabled="!orderRefreshEnabled">Pause refresh</md-button>
+        <md-content class="md-padding">
+          <table id="wavesError" class="display" width="100%"></table>
+        </md-content>
+      </md-tab>
+      
+      <md-tab label="Canceled" md-on-select="">
+        <md-button class="md-opause"
+                   ng-click="pauseRefresh()"
+                   ng-disabled="!orderRefreshEnabled">Pause refresh</md-button>
+        <md-content class="md-padding">
+          <table id="wavesCanceled" class="display" width="100%"></table>
+        </md-content>
+      </md-tab>
+      
+      <md-tab label="Wave Details" md-on-select="">
+        <md-content class="md-padding">
+          <div layout="row">
+            <div flex=5></div>
+            <div flex>
+              <table class="order">
+                <tbody>
+                  <tr>
+                    <td class="order-field">Wave:&nbsp;</td>
+                    <td class="order-data">{{wave.rWave}}</td>
+                  </tr>
+                  <tr>
+                    <td class="order-field">Ship date:&nbsp;</td>
+                    <td class="order-data">{{wave.expShipDate | date:'mediumDate'}}</td>
+                  </tr>
+                  <tr>
+                    <td class="order-field">Description:&nbsp;</td>
+                    <td class="order-data">{{wave.rWaveDesc}}</td>
+                  </tr>
+                  <tr>
+                    <td class="order-field">Released:&nbsp;</td>
+                    <td class="order-data">{{wave.releasedStamp | date:'medium'}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div flex> <!-- layout="row"-->
+              <md-toolbar>
+                <div class="md-toolbar-tools" ng-show="barShown=='tool'">
+                  <span flex></span>
+                  <md-button aria-label="Release"
+                             ng-disabled="!permit('waveEdit')"
+                             ng-click="showRelease()">Release</md-button>
+                  <md-button aria-label="Cancel"
+                             ng-disabled="!permit('waveEdit')"
+                             ng-click="showCancel()">Cancel</md-button>
+                </div>
+                <div class="md-toolbar-tools" ng-show="barShown=='release'">
+                  <span flex>Release wave {{waveRWaveStored}}?</span>
+                  <md-button aria-label="Yes"
+                             ng-disabled="!permit('waveEdit')"
+                             ng-click="waveRelease()">Yes</md-button>
+                  <md-button aria-label="No"
+                             ng-click="barReset()">No</md-button>
+                </div>
+                <div class="md-toolbar-tools" ng-show="barShown=='cancel'">
+                  <span flex>Cancel wave {{waveRWaveStored}}?</span>
+                  <md-button aria-label="Yes"
+                             ng-disabled="!permit('waveEdit')"
+                             ng-click="waveCancel()">Yes</md-button>
+                  <md-button aria-label="No"
+                             ng-click="barReset()">No</md-button>
+                </div>
+              </md-toolbar>
+              
+              <md-button class="md-opause"
+                         ng-click="pauseRefresh()"
+                         ng-disabled="!orderRefreshEnabled">Pause refresh</md-button>
+              
+              <br/>
+              <br/>
+              
+              <form ng-submit="lookup_waveRWave(false)">
+                <md-input-container>
+                  <label>Wave lookup</label>
+                  <input ng-model="waveRWave">
+                </md-input-container>
+              </form>
+            </div>
+          </div>
+          
+          <div>
+            <md-tabs md-dynamic-height class="md-padding">
+              <md-tab label="Orders">
+                <table id="orders" class="display" width="100%"></table>
+              </md-tab>
+            </md-tabs>
+        </div>
+
+        </md-content>
+      </md-tab>
+      
+      <md-tab label="Order Details" md-on-select="">
+        <md-content class="md-padding">
+          <div layout="row">
+            <div flex=5></div>
+            <div flex>
+              <table class="order">
+                <tbody>
+                  <tr>
+                    <td class="order-field">Order number:&nbsp;</td>
+                    <td class="order-data">{{order.orderNum}}</td>
+                  </tr>
+                  <tr>
+                    <td class="order-field">Wave:&nbsp;</td>
+                    <td class="order-data">{{order.rWave}}</td>
+                  </tr>
+                  <tr>
+                    <td class="order-field">Ship date:&nbsp;</td>
+                    <td class="order-data">{{order.expShipDate | date:'mediumDate'}}</td>
+                  </tr>
+                  <tr>
+                    <td class="order-field">Picked:&nbsp;</td>
+                    <td class="order-data">{{order.pickCompleteStamp | date:'medium'}}</td>
+                  </tr>
+                  <tr>
+                    <td class="order-field">Packed:&nbsp;</td>
+                    <td class="order-data">{{order.packCompleteStamp | date:'medium'}}</td>
+                  </tr>
+                  <tr>
+                    <td class="order-field">Shipped:&nbsp;</td>
+                    <td class="order-data">{{order.shipCompleteStamp | date:'medium'}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div flex> <!-- layout="row"-->
+              <md-toolbar>
+                <div class="md-toolbar-tools">
+                  <span flex></span>
+                </div>
+              </md-toolbar>
+              
+              <md-button class="md-opause"
+                         ng-click="pauseRefresh()"
+                         ng-disabled="!orderRefreshEnabled">Pause refresh</md-button>
+              
+              <br/>
+              <br/>
+              
+              <form ng-submit="lookup_orderNum()">
+                <md-input-container>
+                  <label>Order lookup</label>
+                  <input ng-model="orderNum">
+                </md-input-container>
+              </form>
+            </div>
+          </div>
+          
+          <div>
+            <md-tabs md-dynamic-height class="md-padding">
+              <md-tab label="Cartons">
+                <table id="cartons" class="display" width="100%"></table>
+              </md-tab>
+            </md-tabs>
+        </div>
+
+        </md-content>
+      </md-tab>
+      
+      <md-tab label="Carton Details" md-on-select="">
+        <md-content class="md-padding">
+          <div layout="row">
+            <div flex=5></div>
+            <div flex>
+              <table class="order">
+                <tbody>
+                  <tr>
+                    <td class="order-field">Carton LPN:&nbsp;</td>
+                    <td class="order-data">{{carton.carton}}</td>
+                  </tr>
+                  <tr>
+                    <td class="order-field">Order number:&nbsp;</td>
+                    <td class="order-data">{{carton.orderNum}}</td>
+                  </tr>
+                  <tr>
+                    <td class="order-field">Wave:&nbsp;</td>
+                    <td class="order-data">{{carton.rWave}}</td>
+                  </tr>
+                  <tr>
+                    <td class="order-field">Ship date:&nbsp;</td>
+                    <td class="order-data">{{carton.expShipDate | date:'mediumDate'}}</td>
+                  </tr>
+                  <tr>
+                    <td class="order-field">Picked:&nbsp;</td>
+                    <td class="order-data">{{carton.pickCompleteStamp | date:'medium'}}</td>
+                  </tr>
+                  <tr>
+                    <td class="order-field">Packed:&nbsp;</td>
+                    <td class="order-data">{{carton.packStamp | date:'medium'}}</td>
+                  </tr>
+                  <tr>
+                    <td class="order-field">Shipped:&nbsp;</td>
+                    <td class="order-data">{{carton.shipStamp | date:'medium'}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div flex> <!-- layout="row"-->
+              <md-toolbar>
+                <div class="md-toolbar-tools">
+                  <span flex></span>
+                </div>
+              </md-toolbar>
+              
+              <md-button class="md-opause"
+                         ng-click="pauseRefresh()"
+                         ng-disabled="!orderRefreshEnabled">Pause refresh</md-button>
+              
+              <br/>
+              <br/>
+              
+              <form ng-submit="lookup_cartonLpn()">
+                <md-input-container>
+                  <label>Carton lookup</label>
+                  <input ng-model="cartonLpn">
+                </md-input-container>
+              </form>
+            </div>
+          </div>
+          
+          <div>
+            <md-tabs md-dynamic-height class="md-padding">
+              <md-tab label="Items">
+                <table id="items" class="display" width="100%"></table>
+              </md-tab>
+              
+              <md-tab label="History">
+                <table id="history" class="display" width="100%"></table>
+              </md-tab>
+            </md-tabs>
+        </div>
+
+        </md-content>
+      </md-tab>
+      
+    </md-tabs>
+  </md-content>
+</div>

@@ -1,0 +1,13 @@
+How to make RDS3 library package
+================================
+
+1. As an rds user run the following commands:
+      cd ~/src/
+      make clean; make lib; make all
+
+2. Become a superuser and run the following command:
+      make install
+
+3. Become an rds user and run the following command:
+      make clean
+

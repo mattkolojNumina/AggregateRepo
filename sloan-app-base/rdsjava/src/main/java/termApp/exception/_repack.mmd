@@ -1,0 +1,48 @@
+flowchart TB
+    start(((Repack Process Start)))
+        start --> scanCartonLPN
+
+    scanCartonLPN(Scan LPN of new carton)
+        scanCartonLPN --> skusToMove?
+
+    skusToMove?{Are there more\nskus to move?}
+        skusToMove? -->|Yes| scanBarcode
+        skusToMove? -->|No| reinductCartons
+
+    scanBarcode(Scan a sku that is being\nmoved to the new carton)
+        scanBarcode --> isBarcodeValid?
+
+    isBarcodeValid?{Is barcode valid?}
+        isBarcodeValid?-->|Yes| shouldSkuBeInCarton?
+        isBarcodeValid?-->|No| invalidBarcode
+
+    invalidBarcode(/RED/ Msg: No sku can be found for barcode X.\nLookup barcode on RDS Webview.)
+        invalidBarcode --> skusToMove?
+
+    shouldSkuBeInCarton?{Should sku be\nin carton?}
+        shouldSkuBeInCarton?-->|Yes| moveSku
+        shouldSkuBeInCarton?-->|No| noDemand
+
+    noDemand(/RED/ Msg: No demand for sku in carton. Restock.)
+        noDemand --> skusToMove?
+
+    moveSku(Find pick for sku\n/GREEN/ Msg: Move pick to new carton\n)
+        moveSku --> skusToMove?
+
+    reinductCartons(Mark new carton as picked.\nGenerate packlist, order info label\n and shipping label for new carton)
+        reinductCartons --> isOriginalCartonEmpty?
+
+    isOriginalCartonEmpty?{Is the original\ncarton empty?}
+        isOriginalCartonEmpty? -->|No| docsForOriginalCarton
+        isOriginalCartonEmpty? -->|Yes| cancelOriginalCarton
+
+    cancelOriginalCarton(Cancel original carton)
+        cancelOriginalCarton --> repackResolved
+
+    docsForOriginalCarton(Regenerate packlist and shipping label\nfor original carton.)
+        docsForOriginalCarton --> repackResolved
+
+    repackResolved(((REPACK RESOLVED\n\nTell user to re-induct all\ncartons that still contain skus)))
+
+
+

@@ -1,0 +1,18 @@
+#!/bin/bash
+
+RETAIN=30
+
+DATE=`date +%y%m%d`
+LOGFILE=trn$DATE.log
+LOGDIR=$HOME/log
+HOST=`hostname`
+
+
+mv -f $LOGDIR/trn.log $LOGDIR/$LOGFILE
+gzip -f $LOGDIR/$LOGFILE
+
+find $LOGDIR -name "trn*.log.gz" -ctime +$RETAIN -delete
+
+
+/usr/bin/mysql -urds -prds -Drds -e "REPLACE INTO runtime SET name='/$HOST/rds_daily', value=NOW();"
+

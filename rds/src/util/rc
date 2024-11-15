@@ -1,0 +1,12 @@
+#!/bin/sh
+# Description: Starts, stops, and restarts specified process with arguments
+
+cmd=""; for ((i=1;i<=$#-1;i++)); do cmd="$cmd ${!i}"; done;
+
+case "${!#}" in
+  start)   cd $HOME/app/bin; $cmd & usleep 500000;;
+  stop)    killall $1; usleep 200000;;
+  status)  pstatus $1;;
+  restart) $0 $cmd stop; $0 $cmd start;;
+  *)  echo "Usage: $0 <process> [<arg1> ...] {start|stop|restart|status}";exit 1
+esac

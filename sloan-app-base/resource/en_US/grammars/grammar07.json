@@ -1,0 +1,16 @@
+{
+  "filename":"grammar07",
+  "key":"28",
+  "type": "standard",
+  "minAlphaNumeric": "0",
+  "maxAlphaNumeric": "0",
+  "minNumeric": "0",
+  "maxNumeric": "0",
+  "phraseMap": {
+    "LEVEL ONE": "Level 1",
+    "LEVEL TWO": "Level 2",
+    "LEVEL THREE": "Level 3",
+    "CHANGE TASK": "changeTask",
+    "PLEASE LOG OFF": "logout"
+  }
+}

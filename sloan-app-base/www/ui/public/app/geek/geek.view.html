@@ -1,0 +1,211 @@
+<div class="container-fluid" ng-cloak>
+  <md-content>
+    <md-tabs md-dynamic-height md-selected="selected">
+
+      <md-tab label="Putaways" md-on-select="refresh()">
+        <md-content class="md-padding">
+
+                  <section layout="row" layout-wrap>
+                  
+                    <div layout="row">
+                      <md-button class="pointless">From:</md-button>
+                      <mdp-date-picker ng-model='date1'></mdp-date-picker>
+                      <mdp-time-picker ng-model='date1'></mdp-time-picker>
+                    </div>
+                  
+                    <div layout="row">
+                      <md-button class="pointless">To:</md-button>
+                      <mdp-date-picker ng-model='date2'></mdp-date-picker>
+                      <mdp-time-picker ng-model='date2'></mdp-time-picker>
+                    </div>
+                  
+                    <md-input-container>
+                      <md-button class="md-raised" ng-click="changeGeekPutaways()">Display</md-button>
+                      <md-button class="md-raised" ng-click="refreshGeekPutaways()">Reset Table</md-button>
+                    </md-input-container>
+                  </section>
+
+          <table id="geekPutaways" class="display compact" width="100%"></table>
+        </md-content>
+      </md-tab>
+
+      <md-tab label="Stocktake" md-on-select="refresh()">
+        <md-content class="md-padding">
+
+          <section layout="row" layout-wrap>
+          
+            <div layout="row">
+              <md-button class="pointless">From:</md-button>
+              <mdp-date-picker ng-model='date3'></mdp-date-picker>
+              <mdp-time-picker ng-model='date3'></mdp-time-picker>
+            </div>
+          
+            <div layout="row">
+              <md-button class="pointless">To:</md-button>
+              <mdp-date-picker ng-model='date4'></mdp-date-picker>
+              <mdp-time-picker ng-model='date4'></mdp-time-picker>
+            </div>
+          
+            <md-input-container>
+              <md-button class="md-raised" ng-click="changeGeekStockatakes()">Display</md-button>
+              <md-button class="md-raised" ng-click="refreshGeekStocktake()">Reset Table</md-button>
+            </md-input-container>
+          </section>
+
+          <table id="geekStocktake" class="display compact" width="100%"></table>
+        </md-content>
+      </md-tab>
+
+      <md-tab label="Outbound" md-on-select="refresh()">
+        <md-content class="md-padding">
+      
+          <section layout="row" layout-wrap>
+      
+            <div layout="row">
+              <md-button class="pointless">From:</md-button>
+              <mdp-date-picker ng-model='date5'></mdp-date-picker>
+              <mdp-time-picker ng-model='date5'></mdp-time-picker>
+            </div>
+      
+            <div layout="row">
+              <md-button class="pointless">To:</md-button>
+              <mdp-date-picker ng-model='date6'></mdp-date-picker>
+              <mdp-time-picker ng-model='date6'></mdp-time-picker>
+            </div>
+      
+            <md-input-container>
+              <md-button class="md-raised" ng-click="changeGeekOutbounds()">Display</md-button>
+              <md-button class="md-raised" ng-click="refreshGeekOutbounds()">Reset Table</md-button>
+            </md-input-container>
+          </section>
+      
+          <table id="geekOutbounds" class="display compact" width="100%"></table>
+        </md-content>
+      </md-tab>
+
+      <md-tab label="Details" md-on-select="refresh()">
+        <md-content class="md-padding">
+          <div layout="row">
+            <div flex>
+              <table class="searchRes">
+                <tbody>
+
+                  <tr>
+                    <td class='cartons-field'>Tracking Number:</td>
+                    <td class='cartons-data'>{{searchResult.out_order_code}}</td>
+                    <!-- <td class='cartons-data'>
+                      <a href="#/shipments?shipmentId={{searchResult.shipmentId}}">
+                        {{searchResult.shipmentId}}
+                      </a>
+                    </td> -->
+                  </tr>
+                  
+                  <tr>
+                    <td class='cartons-field'>LPN: </td>
+                    <td class='cartons-data'>{{searchResult.container_code}}</td>
+                  </tr>
+
+                  <tr>
+                    <td class='cartons-field'>Pick complete date/time:</td>
+                    <td class='cartons-data'>{{searchResult.finish_date | date:medium}}</td>
+                  </tr>
+      
+                  <!-- <tr ng-show="searchResult.errorMsg && searchResult.errorMsg!=''">
+                    <td class='order-field'>Error:</td>
+                    <td class='orders-alert'>{{searchResult.errorMsg}}</td>
+                  </tr>
+      
+                  <tr>
+                    <td class='cartons-field'>Priority: </td>
+                    <td class='cartons-data'>{{searchResult.priority}}</td>
+                  </tr> -->
+      
+                </tbody>
+              </table>
+            </div>
+      
+            <!-- <div flex>
+              <table class="orderStamps">
+                <tbody>
+                  <tr>
+                    <td class='cartons-field'>Download Stamp:</td>
+                    <td class='cartons-data'>{{searchResult.downloadStamp | date: 'medium' }}</td>
+                  </tr>
+                  <tr>
+                    <td class='cartons-field'>Prepare Stamp:</td>
+                    <td class='cartons-data'>{{searchResult.prepareStamp | date: 'medium' }}</td>
+                  </tr>
+                  <tr>
+                    <td class='cartons-field'>Cartonize Stamp:</td>
+                    <td class='cartons-data'>{{searchResult.cartonizeStamp | date: 'medium' }}</td>
+                  </tr>
+                  <tr>
+                    <td class='cartons-field'>Release Stamp:</td>
+                    <td class='cartons-data'>{{searchResult.releaseStamp | date: 'medium' }}</td>
+                  </tr>
+                  <tr>
+                    <td class='cartons-field'>Pick Start Stamp:</td>
+                    <td class='cartons-data'>{{searchResult.pickStartStamp | date: 'medium' }}</td>
+                  </tr>
+                  <tr>
+                    <td class='cartons-field'>Pick End Stamp:</td>
+                    <td class='cartons-data'>{{searchResult.pickEndStamp | date: 'medium' }}</td>
+                  </tr>
+                  <tr>
+                    <td class='cartons-field'>Label Stamp Stamp:</td>
+                    <td class='cartons-data'>{{searchResult.labelStamp | date: 'medium' }}</td>
+                  </tr>
+                  <tr>
+                    <td class='cartons-field'>Sort Stamp:</td>
+                    <td class='cartons-data'>{{searchResult.sortStamp | date: 'medium' }}</td>
+                  </tr>
+                  <tr>
+                    <td class='cartons-field'>Palletize Stamp:</td>
+                    <td class='cartons-data'>{{searchResult.palletizeStamp | date: 'medium' }}</td>
+                  </tr>
+                  <tr>
+                    <td class='cartons-field'>Upload Stamp:</td>
+                    <td class='cartons-data'>{{searchResult.uploadStamp | date: 'medium' }}</td>
+                  </tr>
+                  <tr>
+                    <td class='cartons-field'>Complete Stamp:</td>
+                    <td class='cartons-data'>{{searchResult.completeStamp | date: 'medium' }}</td>
+                  </tr>
+                  <tr>
+                    <td class='cartons-field'>Cancel Stamp:</td>
+                    <td class='cartons-data'>{{searchResult.cancelStamp | date: 'medium' }}</td>
+                  </tr>
+      
+                </tbody>
+              </table>
+            </div>
+       -->
+            <div flex>
+              <div layout="column">
+                <md-content class="md-padding">
+                  <form ng-submit="lookupByTrackingNumber()">
+                    <md-input-container>
+                      <label>Search For trackingNumber</label>
+                      <input ng-model="trackingNumber" id="trackingNumber">
+                    </md-input-container>
+                  </form>
+
+                  <form ng-submit="lookupByLPN()">
+                    <md-input-container>
+                      <label>Search For LPN</label>
+                      <input ng-model="LPN" id="LPN">
+                    </md-input-container>
+                  </form>
+                </md-content>
+              </div>
+            </div>
+          </div>
+      
+
+                <table id="geekOutboundDetailsTable" class="display" width="100%"></table>
+
+
+
+    </md-tabs>
+  </md-content>
+</div>

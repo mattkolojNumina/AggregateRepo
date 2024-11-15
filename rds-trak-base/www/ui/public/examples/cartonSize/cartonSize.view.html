@@ -1,0 +1,57 @@
+<div class="container-fluid" ng-cloak>
+  <md-content>
+    <div layout="row">
+      <div flex>
+        <md-content class="md-padding">
+          <table id="carton" class="display" width="100%"></table>
+        </md-content>
+      </div>
+
+      <div flex class="md-padding">
+      <md-toolbar>
+        <div class="md-toolbar-tools">
+          <span flex></span>
+          <md-button aria-label="New"
+                     ng-disabled="!permit('cartonSizeEdit')"
+                     ng-click="cartonNew()">New</md-button>
+          <md-button aria-label="Update"
+                     ng-disabled="!permit('cartonSizeEdit')" 
+                     ng-click="cartonUpdate()">Update</md-button>
+          <md-button aria-label="Delete"
+                     ng-disabled="!permit('cartonSizeEdit')" 
+                     ng-click="cartonDelete()">Delete</md-button>
+        </div>
+      </md-toolbar>
+
+      <div layout="column">
+        <md-content class="md-padding">
+          <div>
+            <md-input-container class="md-block">
+              <label>Carton Size</label>
+              <input ng-model="carton.cartonSize"
+                     md-maxlength="3">
+            </md-input-container>
+          </div>
+    
+          <div>
+            <md-input-container class="md-block">
+              <label>Cubbies</label>
+              <input type="number" ng-model="carton.cubbies">
+            </md-input-container>
+          </div>
+
+          <div>
+            <md-input-container class="md-block">
+              <label>AutoBagger Eligible</label>
+              <md-select ng-model="carton.autobaggerEligible">
+                <md-option value="1">yes</md-option>
+                <md-option value="0">no</md-option>
+              </md-select>
+            </md-input-container>
+          </div>
+         
+        </md-content>
+      </div>
+    </div>
+  </md-content>
+</div>

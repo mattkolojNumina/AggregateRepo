@@ -1,0 +1,20 @@
+{
+    "filename":"grammar14",
+    "key":"1",
+    "type": "standard",
+    "minAlphaNumeric": "0",
+    "maxAlphaNumeric": "0",
+    "minNumeric": "0",
+    "maxNumeric": "0",
+    "phraseMap": {
+      "EXCEPTION": "exception",
+      "READY": "ready",
+      "CONFIRM": "ready",
+      "AT LOCATION": "ready",
+      "AISLE": "ready",
+      "AT BAY": "ready",
+      "ARRIVED": "ready",
+      "ALL SET": "ready",
+      "REVERSE": "reverse"
+    }
+}

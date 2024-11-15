@@ -1,0 +1,6 @@
+Revision history for Perl extension Ersc.
+
+0.01  Thu Oct 17 15:57:21 2019
+	- original version; created by h2xs 1.23 with options
+		--omit-XS ersc
+

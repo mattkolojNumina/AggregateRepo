@@ -1,0 +1,154 @@
+<div class="container-fluid" ng-cloak>
+  <md-content>
+    <md-tabs md-dynamic-height md-selected="selected">
+      
+      <md-tab label="Report" md-on-select="">
+        <section layout="row" layout-wrap layout-align="start center">
+          <div layout="row">
+            <md-input-container>
+            <md-button class="pointless">From:</md-button> 
+            </md-input-container>
+
+            <mdp-date-picker ng-model='startDate'
+                             ng-change='changeStart()'></mdp-date-picker>
+            <mdp-time-picker ng-model='startDate'
+                             ng-change='changeStart()'></mdp-time-picker>
+          </div>
+
+          <div layout="row"> 
+            <md-input-container>
+            <md-button class="pointless">To:</md-button> 
+            </md-input-container>
+            <mdp-date-picker ng-model='endDate'
+                             ng-change='changeEnd()'></mdp-date-picker>
+            <mdp-time-picker ng-model='endDate'
+                             ng-change='changeEnd()'></mdp-time-picker>
+          </div>
+
+          <md-input-container>
+            <md-button class='md-raised' ng-click='report()'>Report</md-button>
+          </md-input-container>
+
+        </section>
+  
+        <div layout="row" layout-wrap>
+          <md-input-container>
+            <label>Operator</label>
+            <md-select ng-model="operatorSelect"
+                       ng-change="display()">
+              <md-option ng-repeat="operator in operatorChoices"
+                         ng-value="operator">
+                {{operator}}
+              </md-option>
+            </md-select>
+          </md-input-container>
+
+          <md-input-container>
+            <label>Task</label>
+            <md-select ng-model="taskSelect"
+                       ng-change="display()">
+              <md-option ng-repeat="task in taskChoices"
+                         ng-value="task">
+                {{task}}
+              </md-option>
+            </md-select>
+          </md-input-container>
+
+          <md-input-container>
+            <label>Operation</label>
+            <md-select ng-model="operationSelect"
+                       ng-change="display()">
+              <md-option ng-repeat="operation in operationChoices"
+                         ng-value="operation">
+                {{operation}}
+              </md-option>
+            </md-select>
+          </md-input-container>
+
+          <md-input-container>
+            <label>Area</label>
+            <md-select ng-model="areaSelect"
+                       ng-change="display()">
+              <md-option ng-repeat="area in areaChoices"
+                         ng-value="area">
+                {{area}}
+              </md-option>
+            </md-select>
+          </md-input-container>
+
+        </div>
+        
+        <div>
+          <table id="prod" class="display" width="100%"></table>
+        </div>
+      </md-tab>
+      
+      <md-tab label="Configure" md-on-select="">
+        <div layout="row">
+          <div flex=60>
+            <md-content class="md-padding">
+              <table id="proopsTable" class="display" width="100%"></table>
+            </md-content>
+          </div>
+
+          <div flex>
+            <md-toolbar>
+              <div class="md-toolbar-tools">
+                <span flex></span>
+                <!--<md-button  aria-label="New"
+                            ng-disabled="!permit('')"
+                            ng-click="">New</md-button>-->
+                <md-button  aria-label="Update"
+                            ng-disabled="!permit('prodConfig')||!proop.sequence" 
+                            ng-click="proopUpdate()">Update</md-button>
+                <!--<md-button  aria-label="Delete"
+                            ng-disabled="!permit('prodConfig')||!proop.sequence"
+                            ng-click="">Delete</md-button>-->
+              </div>
+            </md-toolbar>
+
+            <div layout="row">
+
+              <div flex>
+                <md-content class="md-padding">
+                  <div layout="column">
+                    <div>
+                    <md-input-container class="md-block">
+                      <label>Task</label>
+                      <input disabled ng-model="proop.task">
+                    </md-input-container>
+                    </div>
+                    
+                    <div>
+                    <md-input-container class="md-block">
+                      <label>Operation</label>
+                      <input disabled ng-model="proop.operation">
+                    </md-input-container>
+                    </div>
+                    
+                    <div>
+                    <md-input-container class="md-block">
+                      <label>Area</label>
+                      <input disabled ng-model="proop.area">
+                    </md-input-container>
+                    </div>
+
+                    <div>
+                    <md-input-container class="md-block">
+                      <label>Goal</label>
+                      <input type="number" step="1" ng-model="proop.goal">
+                    </md-input-container>
+                    </div>
+
+                  </div>
+                </md-content> 
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </md-tab>
+      
+    </md-tabs>
+  </md-content>
+</div>

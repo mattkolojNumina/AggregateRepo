@@ -1,0 +1,255 @@
+<div class="container-fluid" ng-cloak>
+  <md-content>
+    <md-tabs md-dynamic-height md-selected="selected">
+          
+      <md-tab label="Today's Schedule" md-on-select="refresh()">
+        <md-content ng-show='working'>
+          <div layout="row">
+            <span flex></span>
+            <div layout="column" layout-align="center center">
+              <h2>WORKING</h2>
+              <md-progress-circular md-mode="indeterminate"></md-progress-circular>
+              <h3></h3>
+            </div>
+            <span flex></span>
+          </div>
+        </md-content>
+        <md-content ng-hide='working'>
+          <div layout="row">
+          <div flex=70>
+            <md-content class="md-padding">
+              <table id="CfgTruckSchedule" class="display" width="100%"></table>
+            </md-content>
+          </div>
+          <div flex>
+            <md-toolbar class="md-hue-1">
+              <div class="md-toolbar-tools" layout="row">
+                <md-button class="md-raised md-primary" ng-click="CfgTruckScheduleNew()" ng-disabled="!permit('configEdit')" >
+                  New
+                </md-button>			  
+                <span>
+                  <md-button class="md-raised md-primary" ng-click="CfgTruckScheduleUpdate()" ng-disabled="(!permit('configEdit') || CfgTruckSchedule.truckNumber=='')" ng-show="(CfgTruckSchedule.truckNumber)" >
+                    Save
+                  </md-button>
+                </span>
+                <span>
+                  <md-button class="md-raised md-primary" ng-click="CfgTruckScheduleDelete()" ng-disabled="(!permit('configEdit'))" ng-show="(CfgTruckSchedule.truckNumber) && (!CfgTruckScheduleNewEntry)">
+                    Delete
+                  </md-button>
+                </span>				
+              </div>
+            </md-toolbar>
+            <md-content class="md-padding">
+              <div layout="column">
+                <div layout="row">
+                  <md-input-container md-no-float class="md-block">
+                    <label>Truck #</label>
+                    <input ng-model="CfgTruckSchedule.truckNumber" ng-readonly="CfgTruckScheduleReadonly" ng-disabled="CfgTruckScheduleReadonly">
+                  </md-input-container>		  
+                </div>
+				<div>
+				  <md-input-container md-no-float class="md-block">
+					<label>Door</label>
+					<md-select ng-model="CfgTruckSchedule.door">
+					  <md-option ng-repeat="value in doorList" ng-value="value">
+						{{value}}
+					  </md-option>
+					</md-select>
+				  </md-input-container>
+				</div>				
+              </div>
+            </md-content>
+          </div>
+          </div>
+        </md-content>
+      </md-tab>			
+
+      <md-tab label="Daily Schedule" md-on-select="refresh()">
+        <md-content ng-show='working'>
+          <div layout="row">
+            <span flex></span>
+            <div layout="column" layout-align="center center">
+              <h2>WORKING</h2>
+              <md-progress-circular md-mode="indeterminate"></md-progress-circular>
+              <h3></h3>
+            </div>
+            <span flex></span>
+          </div>
+        </md-content>
+        <md-content ng-hide='working'>
+		  <div layout="row">
+              <md-radio-group class="md-padding" layout="row" style="padding-left: 30px" ng-change="refresh()" ng-model="dayOfWeekFilter">
+                <md-radio-button value="Monday">Monday</md-radio-button>
+                <md-radio-button value="Tuesday">Tuesday</md-radio-button>
+				<md-radio-button value="Wednesday">Wednesday</md-radio-button>
+				<md-radio-button value="Thursday">Thursday</md-radio-button>
+				<md-radio-button value="Friday">Friday</md-radio-button>
+				<md-radio-button value="Saturday">Saturday</md-radio-button>
+				<md-radio-button value="Sunday">Sunday</md-radio-button>				
+              </md-radio-group>	
+          </div>  
+          <div layout="row">
+          <div flex=70>
+            <md-content class="md-padding">
+              <table id="CfgDefaultTruckSchedule" class="display" width="100%"></table>
+            </md-content>
+          </div>
+          <div flex>
+            <md-toolbar class="md-hue-1">
+              <div class="md-toolbar-tools" layout="row">
+                <md-button class="md-raised md-primary" ng-click="CfgDefaultTruckScheduleNew()" ng-disabled="!permit('configEdit')" >
+                  New
+                </md-button>			  
+                <span>
+                  <md-button class="md-raised md-primary" ng-click="CfgDefaultTruckScheduleUpdate()" ng-disabled="(!permit('configEdit') || CfgDefaultTruckSchedule.truckNumber=='')" ng-show="(CfgDefaultTruckSchedule.truckNumber)" >
+                    Save
+                  </md-button>
+                </span>
+                <span>
+                  <md-button class="md-raised md-primary" ng-click="CfgDefaultTruckScheduleDelete()" ng-disabled="(!permit('configEdit'))" ng-show="(CfgDefaultTruckSchedule.truckNumber) && (!CfgDefaultTruckScheduleNewEntry)">
+                    Delete
+                  </md-button>
+                </span>				
+              </div>
+            </md-toolbar>
+            <md-content class="md-padding">
+              <div layout="column">
+                <div layout="row">
+                  <md-input-container md-no-float class="md-block">
+                    <label>Truck #</label>
+                    <input ng-model="CfgDefaultTruckSchedule.truckNumber" ng-readonly="CfgDefaultTruckScheduleReadonly" ng-disabled="CfgDefaultTruckScheduleReadonly">
+                  </md-input-container>		  
+                </div>
+				<div>
+				  <md-input-container md-no-float class="md-block">
+					<label>Door</label>
+					<md-select ng-model="CfgDefaultTruckSchedule.door">
+					  <md-option ng-repeat="value in doorList" ng-value="value">
+						{{value}}
+					  </md-option>
+					</md-select>
+				  </md-input-container>
+				</div>				
+              </div>
+            </md-content>
+          </div>
+          </div>
+        </md-content>
+      </md-tab>		  
+		  
+      <md-tab label="Sorter Lanes" md-on-select="refresh()">
+        <md-content ng-show='working'>
+          <div layout="row">
+            <span flex></span>
+            <div layout="column" layout-align="center center">
+              <h2>WORKING</h2>
+              <md-progress-circular md-mode="indeterminate"></md-progress-circular>
+              <h3></h3>
+            </div>
+            <span flex></span>
+          </div>
+        </md-content>
+        <md-content ng-hide='working'>
+          <div layout="row">
+          <div flex=70>
+            <md-content class="md-padding">
+              <table id="cfgPhysicalLanes" class="display" width="100%"></table>
+            </md-content>
+          </div>
+          <div flex>
+            <md-toolbar class="md-hue-1">
+              <div class="md-toolbar-tools" layout="row">
+                <span>
+                  <md-button class="md-raised md-primary" ng-click="CfgPhysicalLaneUpdate()" ng-disabled="(!permit('configEdit') || CfgPhysicalLane.area=='')" ng-show="(CfgPhysicalLane.area) && (CfgPhysicalLane.physical)" >
+                    Save
+                  </md-button>
+                </span>
+              </div>
+            </md-toolbar>
+            <md-content class="md-padding">
+              <div layout="column">
+                <div layout="row">
+                  <md-input-container md-no-float class="md-block">
+                    <label>Area</label>
+                    <input ng-model="CfgPhysicalLane.area" ng-readonly="CfgPhysicalLaneReadonly" ng-disabled="CfgPhysicalLaneReadonly">
+                  </md-input-container>
+                  <md-input-container md-no-float class="md-block">
+                    <label>Lane</label>
+                    <input ng-model="CfgPhysicalLane.physical" ng-readonly="CfgPhysicalLaneReadonly" ng-disabled="CfgPhysicalLaneReadonly">
+                  </md-input-container>			  
+                </div>
+				<div>
+				  <md-input-container md-no-float class="md-block">
+					<label>Divert</label>
+					<md-select ng-model="CfgPhysicalLane.enabled">
+					  <md-option ng-repeat="value in tinyintList" ng-value="value">
+						{{value}}
+					  </md-option>
+					</md-select>
+				  </md-input-container>
+				</div>				
+              </div>
+            </md-content>
+          </div>
+          </div>
+        </md-content>
+      </md-tab>  
+	  
+      <md-tab label="Door Config" md-on-select="refresh()">
+        <md-content ng-show='working'>
+          <div layout="row">
+            <span flex></span>
+            <div layout="column" layout-align="center center">
+              <h2>WORKING</h2>
+              <md-progress-circular md-mode="indeterminate"></md-progress-circular>
+              <h3></h3>
+            </div>
+            <span flex></span>
+          </div>
+        </md-content>
+        <md-content ng-hide='working'>
+          <div layout="row">
+          <div flex=70>
+            <md-content class="md-padding">
+              <table id="cfgDoors" class="display" width="100%"></table>
+            </md-content>
+          </div>
+          <div flex>
+            <md-toolbar class="md-hue-1">
+              <div class="md-toolbar-tools" layout="row">
+                <span>
+                  <md-button class="md-raised md-primary" ng-click="CfgDoorUpdate()" ng-disabled="(!permit('configEdit') || CfgDoor.door=='')" ng-show="(CfgDoor.door)" >
+                    Save
+                  </md-button>
+                </span>
+              </div>
+            </md-toolbar>
+            <md-content class="md-padding">
+              <div layout="column">
+                <div layout="row">
+                  <md-input-container md-no-float class="md-block">
+                    <label>Door</label>
+                    <input ng-model="CfgDoor.door" ng-readonly="CfgDoorReadonly" ng-disabled="CfgDoorReadonly">
+                  </md-input-container>		  
+                </div>
+				<div>
+				  <md-input-container md-no-float class="md-block">
+					<label>Lane</label>
+					<md-select ng-model="CfgDoor.lane">
+					  <md-option ng-repeat="value in sorterLaneList" ng-value="value">
+						{{value}}
+					  </md-option>
+					</md-select>
+				  </md-input-container>
+				</div>				
+              </div>
+            </md-content>
+          </div>
+          </div>
+        </md-content>
+      </md-tab>	  
+
+    </md-tabs>
+  </md-content>
+</div>
+

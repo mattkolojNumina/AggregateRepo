@@ -1,0 +1,11 @@
+.main {
+   color: #fff ; 
+   font-size: 12px ;}
+.main .tile {
+   margin: 10px ;
+   height: 125px;
+   width:  125px;  }
+.main .icon {
+   color: #fff ;
+   height: 60px ;
+   width:  60px ; }

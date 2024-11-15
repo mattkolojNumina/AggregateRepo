@@ -1,0 +1,34 @@
+<div class="container-fluid" ng-cloak>
+  <md-content>
+    <md-tabs md-dynamic-height md-selected="selected">
+    
+      <md-tab label="Open lines" md-on-select="refresh()"> 	  
+        <md-content class="md-padding">
+          <table id="startedLine" class="display" width="100%"></table>
+        </md-content>
+      </md-tab>	 
+
+      <md-tab label="Completed" md-on-select="displayTodayCompleted()">
+        <section layout="row" layout-wrap>
+          <div layout="row">
+            <md-button>From:</md-button>
+            <mdp-date-picker ng-model='date1'
+                   ng-change='changeStart()'></mdp-date-picker>
+          </div>
+          <div layout="row">
+            <md-button>To:</md-button>
+            <mdp-date-picker ng-model='date2'
+                 ng-change='changeEnd()'></mdp-date-picker>
+          </div>
+          <md-input-container>
+            <md-button class='md-raised' ng-click='displayCompleted()'>Display</md-button>
+          </md-input-container>
+        </section>  	  
+        <md-content class="md-padding">
+          <table id="completedLine" class="display" width="100%"></table>
+        </md-content>
+      </md-tab>	  	 	  
+
+    </md-tabs>
+  </md-content>
+</div>

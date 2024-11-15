@@ -1,0 +1,19 @@
+.navigation {
+  list-style: none ;
+  padding: 0 ;
+  margin: 0 ;
+}
+
+.navigation-items a {
+  display: block ;
+  background-color: #3f5185 ;
+  color: white ;
+  line-height: 2em ;
+  text-decoration: none ;
+  padding: 10px 30px ;
+}
+.navigation-items a:hover {
+  background-color: #4f61f5 ;
+}
+
+

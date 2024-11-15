@@ -1,0 +1,28 @@
+.device {
+   color: #fff; 
+   font-size: 12px;
+}
+.device .tile {
+   margin: 10px;
+   height: 80px;
+   width:  300px;
+}
+.device .icon {
+   color: #fff;
+   height: 60px;
+   width:  60px;
+}
+.device .title {
+   font-size: 150%;
+   color: #f0f0f0;
+}
+.device .desc {
+   font-size: 75%;
+   color: #f0f0f0;
+}
+.device .uni {
+  font-size: 100%;
+  color: #f0f0f0;
+  white-space: normal;
+  line-height: normal;
+}

@@ -1,0 +1,20 @@
+<div class="container-fluid" ng-cloak>
+  <div class="doc" layout="row" layout-padding layout-wrap layout-fill>
+    <md-button ng-repeat="doc in docs"
+               ng-style="{'background': doc.background}"
+               class="tile" md-whiteframe="5" layout="row" layout-align="center center"
+               href="{{doc.href}}" target="_blank">
+      <div flex=25>
+        <md-icon class="icon" md-svg-src="{{doc.icon}}"></md-icon>
+      </div>
+      <div layout="column" flex ng-if="doc.style=='titled'">
+        <div class="title" flex>{{doc.title}}</div>
+        <div class="desc" flex>{{doc.desc}}</div>
+      </div>
+      <div layout="column" flex ng-if="doc.style=='unitary'">
+        <div class="uni" flex>{{doc.desc}}</div>
+      </div>
+      <md-tooltip>{{doc.tooltip}}</md-tooltip>
+    </md-button>
+  </div>
+</div>

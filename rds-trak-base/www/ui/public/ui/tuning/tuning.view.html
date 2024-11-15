@@ -1,0 +1,68 @@
+<div class="container-fluid" ng-cloak>
+  <md-content class="md-padding">
+    <div layout="row">
+
+      <div flex=70>
+        <md-content class="md-padding"> 
+          <table id="tuningTable" class="display" width="100%"></table>
+        </md-content>
+      </div>
+
+      <div flex>
+        <md-toolbar>
+          <div class="md-toolbar-tools">
+            <span flex></span>
+            <md-button aria-label="Save"
+                       ng-disabled="!permit('tuningEdit')"
+                       ng-click="tuningUpdate()">Save</md-button>
+          </div>
+        </md-toolbar>
+        <md-content class="md-padding">
+          <div layout="column">
+
+            <div layout="row">
+              <div flex>
+                <md-input-container md-no-float class="md-block"> 
+                  <label>Host</label>      
+                  <input ng-model="tuning.host"
+                         ng-readonly="true">
+                </md-input-container>
+              </div>
+              <div flex>
+                <md-input-container md-no-float class="md-block"> 
+                  <label>Zone</label>      
+                  <input ng-model="tuning.zone"
+                         ng-readonly="true">
+                </md-input-container>
+              </div>
+              <div flex=50>
+                <md-input-container md-no-float class="md-block"> 
+                  <label>Name</label>      
+                  <input ng-model="tuning.name"
+                         ng-readonly="true">
+                </md-input-container>
+              </div>
+            </div>
+
+            <div>
+                <md-input-container md-no-float class="md-block"> 
+                  <label>Description</label>      
+                  <input ng-model="tuning.description"
+                         ng-readonly="true">
+                </md-input-container>
+            </div>
+
+            <div class="shade">
+              <md-input-container md-no-float class="md-block" >
+                <label>Value</label>      
+                <input ng-model="tuning.value"
+                       type="number" step="1">
+              </md-input-container>
+            </div>
+
+          </div>
+        </md-content>
+      </div>
+    </div>
+  </md-content>
+</div>

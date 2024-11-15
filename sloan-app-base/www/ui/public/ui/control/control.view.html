@@ -1,0 +1,65 @@
+<div class="container-fluid" ng-cloak>
+  <md-content class="md-padding">
+    <div layout="row">
+
+      <div flex=60>
+        <md-content class="md-padding"> 
+          <table id="controlTable" class="display" width="100%"></table>
+        </md-content>
+      </div>
+
+      <div flex>
+        <md-toolbar>
+          <div class="md-toolbar-tools">
+            <span flex></span>
+            <md-button aria-label="Update"
+                       ng-disabled="!permit('controlEdit')"
+                       ng-click="controlUpdate()">Save</md-button>
+          </div>
+        </md-toolbar>
+        <md-content class="md-padding">
+          <div layout="row">
+
+            <div>
+              <md-input-container>
+                <label>Host</label>      
+                <input ng-model="control.host" ng-readonly="true">
+              </md-input-container>
+            </div>                
+
+            <div>
+              <md-input-container>
+                <label>Zone</label>      
+                <input ng-model="control.zone" ng-readonly="true">
+              </md-input-container>
+            </div>                
+
+            <div>
+              <md-input-container>
+                <label>Name</label>      
+                <input ng-model="control.name" ng-readonly="true">
+              </md-input-container>
+            </div>                
+          </div>
+   
+          <div layout="column" class="shade">
+            <div>
+              <md-input-container md-no-float class="md-block" >
+                <label>Value</label>      
+                <input ng-model="control.value">
+              </md-input-container>
+            </div>                
+
+            <div>
+              <md-input-container md-no-float class="md-block" >
+                <label>Description</label>      
+                <input ng-model="control.description">
+              </md-input-container>
+            </div>                
+
+          </div>
+        </md-content>
+      </div>
+    </div>
+  </md-content>
+</div>

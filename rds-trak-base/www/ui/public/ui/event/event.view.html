@@ -1,0 +1,137 @@
+<div class="container-fluid" ng-cloak>
+  <md-content>
+    <md-tabs md-dynamic-height md-selected="selected">
+      
+      <md-tab label="Current" md-on-select="refresh()">
+        <md-content class="md-padding">
+          <table class="event">
+            <tr ng-repeat="event in current" class="{{event.class}}">
+              <td class="event-code">{{event.code}}</td>
+              <td class="event-desc">{{event.description}}</td>
+              <td>
+                  <md-icon ng-show="event.suggestedAction"
+                           ng-click="info($event,event.suggestedAction)"
+                           md-svg-src="icons/info.svg"></md-icon> 
+              </td>
+              <td class="event-time">{{event.duration}}</td>
+            </tr>
+          </table>
+        </md-content>
+      </md-tab>
+      
+      <md-tab label="History" md-on-select="refresh()">
+        <md-content>
+          <table id="eventHistory" class="display" width="100%"></table>
+        </md-content>
+      </md-tab>
+      
+      <md-tab label="Report" md-on-select="refresh()">
+        <md-content class="md-padding">
+          <section layout="row" layout-wrap layout-align="start center">
+            <div layout="row">
+              <md-input-container>
+                <md-button class="pointless">From:</md-button>
+              </md-input-container>
+              <mdp-date-picker ng-model="reportStart"
+                               ng-change="changeStart()"></mdp-date-picker>
+              <mdp-time-picker ng-model="reportStart"
+                               ng-change="changeStart()"></mdp-time-picker>
+            </div>
+            <div layout="row">
+              <md-input-container>
+                <md-button class="pointless">To:</md-button>
+              </md-input-container>
+              <mdp-date-picker ng-model="reportEnd"
+                               ng-change="changeEnd()"></mdp-date-picker>
+              <mdp-time-picker ng-model="reportEnd"
+                               ng-change="changeEnd()"></mdp-time-picker>
+            </div>
+            <md-input-container>
+              <md-button class="md-raised"
+                         ng-click="reportRefresh()"
+                         ng-hide="reported">Report</md-button>
+            </md-input-container>
+          </section>
+          <table id="eventReport" class="display" width="100%"></table>
+        </md-content>
+      </md-tab>
+      
+      <md-tab label="Edit" ng-disabled="!permit('eventEdit')"
+              md-on-select="refresh()">
+        <md-content class="md-padding">
+          <div layout="row">
+            <div flex=65>
+              <md-content class="md-padding">
+                <table id="eventChoose" class="display" width="100%"></table>
+              </md-content>
+            </div>
+            
+            <div flex=35>
+              <md-toolbar>
+                <div class="md-toolbar-tools">
+                  <span flex></span>
+                  <md-button aria-label="New"
+                             ng-click="editNew()">New</md-button>
+                  <md-button aria-label="Update"
+                             ng-readonly="editDisable()"
+                             ng-click="editUpdate()">Save</md-button>
+                  <md-button aria-label="Delete"
+                             ng-readonly="editDisable()"
+                             ng-click="editDelete()">Delete</md-button>
+                </div>
+              </md-toolbar>
+              <md-content class="md-padding">
+                <div layout="column">
+                  <div>
+                    <md-input-container md-no-float class="md-block" >
+                      <label>Code</label>
+                      <input ng-model="edit.code">
+                    </md-input-container>
+                  </div>
+                  
+                  <div>
+                    <md-input-container md-no-float class="md-block">
+                      <label>Description</label>
+                      <input ng-model="edit.description">
+                    </md-input-container>
+                  </div>
+                  
+                  <div>
+                    <md-input-container md-no-float class="md-block">
+                      <label>Severity</label>
+                      <input ng-model="edit.severity">
+                    </md-input-container>
+                  </div>
+                  
+                  <div>
+                    <md-input-container md-no-float class="md-block">
+                      <label>Notify</label>
+                      <md-select ng-model="edit.notify">
+                        <md-option ng-repeat="notify in notifies"
+                                   ng-value="notify">
+                          {{notify}}
+                        </md-option>
+                      </md-select>
+                    </md-input-container>
+                  </div>
+                  
+                  <div>
+                    <md-input-container md-no-float class="md-block">
+                      <label>Suggested action</label>
+                      <textarea ng-model="edit.suggestedAction"
+                                md-maxlength="255"
+                                rows=5>
+                      </textarea>
+                    </md-input-container>
+                  </div>
+                </div>
+                
+              </md-content>
+            </div>
+          </div>
+        </md-content>
+      </md-tab>
+      
+    </md-tabs>
+  </md-content>
+</div>

@@ -1,0 +1,41 @@
+<div class="container-fluid" ng-cloak>
+  <md-content>
+    <div layout="row">
+      <div flex>
+        <md-content class="md-padding">
+          <table id="sequence" class="display" width="100%"></table>
+        </md-content>
+      </div>
+
+      <div flex class="md-padding">
+      <md-toolbar>
+        <div class="md-toolbar-tools">
+          <span flex></span>
+          <md-button aria-label="Update"
+                     ng-disabled="!permit('sequenceEdit')" 
+                     ng-click="sequenceUpdate()">Update</md-button>
+        </div>
+      </md-toolbar>
+
+      <div layout="row">
+        <md-content class="md-padding">
+          <md-input-container class="md-block">
+            <label>Cubby</label>
+            <input ng-model="sequence.cubby" ng-readonly="true">
+          </md-input-container>
+        </md-content>
+      </div>
+
+      <div layout="column">
+        <md-content class="md-padding" class="shade">
+          <div>
+            <md-input-container class="md-block">
+              <label>sequence</label>
+              <input type="number" ng-model="sequence.sequence">
+            </md-input-container>
+          </div>
+        </md-content>
+      </div>
+    </div>
+  </md-content>
+</div>

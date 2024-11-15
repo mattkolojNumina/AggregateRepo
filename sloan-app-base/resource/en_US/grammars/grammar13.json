@@ -1,0 +1,19 @@
+{
+    "filename":"grammar13",
+    "key":"2",
+    "type": "standard",
+    "minAlphaNumeric": "0",
+    "maxAlphaNumeric": "0",
+    "minNumeric": "0",
+    "maxNumeric": "0",
+    "phraseMap": {
+      "BAD LOCATION LABEL": "noProductLabel",
+      "NO PRODUCT U P C": "noProductUPC",
+      "NO PRODUCT UPC": "noProductUPC",
+      "NO PRODUCT CODE": "noProductUPC",
+      "NO UNIQUIE PRODUCT CODE": "noProductUPC",
+      "DAMAGED PRODUCT": "damagedProduct",
+      "SLOT EMPTY": "slotEmpty",
+      "CANCEL": "cancel"
+    }
+}

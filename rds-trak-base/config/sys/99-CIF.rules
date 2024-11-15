@@ -1,0 +1,1 @@
+KERNEL=="cif*", OWNER="rds", GROUP="rds"

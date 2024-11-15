@@ -1,0 +1,23 @@
+#!/bin/bash
+
+systemctl stop mysqld@2
+sleep 5
+/usr/bin/myisamchk --silent --force --fast --update-state \
+                 --key_buffer_size=64M --sort_buffer_size=64M \
+                 --read_buffer_size=1M --write_buffer_size=1M \
+                 /var/lib/mysql2/rds/*.MYI
+sleep 2
+
+systemctl stop mysqld@1
+sleep 5
+/usr/bin/myisamchk --silent --force --fast --update-state \
+                 --key_buffer_size=64M --sort_buffer_size=64M \
+                 --read_buffer_size=1M --write_buffer_size=1M \
+                 /var/lib/mysql/rds/*.MYI
+sleep 2
+
+systemctl start mysqld@1
+sleep 5
+systemctl start mysqld@2
+sleep 2
+

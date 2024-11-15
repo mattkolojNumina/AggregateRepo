@@ -1,0 +1,228 @@
+<div class="container-fluid" ng-cloak>
+  <md-tabs md-dynamic-height md-selected="selected">
+
+    <md-tab label="Details">
+      <md-content class="md-padding">
+        <div layout="row">
+          <div flex>
+            <table class="searchRes">
+              <tbody>
+                <tr>
+                  <td class='cartons-field'>Carton LPN:</td>
+                  <td class='cartons-data'>{{cartonInfo.lpn}}</td>
+                </tr>
+                <tr>
+                  <td class='cartons-field'>Order ID:</td>
+                  <td class='cartons-data'>
+					 <a href="#/orders?orderId={{cartonInfo.orderId}}">
+                           {{cartonInfo.orderId}}
+                     </a>
+				  </td>
+                </tr>
+                <tr>
+                  <td class='cartons-field'>Pallet Sequence:</td>
+                  <td class='cartons-data'>
+					 <a href="#/pallets?palletSeq={{cartonInfo.palletSeq}}">
+                           {{cartonInfo.palletSeq}}
+                     </a>				  
+				  </td>
+                </tr>
+
+                <tr>
+                  <td class='cartons-field'>Pick Type:</td>
+                  <td class='cartons-data'>{{cartonInfo.pickType}}</td>
+                </tr>
+                <tr>
+                  <td class='cartons-field'>Carton Type:</td>
+                  <td class='cartons-data'>{{cartonInfo.cartonType}}</td>
+                </tr>
+                <tr>
+                  <td class='cartons-field'>Estimated Dimensions:</td>
+                  <td class='cartons-data'>{{cartonInfo.estDim}}</td>
+                </tr>
+                <tr>
+                  <td class='cartons-field'>Actual Dimensions:</td>
+                  <td class='cartons-data'>{{cartonInfo.actDim}}</td>
+                </tr>
+                <tr>
+                  <td class='cartons-field'>Estimated Weight:</td>
+                  <td class='cartons-data'>{{cartonInfo.estWeight}}</td>
+                </tr>
+                <tr>
+                  <td class='cartons-field'>Actual Weight:</td>
+                  <td class='cartons-data'>{{cartonInfo.actWeight}}</td>
+                </tr>
+                <tr>
+                  <td class='cartons-field'>Tracking Number:</td>
+                  <td class='cartons-data'>{{cartonInfo.trackingNumber}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div flex>
+            <table class="orderStamps">
+              <tbody>
+                <tr>
+                  <td class='cartons-field'>Create Stamp:</td>
+                  <td class='cartons-data'>{{cartonInfo.createStamp | date: 'medium' }}</td>
+                </tr>
+                <tr>
+                  <td class='cartons-field'>Release Stamp:</td>
+                  <td class='cartons-data'>{{cartonInfo.releaseStamp | date: 'medium' }}</td>
+                </tr>
+                <tr>
+                  <td class='cartons-field'>Pick Start Stamp:</td>
+                  <td class='cartons-data'>{{cartonInfo.pickStartStamp | date: 'medium' }}</td>
+                </tr>
+                <tr>
+                  <td class='cartons-field'>Pick Stamp:</td>
+                  <td class='cartons-data'>{{cartonInfo.pickStamp | date: 'medium' }}</td>
+                </tr>
+                <tr>
+                  <td class='cartons-field'>Short Stamp:</td>
+                  <td class='cartons-data'>{{cartonInfo.shortStamp | date: 'medium' }}</td>
+                </tr>
+                <tr>
+                  <td class='cartons-field'>Audit Stamp:</td>
+                  <td class='cartons-data'>{{cartonInfo.auditStamp | date: 'medium' }}</td>
+                </tr>
+                <tr>
+                  <td class='cartons-field'>Pack Stamp:</td>
+                  <td class='cartons-data'>{{cartonInfo.packStamp | date: 'medium' }}</td>
+                </tr>
+                <tr>
+                  <td class='cartons-field'>Label Stamp:</td>
+                  <td class='cartons-data'>{{cartonInfo.labelStamp | date: 'medium' }}</td>
+                </tr>
+                <!--tr>
+                  <td class='cartons-field'>Ship Stamp:</td>
+                  <td class='cartons-data'>{{cartonInfo.shipStamp | date: 'medium' }}</td>
+                </tr-->
+                <tr>
+                  <td class='cartons-field'>Palletize Stamp:</td>
+                  <td class='cartons-data'>{{cartonInfo.palletStamp | date: 'medium' }}</td>
+                </tr>
+                <tr>
+                  <td class='cartons-field'>Cancel Stamp:</td>
+                  <td class='cartons-data'>{{cartonInfo.cancelStamp | date: 'medium' }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+ 
+          <div flex>
+            <div layout="column">
+              <md-toolbar>
+			    <div class="md-toolbar-tools">
+                  <md-button aria-label="Cancel"
+                    ng-show="cartonInfo.cartonSeq && cartonInfo.cartonSeq>0 && cartonInfo.pickStartStamp && cartonInfo.auditRequired==0 && !cartonInfo.auditStamp && !cartonInfo.labelStamp && !cartonInfo.cancelStamp"
+                    ng-disabled="!permit('cartonsEdit')"
+                    ng-click="auditCarton()">Require Audit</md-button>	
+                  <span>					
+                  <md-button aria-label="Cancel"
+                    ng-show="cartonInfo.cartonSeq && cartonInfo.cartonSeq>0 && cartonInfo.pickType=='Geek' && (cartonInfo.geekStatus=='received') && (!cartonInfo.lpn) && false"
+                    ng-disabled="!permit('cartonsEdit')"
+                    ng-click="cancelInGeek()">Cancel in Geek</md-button>
+			      </span>					
+                  <span>					
+                  <md-button aria-label="Cancel"
+                    ng-show="cartonInfo.cartonSeq && cartonInfo.cartonSeq>0 && cartonInfo.pickStamp && (!cartonInfo.labelStamp) && !cartonInfo.cancelStamp"
+                    ng-disabled="!permit('cartonsEdit')"
+                    ng-click="labelCarton()">Mark Labeled</md-button>
+			      </span>
+				  <span>
+                  <md-button aria-label="Cancel"
+                    ng-show="cartonInfo.cartonSeq && cartonInfo.cartonSeq>0 && cartonInfo.labelStamp && (!cartonInfo.shipStamp) && !cartonInfo.cancelStamp"
+                    ng-disabled="!permit('cartonsEdit')"
+                    ng-click="sortCarton()">Mark Sorted</md-button>
+                  </span>	
+                </div>					
+			  </md-toolbar>
+              <md-content class="md-padding">
+                Look up Carton by LPN, UCC, or Tracking Number:
+                <form ng-submit="lpnSearchDetails()">
+                  <md-input-container>
+                    <label>LPN, UCC, or Tracking Number</label>
+                    <input ng-model="lpnBySearch" id="lpnSearch">
+                  </md-input-container>
+                </form>
+              </md-content>
+            </div>
+          </div>
+        </div>
+
+        
+        <div>
+          <md-tabs md-dynamic-height class="md-padding" ">
+            <md-tab label="Items">
+              <table id="itemsTable" class="display" width="100%"></table>
+            </md-tab>
+
+            <md-tab label="history"">
+              <table id="historyTable" class="display" width="100%"></table>
+            </md-tab>
+
+        </md-tabs>
+
+        </div>
+      </md-content>
+    </md-tab>
+
+
+</div>
+
+<script type="text/ng-template" id="lookupCarton.html">
+  <md-dialog ng-cloak>
+    <form>
+      <md-toolbar>
+        <div class="md-toolbar-tools">
+          <h2>Select a record</h2>              
+        </div>
+      </md-toolbar>	
+      <md-dialog-content>
+          <div class="md-dialog-content">
+            <table>
+              <thead>
+                <tr>
+				          <th>Carton Seq &nbsp;</th>
+                  <th>LPN &nbsp;</th>
+                  <th>UCC &nbsp;</th>
+                  <th>Order ID &nbsp;</th>
+                  <th>Carton Type &nbsp;</th>
+                  <th>Pick Type &nbsp;</th>
+                  <!--th>Cart Seq &nbsp;</th>
+                  <th>Cart Slot &nbsp;</th>
+                  <th>Parent Carton Seq &nbsp;</th>
+                  <th>Pallet Seq &nbsp;</th>
+                  <th>Pallet Operator ID  &nbsp;</th-->
+                  <th>Select &nbsp;</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="carton in candidates">
+				          <td align="center"> {{carton.cartonSeq}} </td>
+				          <td align="center"> {{carton.lpn}} </td>
+				          <td align="center"> {{carton.ucc}} </td>
+                  <td align="center"> {{carton.orderId}} </td>				  
+                  <td align="center"> {{carton.cartonType}}
+                  <td align="center"> {{carton.pickType}}
+                  <!--td align="center"> {{carton.cartSeq}} </td>
+                  <td align="center"> {{carton.cartSlot}} </td>
+                  <td align="center"> {{carton.parentCartonSeq}} </td>
+				          <td align="center"> {{carton.palletSeq}} </td>
+                  <td align="center"> {{carton.palletOperatorId}} </td-->
+                  <td>
+                    <md-button class="md-raised md-primary"
+                        ng-click="selectCarton(carton)">
+                    Select
+                    </md-button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+      </md-dialog-content>
+    </form>
+  </md-dialog>
+</script>

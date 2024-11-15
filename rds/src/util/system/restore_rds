@@ -1,0 +1,12 @@
+#!/bin/bash
+
+cd $HOME
+
+echo -n "restoring rds src tree... "
+if [[ -d src ]] ; then
+   echo "src tree already exists"
+   exit 1
+fi
+
+tar -xzf archive/rds.tgz
+echo "done"

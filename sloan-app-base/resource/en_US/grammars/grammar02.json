@@ -1,0 +1,23 @@
+{
+    "filename":"grammar02",
+    "key":"2",
+    "type": "standard",
+    "minAlphaNumeric": "0",
+    "maxAlphaNumeric": "0",
+    "minNumeric": "0",
+    "maxNumeric": "0",
+    "phraseMap": {
+      "REPACK PICK MODULE": "repackPickModule",
+      "RE PACK PICK MODULE": "repackPickModule",
+      "REPACK PICKMODULE": "repackPickModule",
+      "RE PACK PICKMODULE": "repackPickModule",
+      "DEPARTMENT B PICKING": "repackPickModule",
+      "DEPARTMENT BE PICKING": "repackPickModule",
+      "DEPARTMENT BEE PICKING": "repackPickModule",
+      "CART PICKING": "cartPicking",
+      "BREAK": "break",
+      "MEETING": "meeting",
+      "CLEANING": "cleaning",
+      "PLEASE LOG OFF": "logout"
+    }
+}

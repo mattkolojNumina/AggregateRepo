@@ -1,0 +1,17 @@
+.doc {
+   color: #fff ; 
+   font-size: 12px ;}
+.doc .tile {
+   margin: 10px ;
+   height: 80px;
+   width:  300px;  }
+.doc .icon {
+   color: #fff ;
+   height: 60px ;
+   width:  60px ; }
+.doc .title {
+   font-size: 150%;
+   color: #f0f0f0 ; }
+.doc .desc {
+   font-size: 75%;
+   color: #f0f0f0 ; }

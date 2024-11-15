@@ -1,0 +1,5 @@
+#!/bin/bash
+
+HOST=`hostname`
+
+/usr/bin/mysql -hdb -urds -prds rds -e "UPDATE trak SET state = 'standard' WHERE host = '$HOST' AND zone = 'rp'"

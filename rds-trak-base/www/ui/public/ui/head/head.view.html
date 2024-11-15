@@ -1,0 +1,60 @@
+<div ng-controller="HeadController as head" ng-cloak>
+ <md-toolbar class="md-hue-4" id="headBar">
+   <div class="md-toolbar-tools">
+     <md-button class="md-icon-button" aria-label="Menu"
+                ng-if="false"
+                ng-click="leftToggle()">
+       <md-icon md-svg-icon="icons/menu.svg"></md-icon>
+       <md-tooltip>Menu</md-tooltip>
+     </md-button>
+     <md-button class="md-icon-button" aria-label="Home"
+                href="#/">
+       <md-icon md-svg-icon="icons/home.svg"></md-icon>
+       <md-tooltip>Home</md-tooltip>
+     </md-button>
+     <span flex>
+       <div layout="row">
+       <span flex></span>
+       <span ng-show="synchAlertOn" style="background-color: red; border-radius: 5px">
+         &nbsp;Database out of synch&nbsp;</span>
+       <span flex></span>
+       </div>
+     </span>
+     <h2>
+       <span>{{title}}</span>
+     </h2>
+     <span flex>
+       <div layout="row">
+       <span flex></span>
+       <span ng-show="connectionAlertOn" style="background-color: red; border-radius: 5px">
+         &nbsp;Database connection lost&nbsp;</span>
+       <span flex></span>
+       </div>
+     </span>
+
+     <md-progress-circular class="md-warn md-hue-1" 
+                           md-mode="indeterminate"
+                           md-diameter="48px"
+                           ng-disabled="!busyRefresh"
+                           ng-show="busyRefresh">
+     </md-progress-circular>
+     <md-button class="md-icon-button" aria-label="Refresh"
+                ng-click="refresh()"
+                ng-hide="busyRefresh">
+       <md-icon md-svg-icon="icons/refresh.svg"> </md-icon>
+       <md-tooltip>Refresh</md-tooltip>
+     </md-button>
+
+     <md-button id="login" class="md-icon-button" aria-label="User"
+                ng-click="showLogin()">
+       <md-icon md-svg-icon="icons/user.svg"></md-icon>
+       <md-tooltip>{{name}}</md-tooltip>
+     </md-button>
+     <md-button class="md-icon-button" aria-label="Settings"
+                ng-click="rightToggle()">
+       <md-icon md-svg-icon="icons/more_vert.svg"></md-icon>
+       <md-tooltip>Settings</md-tooltip>
+     </md-button>
+   </div>
+ </md-toolbar>
+</div>

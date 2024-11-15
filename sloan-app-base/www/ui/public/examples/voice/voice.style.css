@@ -1,0 +1,21 @@
+voice td {
+  padding: 10px 10px ;
+  margin: 0px 5px ;
+  font-size: 150% ;
+}
+
+.voice-field {
+  text-align: right ;
+}
+
+.voice-data {
+  color: blue ;  
+}
+
+.md-button.md-separate {
+  background-color: lightgrey;
+}
+
+.md-button.md-ohno {
+  background-color: orangered;
+}

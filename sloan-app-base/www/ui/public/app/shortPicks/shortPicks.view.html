@@ -1,0 +1,811 @@
+<div class="container-fluid" ng-cloak>
+   <md-tabs md-dynamic-height md-selected="selected">
+
+      <md-tab label="Unassigned Short Picks" md-on-select="refresh()">
+        <md-content ng-show='working'>
+          <div layout="row">
+            <span flex></span>
+              <div layout="column" layout-align="center center">
+                <h2>WORKING</h2>
+                  <md-progress-circular md-mode="indeterminate"></md-progress-circular>
+                <h3></h3>
+              </div>
+            <span flex></span>
+          </div>
+        </md-content>
+		<md-content ng-hide='working'>
+          <md-content ng-hide='UnassignedSkuList'>
+            <md-toolbar class="md-hue-1">
+              <div class="md-toolbar-tools" layout="row">
+                <span>
+                  Showing {{UnassignedShortPicksFiltered}} of {{UnassignedShortPicksTotal}}, {{UnassignedShortPicksSelected}} selected
+                </span>
+                <span>
+                  <md-button class="md-raised md-primary" ng-click="UnassignedShortPicksSelectShown()">
+                    Select Shown
+                  </md-button>
+                </span>
+                <!--span>
+                  <md-button class="md-raised md-primary" ng-click="UnassignedShortPicksSelectAll()" ng-disabled="UnassignedShortPicksSelected == UnassignedShortPicksTotal">
+                    Select All
+                  </md-button>
+                </span-->
+                <span>
+                  <md-button class="md-raised md-primary" ng-click="UnassignedShortPicksSelectNone()" ng-disabled="UnassignedShortPicksSelected == 0">
+                    Select None
+                  </md-button>
+                </span>
+                <span>
+                  <md-button class="md-raised md-primary" ng-disabled="!permit('shortPicksEdit') || UnassignedShortPicksSelected == 0" ng-click="UnassignedShortPicksAssignPickerMass()">
+                    Mass-Assign selected
+                  </md-button>
+                </span>
+              </div>
+            </md-toolbar>
+			<md-toolbar class="md-hue-2">
+				<div class="md-toolbar-tools" layout="row">
+				  <span>
+                    <md-button class="md-raised md-primary" ng-click="UnassignedSkuListSwitch()">
+                      {{UnassignedSkuListButton}}
+                    </md-button>
+                  </span>
+				  <span>
+					<md-button class="md-raised md-primary" ng-click="UnassignedShortPicksClearFilters()">
+					  Clear Filters
+					</md-button>
+				  </span>
+
+				</div>
+			</md-toolbar>
+			<div>
+				<div layout="row">
+				  <div>
+					<label>Pick Type:</label>
+					<md-radio-group layout="row" class="md-padding" ng-change="refresh()" ng-model="UnassignedShortPicksPickTypeFilter">
+                        <md-radio-button value="All">All</md-radio-button>
+                        <md-radio-button value="GeekAersolBoom">East</md-radio-button>
+                        <md-radio-button value="ZoneRouteLiquidsPerishables">West</md-radio-button>
+                        <md-radio-button value="Geek">Geek</md-radio-button>
+                        <md-radio-button value="ZoneRoute">ZoneRoute</md-radio-button>
+                        <md-radio-button value="AersolBoom">D&U</md-radio-button>
+                        <md-radio-button value="LiquidsPerishables">P&Q</md-radio-button>
+					</md-radio-group>
+				  </div>
+				  <div>
+				  <label>Invoice</label>
+				  <form ng-submit="refresh()">
+					<md-input-container>
+					  <label>Invoice</label>
+					  <input ng-model="UnassignedShortPicksOrderIdFilter">
+					</md-input-container>
+				  </form>
+                  </div>
+                  <br/>
+				  <div>
+				  <label>SKU:</label>
+				  <form ng-submit="refresh()">
+					<md-input-container>
+					  <label>SKU</label>
+					  <input ng-model="UnassignedShortPicksSKUFilter">
+					</md-input-container>
+				  </form>
+                  </div>
+                  <br/>
+				  <div>
+				    <label>Daily Wave Seq:</label>
+                    <md-select aria-label="Daily Wave Seq" ng-model="UnassignedShortPicksDailyWaveFilter" ng-change="refresh()">
+                      <md-option value="All">All</md-option>
+                      <md-option ng-repeat="waveSeq in unassignedWaveSeqs" value="{{waveSeq}}">{{waveSeq}}</md-option>
+                    </md-select>
+				  </div>
+                  <br/>
+				  <div>
+					<md-input-container>
+					  <md-checkbox ng-model="autoAssign" aria-label="Auto Assign" ng-change="updateAutoAssign()" ng-disabled="!permit('shortPicksEdit')">Auto Assign</md-checkbox>
+					</md-input-container>
+				  </div>
+				</div>
+			</div>
+			<br/>
+		    <table id="UnassignedShortPicksTable" class="display small-font" width="100%"></table>
+		  </md-content>
+          <md-content ng-show='UnassignedSkuList'>
+            <md-toolbar class="md-hue-1">
+              <div class="md-toolbar-tools" layout="row">
+                <span>
+                  Showing {{UnassignedSkuListFiltered}} of {{UnassignedSkuListTotal}}, {{UnassignedSkuListSelected}} selected
+                </span>
+                <span>
+                  <md-button class="md-raised md-primary" ng-click="UnassignedSkuListSelectShown()">
+                    Select Shown
+                  </md-button>
+                </span>
+                <span>
+                  <md-button class="md-raised md-primary" ng-click="UnassignedSkuListSelectNone()" ng-disabled="UnassignedSkuListSelected == 0">
+                    Select None
+                  </md-button>
+                </span>
+                <span>
+                  <md-button class="md-raised md-primary" ng-disabled="!permit('shortPicksEdit') || UnassignedSkuListSelected == 0" ng-click="UnassignedSkuListAssignPickerMass()">
+                    Mass-Assign selected
+                  </md-button>
+                </span>
+              </div>
+            </md-toolbar>
+			<md-toolbar class="md-hue-2">
+				<div class="md-toolbar-tools" layout="row">
+				  <span>
+                    <md-button class="md-raised md-primary" ng-click="UnassignedSkuListSwitch()">
+                      {{UnassignedSkuListButton}}
+                    </md-button>
+                  </span>
+				  <span>
+					<md-button class="md-raised md-primary" ng-click="UnassignedSkuListClearFilters()">
+					  Clear Filters
+					</md-button>
+				  </span>
+
+				</div>
+			</md-toolbar>
+			<div>
+				<div layout="row">
+				  <div>
+					<label>Pick Type:</label>
+                      <md-radio-group layout="row" class="md-padding" ng-change="refresh()" ng-model="UnassignedSkuListPickTypeFilter">
+                          <md-radio-button value="All">All</md-radio-button>
+                          <md-radio-button value="GeekAersolBoom">East</md-radio-button>
+                          <md-radio-button value="ZoneRouteLiquidsPerishables">West</md-radio-button>
+                          <md-radio-button value="Geek">Geek</md-radio-button>
+                          <md-radio-button value="ZoneRoute">ZoneRoute</md-radio-button>
+                          <md-radio-button value="AersolBoom">D&U</md-radio-button>
+                          <md-radio-button value="LiquidsPerishables">P&Q</md-radio-button>
+                      </md-radio-group>
+				  </div>
+                  </br>
+				  <div>
+				  <label>SKU:</label>
+				  <form ng-submit="refresh()">
+					<md-input-container>
+					  <label>SKU</label>
+					  <input ng-model="UnassignedSkuListSKUFilter">
+					</md-input-container>
+				  </form>
+                  </div>
+                  <br/>
+				  <div>
+				    <label>Daily Wave Seq:</label>
+                    <md-select aria-label="Daily Wave Seq" ng-model="UnassignedDailyWaveFilter" ng-change="refresh()">
+                      <md-option value="All">All</md-option>
+                      <md-option ng-repeat="waveSeq in unassignedWaveSeqs" value="{{waveSeq}}">{{waveSeq}}</md-option>
+                    </md-select>
+				  </div>
+                  <br/>
+				  <div>
+					<md-input-container>
+					  <md-checkbox ng-model="autoAssign" aria-label="Auto Assign" ng-change="updateAutoAssign()" ng-disabled="!permit('shortPicksEdit')">Auto Assign</md-checkbox>
+					</md-input-container>
+				  </div>
+				</div>
+			</div>
+			<br/>
+		    <table id="UnassignedSkuListTable" class="display small-font" width="100%"></table>
+		  </md-content>
+		</md-content>
+      </md-tab>
+
+
+      <md-tab label="Assigned Short Picks" md-on-select="refresh()">
+        <md-content ng-show='working'>
+          <div layout="row">
+            <span flex></span>
+              <div layout="column" layout-align="center center">
+                <h2>WORKING</h2>
+                  <md-progress-circular md-mode="indeterminate"></md-progress-circular>
+                <h3></h3>
+              </div>
+            <span flex></span>
+          </div>
+        </md-content>
+		<md-content ng-hide='working'>
+          <md-content ng-hide='AssignedSkuList'>
+            <md-toolbar class="md-hue-1">
+              <div class="md-toolbar-tools" layout="row">
+                <span>
+                  Showing {{AssignedShortPicksFiltered}} of {{AssignedShortPicksTotal}}, {{AssignedShortPicksSelected}} selected
+                </span>
+                <span>
+                  <md-button class="md-raised md-primary" ng-click="AssignedShortPicksSelectShown()">
+                    Select Shown
+                  </md-button>
+                </span>
+                <!--span>
+                  <md-button class="md-raised md-primary" ng-click="AssignedShortPicksSelectAll()" ng-disabled="AssignedShortPicksSelected == AssignedShortPicksTotal">
+                    Select All
+                  </md-button>
+                </span-->
+                <span>
+                  <md-button class="md-raised md-primary" ng-click="AssignedShortPicksSelectNone()" ng-disabled="AssignedShortPicksSelected == 0">
+                    Select None
+                  </md-button>
+                </span>
+                <span>
+                  <md-button class="md-raised md-primary" ng-disabled="!permit('shortPicksEdit') || AssignedShortPicksSelected == 0" ng-click="AssignedShortPicksMarkPickedMass()">
+                    Mark-picked selected
+                  </md-button>
+                </span>
+                <!--<span>
+                  <md-button class="md-raised md-primary" ng-disabled="!permit('shortPicksEdit') || AssignedShortPicksSelected == 0" ng-click="AssignedShortPicksShipShortMass()">
+                    Ship-short selected
+                  </md-button>
+                </span> -->
+              </div>
+            </md-toolbar>
+			<md-toolbar class="md-hue-2">
+				<div class="md-toolbar-tools" layout="row">
+				  <span>
+                    <md-button class="md-raised md-primary" ng-click="AssignedSkuListSwitch()">
+                      {{AssignedSkuListButton}}
+                    </md-button>
+                  </span>
+				  <span>
+					<md-button class="md-raised md-primary" ng-click="AssignedShortPicksClearFilters()">
+					  Clear Filters
+					</md-button>
+				  </span>
+				</div>
+			</md-toolbar>
+			<div>
+				<div layout="row">
+                  <div>
+                    <label>Pick Type:</label>
+                    <md-radio-group layout="row" class="md-padding" ng-change="refresh()" ng-model="AssignedShortPicksPickTypeFilter">
+                        <md-radio-button value="All">All</md-radio-button>
+                        <md-radio-button value="GeekAersolBoom">East</md-radio-button>
+                        <md-radio-button value="ZoneRouteLiquidsPerishables">West</md-radio-button>
+                        <md-radio-button value="Geek">Geek</md-radio-button>
+                        <md-radio-button value="ZoneRoute">ZoneRoute</md-radio-button>
+                        <md-radio-button value="AersolBoom">D&U</md-radio-button>
+                        <md-radio-button value="LiquidsPerishables">P&Q</md-radio-button>
+                    </md-radio-group>
+                  </div>
+				  <div>
+                      <label>Invoice:</label>
+				  <form ng-submit="refresh()">
+					<md-input-container>
+					  <label>Invoice</label>
+					  <input ng-model="AssignedShortPicksOrderIdFilter">
+					</md-input-container>
+				  </form>
+                  </div>
+                  <br/>
+				  <div>
+                  <label>SKU:</label>
+				  <form ng-submit="refresh()">
+					<md-input-container>
+					  <label>SKU</label>
+					  <input ng-model="AssignedShortPicksSKUFilter">
+					</md-input-container>
+				  </form>
+                  </div>
+                  <br/>
+				  <div>
+                      <label>Chase Picker:</label>
+				  <form ng-submit="refresh()">
+					<md-input-container>
+					  <label>Chase Picker</label>
+					  <input ng-model="AssignedShortPicksChaseOperatorIdFilter">
+					</md-input-container>
+				  </form>
+                  </div>
+                  <br/>
+                    <div>
+                        <label>Daily Wave Seq:</label>
+                        <md-select aria-label="Daily Wave Seq" ng-model="AssignedShortPicksDailyWaveFilter" ng-change="refresh()">
+                            <md-option value="All">All</md-option>
+                            <md-option ng-repeat="waveSeq in assignedWaveSeqs" value="{{waveSeq}}">{{waveSeq}}</md-option>
+                        </md-select>
+                    </div>
+				</div>
+			</div>
+			<br/>
+		    <table id="AssignedShortPicksTable" class="display small-font" width="100%"></table>
+		  </md-content>
+          <md-content ng-show='AssignedSkuList'>
+            <!--md-toolbar class="md-hue-1">
+              <div class="md-toolbar-tools" layout="row">
+                <span>
+                  Showing {{AssignedShortPicksFiltered}} of {{AssignedShortPicksTotal}}, {{AssignedShortPicksSelected}} selected
+                </span>
+                <span>
+                  <md-button class="md-raised md-primary" ng-click="AssignedShortPicksSelectShown()">
+                    Select Shown
+                  </md-button>
+                </span>
+                <span>
+                  <md-button class="md-raised md-primary" ng-click="AssignedShortPicksSelectNone()" ng-disabled="AssignedShortPicksSelected == 0">
+                    Select None
+                  </md-button>
+                </span>
+                <span>
+                  <md-button class="md-raised md-primary" ng-disabled="!permit('shortPicksEdit') || AssignedShortPicksSelected == 0" ng-click="AssignedShortPicksAssignPickerMass()">
+                    Mass-Assign selected
+                  </md-button>
+                </span>
+                <span>
+                  <md-button class="md-raised md-primary" ng-disabled="!permit('shortPicksEdit') || AssignedShortPicksSelected == 0" ng-click="AssignedShortPicksShipShortMass()">
+                    Ship-short selected
+                  </md-button>
+                </span>
+              </div>
+            </md-toolbar-->
+			<md-toolbar class="md-hue-2">
+				<div class="md-toolbar-tools" layout="row">
+				  <span>
+                    <md-button class="md-raised md-primary" ng-click="AssignedSkuListSwitch()">
+                      {{AssignedSkuListButton}}
+                    </md-button>
+                  </span>
+				  <span>
+					<md-button class="md-raised md-primary" ng-click="AssignedSkuListClearFilters()">
+					  Clear Filters
+					</md-button>
+				  </span>
+
+				</div>
+			</md-toolbar>
+			<div>
+				<div layout="row">
+				  <div>
+					<label>Pick Type</label>
+					<md-radio-group layout="row" class="md-padding" ng-change="refresh()" ng-model="AssignedSkuListPickTypeFilter">
+					  <md-radio-button value="All">All</md-radio-button>
+                      <md-radio-button value="GeekAersolBoom">East</md-radio-button>
+                      <md-radio-button value="ZoneRouteLiquidsPerishables">West</md-radio-button>
+					  <md-radio-button value="Geek">Geek</md-radio-button>
+					  <md-radio-button value="ZoneRoute">ZoneRoute</md-radio-button>
+                      <md-radio-button value="AersolBoom">D&U</md-radio-button>
+					  <md-radio-button value="LiquidsPerishables">P&Q</md-radio-button>
+					</md-radio-group>
+				  </div>
+                  <br/>
+				  <div>
+				  <label>SKU:</label>
+				  <form ng-submit="refresh()">
+					<md-input-container>
+					  <label>SKU</label>
+					  <input ng-model="AssignedSkuListSKUFilter">
+					</md-input-container>
+				  </form>
+                  </div>
+                  <br/>
+				  <div>
+				  <label>Chase Picker:</label>
+				  <form ng-submit="refresh()">
+					<md-input-container>
+					  <label>Chase Picker</label>
+					  <input ng-model="AssignedSkuListChaseOperatorIdFilter">
+					</md-input-container>
+				  </form>
+                  </div>
+                  <br/>
+				  <div>
+				    <label>Daily Wave Seq:</label>
+                    <md-select aria-label="Daily Wave Seq" ng-model="AssignedDailyWaveFilter" ng-change="refresh()">
+                      <md-option value="All">All</md-option>
+                      <md-option ng-repeat="waveSeq in assignedWaveSeqs" value="{{waveSeq}}">{{waveSeq}}</md-option>
+                    </md-select>
+				  </div>
+				</div>
+			</div>
+			<br/>
+		    <table id="AssignedSkuListTable" class="display small-font" width="100%"></table>
+		  </md-content>
+		</md-content>
+      </md-tab>
+
+      <md-tab label="Picked Chase Picks" md-on-select="refresh()">
+        <md-content ng-show='working'>
+          <div layout="row">
+            <span flex></span>
+              <div layout="column" layout-align="center center">
+                <h2>WORKING</h2>
+                  <md-progress-circular md-mode="indeterminate"></md-progress-circular>
+                <h3></h3>
+              </div>
+            <span flex></span>
+          </div>
+        </md-content>
+		<md-content ng-hide='working'>
+            <md-toolbar class="md-hue-1">
+              <div class="md-toolbar-tools" layout="row">
+                <span>
+                  Showing {{PickedChasePicksFiltered}} of {{PickedChasePicksTotal}}, {{PickedChasePicksSelected}} selected
+                </span>
+                <span>
+                  <md-button class="md-raised md-primary" ng-click="PickedChasePicksSelectShown()">
+                    Select Shown
+                  </md-button>
+                </span>
+                <!--span>
+                  <md-button class="md-raised md-primary" ng-click="PickedChasePicksSelectAll()" ng-disabled="PickedChasePicksSelected == PickedChasePicksTotal">
+                    Select All
+                  </md-button>
+                </span-->
+                <span>
+                  <md-button class="md-raised md-primary" ng-click="PickedChasePicksSelectNone()" ng-disabled="PickedChasePicksSelected == 0">
+                    Select None
+                  </md-button>
+                </span>
+                <span>
+                  <md-button class="md-raised md-primary" ng-disabled="!permit('shortPicksEdit') || PickedChasePicksSelected == 0" ng-click="PickedChasePicksMarkPutMass()">
+                    Mark-put selected
+                  </md-button>
+                </span>
+              </div>
+            </md-toolbar>
+			<md-toolbar class="md-hue-2">
+				<div class="md-toolbar-tools" layout="row">
+				  <span>
+					<md-button class="md-raised md-primary" ng-click="PickedChasePicksClearFilters()">
+					  Clear Filters
+					</md-button>
+				  </span>
+				</div>
+			</md-toolbar>
+			<div>
+				<div layout="row">
+				  <div style='margin-left:50px;'>
+					<label>Last Seen:</label>
+					<md-radio-group class="md-padding" layout="row" ng-change="refresh()" ng-model="pickedChasePicksLastSeenFilter">
+					  <md-radio-button value="All">All locations</md-radio-button>
+					  <md-radio-button value="west">West</md-radio-button>
+					  <md-radio-button value="east">East</md-radio-button>
+					</md-radio-group>
+				  </div>
+				</div>
+			</div>
+          <md-content>
+		    <table id="PickedChasePicksTable" class="display small-font" width="100%"></table>
+		  </md-content>
+		</md-content>
+      </md-tab>
+
+      <md-tab label="Short Cartons" md-on-select="refresh()">
+        <md-content ng-show='working'>
+          <div layout="row">
+            <span flex></span>
+              <div layout="column" layout-align="center center">
+                <h2>WORKING</h2>
+                  <md-progress-circular md-mode="indeterminate"></md-progress-circular>
+                <h3></h3>
+              </div>
+            <span flex></span>
+          </div>
+        </md-content>
+		<md-content ng-hide='working'>
+          <md-content>
+		    <table id="shortCartons" class="display small-font" width="100%"></table>
+		  </md-content>
+		</md-content>
+      </md-tab>
+
+      <md-tab label="Mark Out Skus" md-on-select="refresh()">
+        <md-content ng-show='working'>
+          <div layout="row">
+            <span flex></span>
+              <div layout="column" layout-align="center center">
+                <h2>WORKING</h2>
+                  <md-progress-circular md-mode="indeterminate"></md-progress-circular>
+                <h3></h3>
+              </div>
+            <span flex></span>
+          </div>
+        </md-content>
+		<md-content ng-hide='working'>
+		  <div layout="row">
+            <div flex=5>
+            </div>
+		    <div flex=40>
+			  <div layout="column">
+			  <h3>Picked Short Skus
+                  <md-button class="md-icon-button" aria-label="Mark Out Info"
+                             ng-click="showMarkOutInfo()">
+                      <md-icon md-svg-icon="icons/info.svg"></md-icon>
+                      <md-tooltip>Mark Out Info</md-tooltip>
+                  </md-button>
+              </h3>
+			  <md-content>
+				<table id="shortPicksBySku" class="display small-font" width="100%"></table>
+			  </md-content>
+			  </div>
+			</div>
+            <div flex=10>
+            </div>
+		    <div flex=40>
+			  <div layout="column">
+			  <h3>Marked Out Skus</h3>
+			  <md-content>
+				<table id="markOutSkus" class="display small-font" width="100%"></table>
+			  </md-content>
+			  </div>
+			</div>
+            <div flex=5>
+            </div>
+          </div>
+		</md-content>
+      </md-tab>
+
+      <md-tab label="Default ChasePicker" md-on-select="refresh()">
+        <md-content ng-show='working'>
+          <div layout="row">
+            <span flex></span>
+            <div layout="column" layout-align="center center">
+              <h2>WORKING</h2>
+              <md-progress-circular md-mode="indeterminate"></md-progress-circular>
+              <h3></h3>
+            </div>
+            <span flex></span>
+          </div>
+        </md-content>
+        <md-content ng-hide='working'>
+          <div layout="row">
+          <div flex=70>
+            <md-content class="md-padding">
+              <table id="cfgDepartments" class="display" width="100%"></table>
+            </md-content>
+          </div>
+          <div flex>
+            <md-toolbar class="md-hue-1">
+              <div class="md-toolbar-tools" layout="row">
+                <span>
+                  <md-button class="md-raised md-primary" ng-click="updateDefaultChasePicker()" ng-disabled="(!permit('shortPicksEdit') || CfgDepartments.rdsPickZone=='')" ng-show="(CfgDepartments.rdsPickZone)" >
+                    Save
+                  </md-button>
+                </span>
+                  <span>
+                  <md-button class="md-raised md-primary" ng-click="clearDefaultChasePicker()" ng-disabled="(!permit('shortPicksEdit') || CfgDepartments.rdsPickZone=='' || CfgDepartments.defaultChasePicker=='')" ng-show="(CfgDepartments.rdsPickZone)" >
+                    Clear
+                  </md-button>
+                </span>
+              </div>
+            </md-toolbar>
+            <md-content class="md-padding">
+              <div layout="column">
+                <md-input-container md-no-float class="md-block">
+                  <label>Pick Type</label>
+                  <input ng-model="CfgDepartments.rdsPickZone" ng-readonly="CfgDepartmentsReadonly" ng-disabled="CfgDepartmentsReadonly">
+                </md-input-container>
+				<div>
+				  <md-input-container md-no-float class="md-block">
+					<label>Default ChasePicker</label>
+					<md-select ng-model="CfgDepartments.defaultChasePicker">
+					  <md-option ng-repeat="value in chasePickerList" ng-value="value">
+						{{value}}
+					  </md-option>
+					</md-select>
+				  </md-input-container>
+				</div>
+              </div>
+            </md-content>
+          </div>
+          </div>
+        </md-content>
+      </md-tab>
+
+   </md-tabs>
+</div>
+
+<script type="text/ng-template" id="pickerAssign.html">
+  <md-dialog ng-cloak>
+    <form>
+      <md-dialog-content>
+        <div class="md-dialog-content">
+          <h2>Select operator for chase pick</h2>
+        </div>
+      </md-dialog-content>
+
+      <md-dialog-actions>
+		<md-select ng-model="chasePickOperator" md-on-close="clearSearchPicker()">
+		  <md-select-header class="mdSelectHeader">
+			<input ng-model="SearchPicker"
+			       ng-keydown="$event.stopPropagation()"
+				   type="search"
+				   placeholder="Search for a picker">
+		  </md-select-header>
+		  <md-option ng-repeat="value in chasePickerList | filter: SearchPicker"
+					 ng-value="value">
+			{{value}}
+		  </md-option>
+		</md-select>
+		<md-button ng-click="doAssignChasePick()">Select</md-button>
+		<md-button ng-click="cancelAssign()">Cancel</md-button>
+      </md-dialog-actions>
+    </form>
+  </md-dialog>
+</script>
+
+<script type="text/ng-template" id="pickerAssignForSku.html">
+    <md-dialog ng-cloak>
+        <form>
+            <md-dialog-content>
+                <div class="md-dialog-content">
+                    <h2>Select operator for chase pick</h2>
+                </div>
+            </md-dialog-content>
+
+            <md-dialog-actions>
+                <md-select ng-model="chasePickOperator" md-on-close="clearSearchPicker()">
+                    <md-select-header class="mdSelectHeader">
+                        <input ng-model="SearchPicker"
+                               ng-keydown="$event.stopPropagation()"
+                               type="search"
+                               placeholder="Search for a picker">
+                    </md-select-header>
+                    <md-option ng-repeat="value in chasePickerList | filter: SearchPicker"
+                               ng-value="value">
+                        {{value}}
+                    </md-option>
+                </md-select>
+                <md-button ng-click="doAssignChasePickForSku()">Select</md-button>
+                <md-button ng-click="cancelAssign()">Cancel</md-button>
+            </md-dialog-actions>
+        </form>
+    </md-dialog>
+</script>
+
+<script type="text/ng-template" id="lpnAssign.html">
+  <md-dialog ng-cloak>
+    <form>
+      <md-dialog-content>
+        <div class="md-dialog-content">
+          <h2>Assign LPN for Geek Short Carton</h2>
+        </div>
+      </md-dialog-content>
+
+      <md-dialog-actions>
+	    <md-input-container>
+	      <label>LPN</label>
+	      <input ng-model="newCartonLpn">
+	    </md-input-container>
+		<md-button ng-click="doAssignLpn()">Assign</md-button>
+		<md-button ng-click="cancelAssignLpn()">Cancel</md-button>
+      </md-dialog-actions>
+    </form>
+  </md-dialog>
+</script>
+
+<script type="text/ng-template" id="massAssign.html">
+  <md-dialog ng-cloak>
+    <form>
+      <md-dialog-content>
+        <div class="md-dialog-content">
+          <h2>Select operator for chase pick</h2>
+        </div>
+      </md-dialog-content>
+
+      <md-dialog-actions>
+		<md-select ng-model="chasePickOperator" md-on-close="clearSearchPicker()">
+		  <md-select-header class="mdSelectHeader">
+			<input ng-model="SearchPicker"
+			       ng-keydown="$event.stopPropagation()"
+				   type="search"
+				   placeholder="Search for a picker">
+		  </md-select-header>
+		  <md-option ng-repeat="value in chasePickerList | filter: SearchPicker"
+					 ng-value="value">
+			{{value}}
+		  </md-option>
+		</md-select>
+		<md-button ng-click="doMassAssignChasePick()">Select</md-button>
+		<md-button ng-click="cancelMassAssign()">Cancel</md-button>
+      </md-dialog-actions>
+    </form>
+  </md-dialog>
+</script>
+
+<script type="text/ng-template" id="massAssignForSku.html">
+    <md-dialog ng-cloak>
+        <form>
+            <md-dialog-content>
+                <div class="md-dialog-content">
+                    <h2>Select operator for chase pick</h2>
+                </div>
+            </md-dialog-content>
+
+            <md-dialog-actions>
+                <md-select ng-model="chasePickOperator" md-on-close="clearSearchPicker()">
+                    <md-select-header class="mdSelectHeader">
+                        <input ng-model="SearchPicker"
+                               ng-keydown="$event.stopPropagation()"
+                               type="search"
+                               placeholder="Search for a picker">
+                    </md-select-header>
+                    <md-option ng-repeat="value in chasePickerList | filter: SearchPicker"
+                               ng-value="value">
+                        {{value}}
+                    </md-option>
+                </md-select>
+                <md-button ng-click="doMassAssignChasePickForSku()">Select</md-button>
+                <md-button ng-click="cancelMassAssign()">Cancel</md-button>
+            </md-dialog-actions>
+        </form>
+    </md-dialog>
+</script>
+
+<script type="text/ng-template" id="markOutInfo.html">
+    <md-dialog ng-cloak>
+        <form>
+            <md-dialog-content>
+                <div class="md-dialog-content">
+                    <h2>What does Mark Out do?</h2>
+                    <ul>
+                        <li>Mark Out SKUs will be whipped clean at midnight each night.</li>
+                        <li>Mark Out SKUs will short <i>AND</i> ship short approve all open picks that are picked via RDS.
+                            <ul><li>That includes picking in B ZoneRoute, P&Q, and D&U.</li></ul>
+                        </li>
+                        <li>Mark Out SKUs will ship short approve all short picks.</li>
+                        <li>Picks will still be cartonized if they are marked out.</li>
+                        <li>Picks will still be prepared if they are marked out.</li>
+                    </ul>
+                </div>
+            </md-dialog-content>
+            <md-dialog-actions>
+                <md-button ng-click="closeMarkOutInfo()">Close</md-button>
+            </md-dialog-actions>
+        </form>
+    </md-dialog>
+</script>
+
+<script type="text/ng-template" id="selectLocation.html">
+    <md-dialog ng-cloak>
+        <form>
+            <md-content ng-show='workingLocation'>
+                <div layout="row">
+                    <span flex></span>
+                    <div layout="column" layout-align="center center">
+                        <h2>WORKING</h2>
+                        <md-progress-circular md-mode="indeterminate"></md-progress-circular>
+                        <h3></h3>
+                    </div>
+                    <span flex></span>
+                </div>
+            </md-content>
+            <md-content ng-hide='workingLocation'>
+                <div ng-show="backStockEmpty">
+                    <md-dialog-content>
+                        <div class="md-dialog-content">
+                            <h2>No Back Stock Locations Found</h2>
+                        </div>
+                    </md-dialog-content>
+                    <md-dialog-actions>
+                        <md-button ng-click="cancelBackStock()">Close</md-button>
+                    </md-dialog-actions>
+                </div>
+                <div ng-hide="backStockEmpty">
+                    <md-dialog-content>
+                        <div class="md-dialog-content">
+                            <h2>Select Back Stock Location</h2>
+                        </div>
+                    </md-dialog-content>
+
+                    <md-dialog-actions>
+                        <md-select ng-model="chasePickLocation" md-on-close="clearBackStockLocation()">
+                            <md-select-header class="mdSelectHeader">
+                                <input ng-model="backStock"
+                                       ng-keydown="$event.stopPropagation()"
+                                       type="search"
+                                       placeholder="Search for a location">
+                            </md-select-header>
+                            <md-option ng-repeat="value in backStockLocationList | filter: backStock"
+                                       ng-value="value">
+                                {{value}}
+                            </md-option>
+                        </md-select>
+                        <md-button ng-click="doBackStockLocation()">Select</md-button>
+                        <md-button ng-click="cancelBackStock()">Cancel</md-button>
+                    </md-dialog-actions>
+                </div>
+            </md-content>
+        </form>
+    </md-dialog>
+</script>

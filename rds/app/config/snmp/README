@@ -1,0 +1,8 @@
+
+install -m 644 -g root -o root *-MIB.txt /usr/share/snmp/mibs/
+install -m 644 -g root -o root snmp.conf /etc/snmp/
+
+# To test: snmpwalk 172.17.1.221
+# or       snmpwalk -v 1 -c rds 172.17.34.200
+#
+

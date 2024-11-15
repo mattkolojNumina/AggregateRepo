@@ -1,0 +1,42 @@
+<resources>
+    <string name="app_name">RDS Voice</string>
+
+<!--    Settings Activity (non translated)-->
+    <string name="port_description_with_colon">Port:</string>
+    <string name="port_hint_text">Port</string>
+    <string name="enter_a_heartbeat_delay_in_milliseconds_hint_text">❤ ms</string>
+    <string name="enter_an_ip_address_hint_text">IP</string>
+    <string name="sensitivity_1_100">Sensitivity 1–100</string>
+    <string name="voice_login">Voice Login</string>
+    <string name="portrait_mode">Portrait Mode</string>
+    <string name="camera_scan">Camera Scan</string>
+    <string name="save_button_label">Save</string>
+
+<!--    Login Only (non translated)-->
+    <string name="login_hint">Please enter login ID</string>
+    <string name="login_button_label">Log In</string>
+    <string name="login_failure_error_text">Login Failure</string>
+
+<!--    Main Activity (set/access/translate through StringManager)-->
+    <string name="connecting">Connecting…</string>
+    <string name="info_tab_name">Info</string>
+    <string name="log_tab_name">Log</string>
+    <string name="option_tab_name">Option</string>
+    <string name="camera_scan_button_label">Scan</string>
+    <string name="dump_logs_button_label">Dump Logs</string>
+    <string name="last_command_description">Last:</string>
+    <string name="options_colon">Options:</string>
+    <string name="pitch_colon">Pitch:</string>
+    <string name="speed_colon">Speed:</string>
+    <string name="volume_colon">Volume:</string>
+    <string name="current_instructions_colon">Current Instructions:</string>
+    <string name="speech_sensitivity_colon">Speech Sensitivity:</string>
+    <string name="off">Off</string>
+    <string name="on">On</string>
+    <string name="version_colon">Version:</string>
+    <string name="detailed_logging">Detailed Logging</string>
+    <string name="forget_bluetooth">Forget Bluetooth</string>
+    <string name="use_picklist">Use Picklist</string>
+    <string name="save">Save</string>
+    <string name="version">v. %s</string>
+</resources>

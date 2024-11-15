@@ -1,0 +1,71 @@
+<div class="container-fluid" ng-cloak>
+  <md-content>
+    <!--<md-tabs md-dynamic-height md-selected="selected">-->
+
+      <!--<md-tab label="Edit" ng-disabled="" 
+              md-on-select="refresh()">-->
+
+        <md-content class="md-padding">
+          <div layout="row">
+            <div flex>
+              <md-content class="md-padding"> 
+                <table id="laneChoose" class="display"></table>
+              </md-content>
+            </div>
+
+            <div flex>
+              <md-toolbar>
+                <div class="md-toolbar-tools">
+                  <span>Sorter lane:&nbsp;{{sorterLane}}</span>
+                  <span flex></span>
+                  <!--<md-button aria-label="New"
+                             ng-disabled="!permit('laneEdit')"
+                             ng-click="editNew()">New</md-button>-->
+                  <md-button aria-label="Update"
+                             ng-disabled="!permit('laneEdit')"
+                             ng-click="editUpdate()">Save</md-button>
+                  <!--<md-button aria-label="Delete"
+                             ng-disabled="!permit('laneEdit')"
+                             ng-click="editDelete()">Delete</md-button>-->
+                </div>
+              </md-toolbar>
+
+              <md-content class="md-padding">
+                <div layout="column">
+                  <div>
+                    <md-input-container md-no-float class="md-block">
+                      <!--<label>Status</label>
+                      <md-select ng-model="edit.status"
+                                 ng-disabled="!(edit.status=='idle'
+                                             || edit.status=='inactive'
+                                             || edit.status=='reverse')">
+                        <md-option ng-repeat="status in statuses"
+                                   ng-disabled="!(status=='idle'
+                                               || status=='inactive'
+                                               || status=='reverse')"
+                                   ng-value="status">
+                          {{status}}
+                        </md-option>
+                      </md-select>-->
+                      <label>Type</label>
+                      <md-select ng-model="edit.laneType">
+                        <md-option ng-repeat="laneType in laneTypes"
+                                   ng-value="laneType">
+                          {{laneType}}
+                        </md-option>
+                      </md-select>
+                    </md-input-container>         
+                  </div>
+
+                </div>
+
+              </md-content>
+            </div>
+          </div>
+        </md-content>
+        
+      <!--</md-tab>-->
+
+    <!--</md-tabs>-->
+  </md-content>
+</div>

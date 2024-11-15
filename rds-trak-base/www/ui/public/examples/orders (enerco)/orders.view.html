@@ -1,0 +1,211 @@
+<div class="container-fluid" ng-cloak>
+  <md-content>
+    <md-tabs md-dynamic-height md-selected="selected">
+      
+      <md-tab label="All" md-on-select="">
+        <md-button class="md-opause"
+                   ng-click="pauseRefresh()"
+                   ng-disabled="!orderRefreshEnabled">Pause refresh</md-button>
+        <md-content class="md-padding">
+          <table id="ordersAll" class="display" width="100%"></table>
+        </md-content>
+      </md-tab>
+      
+      <md-tab label="Unassigned" md-on-select="">
+        <md-button class="md-opause"
+                   ng-click="pauseRefresh()"
+                   ng-disabled="!orderRefreshEnabled">Pause refresh</md-button>
+        <md-content class="md-padding">
+          <table id="ordersUnassigned" class="display" width="100%"></table>
+        </md-content>
+      </md-tab>
+      
+      <md-tab label="In Process" md-on-select="">
+        <md-button class="md-opause"
+                   ng-click="pauseRefresh()"
+                   ng-disabled="!orderRefreshEnabled">Pause refresh</md-button>
+        <md-content class="md-padding">
+          <table id="ordersInProcess" class="display" width="100%"></table>
+        </md-content>
+      </md-tab>
+      
+      <md-tab label="Error" md-on-select="">
+        <md-button class="md-opause"
+                   ng-click="pauseRefresh()"
+                   ng-disabled="!orderRefreshEnabled">Pause refresh</md-button>
+        <md-content class="md-padding">
+          <table id="ordersError" class="display" width="100%"></table>
+        </md-content>
+      </md-tab>
+      
+      <md-tab label="Aged" md-on-select="">
+        <md-button class="md-opause"
+                   ng-click="pauseRefresh()"
+                   ng-disabled="!orderRefreshEnabled">Pause refresh</md-button>
+        <md-content class="md-padding">
+          <table id="ordersAged" class="display" width="100%"></table>
+        </md-content>
+      </md-tab>
+      
+      <md-tab label="Cancelled" md-on-select="">
+        <md-button class="md-opause"
+                   ng-click="pauseRefresh()"
+                   ng-disabled="!orderRefreshEnabled">Pause refresh</md-button>
+        <md-content class="md-padding">
+          <table id="ordersCancelled" class="display" width="100%"></table>
+        </md-content>
+      </md-tab>
+      
+      <md-tab label="Complete" md-on-select="">
+        <md-button class="md-opause"
+                   ng-click="pauseRefresh()"
+                   ng-disabled="!orderRefreshEnabled">Pause refresh</md-button>
+        <md-content class="md-padding">
+          <table id="ordersComplete" class="display" width="100%"></table>
+        </md-content>
+      </md-tab>
+      
+      <md-tab label="Details" md-on-select="">
+        <md-content class="md-padding">
+          <div layout="row">
+            <div flex=5></div>
+            <div flex
+                 ng-show="order.orderID || true"> <!--TODO-->
+              <table class="order">  <!--class="table-responsive borderless"-->
+                <tbody>
+                  <tr>
+                    <td class="order-field">Order number:&nbsp;</td>
+                    <td class="order-data">{{order.orderID}}</td>
+                  </tr>
+                  <tr>
+                    <td class="order-field">Ship method:&nbsp;</td>
+                    <td class="order-data">{{order.shipMethod}}</td>
+                  </tr>
+                  <tr>
+                    <td class="order-field">Carrier:&nbsp;</td>
+                    <td class="order-data">{{order.carrier}}</td>
+                  </tr>
+                  <!--<tr>
+                    <td class="order-field">Service:&nbsp;</td>
+                    <td class="order-data">{{order.service}}</td>
+                  </tr>-->
+                  <tr>
+                    <td class="order-field">Customer:&nbsp;</td>
+                    <td class="order-data">{{order.customer}}</td>
+                  </tr>
+                  <tr>
+                    <td class="order-field">Type:&nbsp;</td>
+                    <td class="order-data">{{order.orderType}}</td>
+                  </tr>
+                  <tr>
+                    <td class="order-field">Status:&nbsp;</td>
+                    <td class="order-data">
+                      {{order.status}}
+                      <span ng-if="order.status=='error'">:&nbsp;{{order.errorType}}</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="order-field">Lane:&nbsp;</td>
+                    <td class="order-data">{{order.sorterLane}}</td>
+                  </tr>
+                  <tr>
+                    <td class="order-field">Priority:&nbsp;</td>
+                    <td class="order-data">{{order.priority}}
+                      <span>&nbsp;&nbsp;</span>
+                      <md-button aria-label="P+1"
+                                 class="md-small"
+                                 ng-disabled="!permit('orderEdit')"
+                                 ng-click="priorityPlus()"><b>P+1</b></md-button>
+                      <span>&nbsp;</span>
+                      <md-button aria-label="P-1"
+                                 class="md-small"
+                                 ng-disabled="!permit('orderEdit')"
+                                 ng-click="priorityMinus()"><b>P-1</b></md-button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="order-field">Downloaded:&nbsp;</td>
+                    <td class="order-data">{{order.downloadStamp | date:'medium'}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div flex> <!-- layout="row"-->
+              <md-toolbar>
+                <div class="md-toolbar-tools" ng-show="barShown=='tool'">
+                  <!--<md-button aria-label="P+1"
+                             ng-disabled="!permit('orderEdit')"
+                             ng-click="priorityPlus()">P+1</md-button>
+                  <md-button aria-label="P-1"
+                             ng-disabled="!permit('orderEdit')"
+                             ng-click="priorityMinus()">P-1</md-button>-->
+                  <span flex></span>
+                  <md-button aria-label="Release"
+                             ng-show="order.orderType=='LTL' && order.status=='downloaded'"
+                             ng-disabled="!permit('orderEdit')"
+                             ng-click="showRelease()">Release</md-button>
+                  <md-button aria-label="Cancel"
+                             ng-disabled="!permit('orderEdit')"
+                             ng-click="showCancel()">Cancel</md-button>
+                </div>
+                <div class="md-toolbar-tools" ng-show="barShown=='release'">
+                  <span flex>Release order {{storedId}}?</span>
+                  <md-button aria-label="Yes"
+                             ng-disabled="!permit('orderEdit')"
+                             ng-click="orderRelease()">Yes</md-button>
+                  <md-button aria-label="No"
+                             ng-click="barReset()">No</md-button>
+                </div>
+                <div class="md-toolbar-tools" ng-show="barShown=='cancel'">
+                  <span flex>Cancel order {{storedId}}?</span>
+                  <md-button aria-label="Yes"
+                             ng-disabled="!permit('orderEdit')"
+                             ng-click="orderCancel()">Yes</md-button>
+                  <md-button aria-label="No"
+                             ng-click="barReset()">No</md-button>
+                </div>
+              </md-toolbar>
+              
+              <md-button class="md-opause"
+                         ng-click="pauseRefresh()"
+                         ng-disabled="!orderRefreshEnabled">Pause refresh</md-button>
+              
+              <br/>
+              <br/>
+              
+              <form ng-submit="lookup()">
+                <md-input-container>
+                  <label>Order lookup</label>
+                  <input ng-model="orderId">
+                </md-input-container>
+              </form>
+            </div>
+          </div>
+          
+          <div>
+            <md-tabs md-dynamic-height class="md-padding">
+              <md-tab label="Order Pallets">
+                <table id="pallets" class="display" width="100%"></table>
+              </md-tab>
+              
+              <md-tab label="Order Cartons">
+                <table id="cartons" class="display" width="100%"></table>
+              </md-tab>
+              
+              <md-tab label="Order Picks">
+                <table id="picks" class="display" width="100%"></table>
+              </md-tab>
+              
+              <md-tab label="Order History">
+                <table id="history" class="display" width="100%"></table>
+              </md-tab>
+            </md-tabs>
+        </div>
+
+        </md-content>
+      </md-tab>
+      
+    </md-tabs>
+  </md-content>
+</div>

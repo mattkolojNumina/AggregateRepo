@@ -1,0 +1,33 @@
+# 2300278-Diagnostic-CP-2 Trash.rds
+#
+
+[image]
+name=
+file=2300278-CP-2 Trash.png
+x=0.0
+y=0.0
+width=1920.0
+height=1080.0
+rotation=0.0
+hint=
+
+[text]
+name=trash_run
+x=1512.0
+y=273.4
+rotation=0.0
+justification=0.5
+font=Arial
+size=80
+color=0x00FF00
+hint=
+
+[text]
+name=trash_fault
+x=1512.0
+y=273.4
+rotation=0.0
+justification=0.5
+font=Arial
+size=80
+color=0xFF0000

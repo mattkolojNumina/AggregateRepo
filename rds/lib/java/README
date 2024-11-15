@@ -1,0 +1,2 @@
+use sqljdbc41 for MS SQL Server 2008, 2008 R2, 2012, 2014, 2016, using java 7
+use sqljdbc42 for MS SQL Server 2008, 2008 R2, 2012, 2014, 2016, using java 8

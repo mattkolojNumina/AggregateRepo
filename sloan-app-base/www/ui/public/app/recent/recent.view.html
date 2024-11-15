@@ -1,0 +1,25 @@
+<div class="container-fluid" ng-cloak>
+  <md-content>
+    <md-tabs md-dynamic-height md-selected="selected">
+      
+      <md-tab label="East P&A" md-on-select="refresh()">
+        <md-content class="md-padding">
+          <table id="eastPNA" class="display compact" width="100%"></table>
+        </md-content>
+      </md-tab>
+
+      <md-tab label="West P&A" md-on-select="refresh()">
+        <md-content class="md-padding">
+          <table id="westPNA" class="display compact" width="100%"></table>
+        </md-content>
+      </md-tab>
+
+      <md-tab label="Sorter" md-on-select="refresh()">
+        <md-content class="md-padding">
+          <table id="sort" class="display compact" width="100%"></table>
+        </md-content>
+      </md-tab>
+
+    </md-tabs>
+  </md-content>
+</div>

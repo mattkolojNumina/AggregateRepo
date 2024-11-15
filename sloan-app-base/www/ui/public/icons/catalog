@@ -1,0 +1,23 @@
+#!/bin/bash
+
+OUT=index.html
+
+echo "<html>"  >$OUT
+echo "<body>" >>$OUT
+echo "<h1>Icons</h1>" >>$OUT
+
+for path in *.svg 
+do
+  file=$(basename $path)
+  name="${file%.*}"
+
+  echo "<h2>" $name "</h2>" >>$OUT
+  echo "<div>" >>$OUT
+
+  echo "<img src='"$path"' style='width:128px;height:128px;' />" >>$OUT
+  echo "</div>" >>$OUT
+  
+done 
+
+echo "</body>" >>$OUT
+echo "</html>" >>$OUT

@@ -1,0 +1,232 @@
+<div ng-cloak>
+  <md-tabs md-dynamic-height md-selected="selected">
+    <md-tab label="View" md-on-select="">
+      <md-content class="md-padding">
+        
+        <section layout="row" layout-wrap>
+          <div layout="row" class="form-group">
+            <md-input-container>
+              <label>Report:</label>
+              <md-select ng-model="selectedReport">
+                <md-option ng-repeat="view_report in view_reports"
+                           ng-value="view_report">
+                  {{view_report.title}}
+                </md-option>
+              </md-select>
+            </md-input-container>
+          </div>
+          
+          <div layout="row">
+            <md-button class="pointless">From:</md-button> 
+            <mdp-date-picker ng-model='date1'></mdp-date-picker>
+            <mdp-time-picker ng-model='date1'></mdp-time-picker>
+          </div>
+          
+          <div layout="row"> 
+            <md-button class="pointless">To:</md-button>
+            <mdp-date-picker ng-model='date2'></mdp-date-picker>
+            <mdp-time-picker ng-model='date2'></mdp-time-picker>
+          </div>
+          
+          <md-input-container>
+            <md-button class="md-raised"
+                       ng-click="displayReport()"
+                       ng-disabled="!selectedReport">Display</md-button>
+          </md-input-container>
+        </section>
+        
+        <!--<div layout="row">
+          <md-switch ng-model="percentageOn"
+                     ng-click="displayReport()">
+            Show percentages
+          </md-switch>
+        </div>-->
+        
+        <br/>
+        
+        <div ng-show="currentStyle=='table'">
+          <table id="tableChart" class="display" width="100%"></table>
+        </div>
+        
+        <div class="container-fluid" ng-show="currentStyle=='piechart'">
+          <div id="pie1"></div>
+        </div>
+        
+        <div ng-show="currentStyle=='trendchart'">
+          <div id="trend1"></div>
+        </div>
+        
+        <div ng-show="currentStyle=='tree'" layout="row">
+          <div flex=10></div>
+          <div flex=30>
+            <h3>Counter description</h3>
+            <div id="grove"></div>
+          </div>
+          <div flex=10>
+            <h3 style="text-align: right">Count</h3>
+            <div id="bush"></div>
+          </div>
+          <div flex=15>
+            <h3 style="text-align: right">% of parent</h3>
+            <div id="underbrush"></div>
+          </div>
+          <div flex=35></div>
+        </div>
+
+        <div ng-show="currentStyle=='sqltable'">
+          <md-content>
+            <table id="sqldataTable" class="display" width="100%"></table>
+          </md-content>
+        </div>
+        
+      </md-content>
+    </md-tab>
+    
+    <md-tab label="Edit Reports" md-on-select="" ng-disabled="!permit('reportEdit')">
+      <md-content class="md-padding">
+        <div layout="row">
+          
+          <div flex="30">
+            <md-content class="md-padding">
+              <table id="reportChoose" class="display" width="100%"></table>
+            </md-content>
+          </div>
+          
+          <div flex>
+            <md-toolbar>
+              <div class="md-toolbar-tools">
+                {{edit_report.report}}
+                <span ng-hide="edit_report.report">Type a title to create a new report</span>
+                <span flex>&nbsp;</span>
+                <md-button aria-label="New"
+                           ng-click="deselect()"
+                           ng-show="edit_report.report">New</md-button>
+                <md-button aria-label="New"
+                           ng-click="createReport(edit_report.title)"
+                           ng-hide="edit_report.report"
+                           ng-disabled="!edit_report.title || !permit('reportEdit')">Create</md-button>
+                <md-button aria-label="Update"
+                           ng-click="updateReport()"
+                           ng-show="edit_report.report"
+                           ng-disabled="!permit('reportEdit')">Update</md-button>
+                <md-button aria-label="Delete"
+                           ng-click="destroyReport()"
+                           ng-show="edit_report.report"
+                           ng-disabled="!permit('reportEdit')">Delete</md-button>
+              </div>
+            </md-toolbar>
+            
+            <md-content class="md-padding">
+              <div layout="column">
+                <div>
+                  <md-input-container md-no-float class="md-block">
+                    <label for="reportTitle">Title:</label>
+                    <input id="reportTitle"
+                           class="form-control"
+                           ng-model="edit_report.title"
+                           type="text"
+                           placeholder="Title"/>
+                  </md-input-container>
+                </div>
+                
+                <div>
+                  <md-input-container md-no-float class="md-block">
+                    <label for="reportType">Type:</label>
+                    <md-select id="reportType"
+                               class="form-control"
+                               ng-model="edit_report.type">
+                      <md-option ng-repeat="type in types" value="{{type}}">{{type}}</md-option>
+                    </md-select>
+                  </md-input-container>
+                </div>
+                
+              </div>
+            </md-content>
+            
+            <!--<div class="table-responsive" style="overflow: auto; height:330px;" ng-if="false"
+                 ng-hide="hideItems || !edit_report.report">
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th style="text-align:left">Code</th>
+                    <th style="text-align:left">Description</th>
+                    <th style="text-align:left">Select</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="counter in countersAll | orderBy:'code'">
+                    <td>{{counter.code}}</td>
+                    <td>{{counter.description}}</td>
+                    <td><input type="checkbox"
+                               ng-model="counter.selected"
+                               ng-change="updateItem(counter)"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>-->
+            
+            <div style="margin-left: 20px" id="thicket"></div>
+            
+          </div>
+          
+        </div>
+      </md-content>
+    </md-tab>
+    
+    <md-tab label="Edit Counters" md-on-select="" ng-disabled="!permit('reportEdit')">
+      <md-content class="md-padding">
+        <div layout="row">
+          
+          <div flex=60>
+            <md-content class="md-padding">
+              <table id="counterChoose" class="display" width="100%"></table>
+            </md-content>
+          </div>
+          
+          <div flex=40>
+            <md-toolbar>
+              <div class="md-toolbar-tools">
+                <span flex>&nbsp;</span>
+                <md-button aria-label="Deselect"
+                           ng-click="deselectCounter()"
+                           ng-disabled="!counter.code">Deselect</md-button>
+                <md-button aria-label="Update"
+                           ng-click="updateCounter()"
+                           ng-disabled="!permit('reportEdit') || !counter.code">Update</md-button>
+              </div>
+            </md-toolbar>
+            
+            <md-content class="md-padding">
+              <div layout="column">
+                <div>
+                  <md-input-container md-no-float class="md-block" >
+                    <label for="counterCode">Code:</label>
+                    <input id="counterCode"
+                           class="form-control"
+                           ng-model="counter.code" 
+                           type="text" 
+                           placeholder="Code"
+                           disabled/>
+                  </md-input-container>
+                </div>
+                
+                <div>
+                  <md-input-container md-no-float class="md-block">
+                    <label for="counterDesc">Description:</label>
+                    <input id="counterDesc"
+                           class="form-control"
+                           ng-model="counter.description"
+                           type="text"
+                           placeholder="Description"/>
+                  </md-input-container>
+                </div>
+                
+              </div>
+            </md-content>
+          </div>
+
+        </div>
+      </md-content>
+    </md-tab>
+  </md-tabs>
+</div>

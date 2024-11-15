@@ -1,0 +1,555 @@
+<div class="container-fluid" ng-cloak>
+  <md-content>
+    <md-tabs md-dynamic-height md-selected="selected">
+
+      <md-tab label="Demand Today" md-on-select="refresh()">
+        <md-content class="md-padding">
+          <table width="100%">
+            <tr>
+              <td>
+                <table>
+                  <tr>
+                    <td class='order-field'>
+                      <h3>Demand Date:</h3>
+                    </td>
+                    <td class='order-data'>
+                      <h3>{{today.demandDate | date:'shortDate'}}</h3>
+                    </td>
+                    <td class='order-field'>
+                      <h3>&nbsp;&nbsp;&nbsp;&nbsp;Daily Wave Seq:</h3>
+                    </td>
+                    <td class='order-data'>
+                      <md-input-container>
+                        <md-select aria-label="Daily Wave Seq" ng-model="dailyWaveSeq" ng-change="refresh()">
+                          <md-option value="All">All</md-option>
+                          <md-option ng-repeat="waveSeq in waveSeqs" value="{{waveSeq}}">{{waveSeq}}</md-option>
+                        </md-select>
+                      </md-input-container>
+                      &nbsp;&nbsp;&nbsp;&nbsp;
+                    </td>
+                  </tr>
+                </table>
+              </td>
+              <td width="14%"><h3>West</h3></td>
+              <td width="14%"></td>
+              <td width="14%"><h3>East</h3></td>
+              <td width="14%"></td>
+              <td width="10%"><h3>Total</h3></td>
+            </tr>
+            <tr>
+              <td></td>
+              <td><h4>P&Q Cart Picking</h4></td>
+              <td><h4>B - Zone Route</h4></td>
+              <td><h4>D&U Cart Picking</h4></td>
+              <td><h4>A - Geek+</h4></td>
+            </tr>
+            <tr class="alternate-row">
+              <td class='order-field'>Orders Downloaded<md-tooltip md-direction="right">Number of orders downloaded</md-tooltip></td>
+              <td class='order-data'><span class="padded-content">{{pqCarts.numOrdersDownloaded?pqCarts.numOrdersDownloaded:0}}</span></td>
+              <td class='order-data'><span class="padded-content">{{zoneRoute.numOrdersDownloaded?zoneRoute.numOrdersDownloaded:0}}</span></td>
+              <td class='order-data'><span class="padded-content">{{duCarts.numOrdersDownloaded?duCarts.numOrdersDownloaded:0}}</span></td>
+              <td class='order-data'><span class="padded-content">{{geek.numOrdersDownloaded?geek.numOrdersDownloaded:0}}</span></td>
+              <td class='order-data'><span class="padded-content">{{today.numOrdersDownloaded?today.numOrdersDownloaded:0}}</span></td>
+            </tr>
+            <tr>
+              <td class='order-field' ng-class="{'red-text': today.numOrdersError && today.numOrdersError !== 0}">Orders With Error<md-tooltip md-direction="right">Number of order in error status</md-tooltip></td>
+              <td class='order-data' ng-class="{'red-text': pqCarts.numOrdersError && pqCarts.numOrdersError !== 0}"><span class="padded-content">{{pqCarts.numOrdersError?pqCarts.numOrdersError:0}}</span></td>
+              <td class='order-data' ng-class="{'red-text': zoneRoute.numOrdersError && zoneRoute.numOrdersError !== 0}"><span class="padded-content">{{zoneRoute.numOrdersError?zoneRoute.numOrdersError:0}}</span></td>
+              <td class='order-data' ng-class="{'red-text': duCarts.numOrdersError && duCarts.numOrdersError !== 0}"><span class="padded-content">{{duCarts.numOrdersError?duCarts.numOrdersError:0}}</span></td>
+              <td class='order-data' ng-class="{'red-text': geek.numOrdersError && geek.numOrdersError !== 0}"><span class="padded-content">{{geek.numOrdersError?geek.numOrdersError:0}}</span></td>
+              <td class='order-data' ng-class="{'red-text': today.numOrdersError && today.numOrdersError !== 0}"><span class="padded-content">{{today.numOrdersError?today.numOrdersError:0}}</span></td>
+            </tr>
+            <tr>
+              <td colspan="6">
+                <hr class="hr-space">
+              </td>
+            </tr>
+            <tr class="alternate-row">
+              <td class='order-field'>Containers Created at Cartonization<md-tooltip md-direction="right">Number of containers created from cartonization, includes cancelled</md-tooltip></td>
+              <td class='order-data'><span class="padded-content">{{pqCarts.numCartonsCartonized?pqCarts.numCartonsCartonized:0}}</span></td>
+              <td class='order-data'><span class="padded-content">{{zoneRoute.numCartonsCartonized?zoneRoute.numCartonsCartonized:0}}</span></td>
+              <td class='order-data'><span class="padded-content">{{duCarts.numCartonsCartonized?duCarts.numCartonsCartonized:0}}</span></td>
+              <td class='order-data'><span class="padded-content">{{geek.numCartonsCartonized?geek.numCartonsCartonized:0}}</span></td>
+              <td class='order-data'><span class="padded-content">{{today.numCartonsCartonized?today.numCartonsCartonized:0}}</span></td>
+            </tr>
+            <tr>
+              <td class='order-field'>Containers Added with Repack Functionality<md-tooltip md-direction="right">Number of containers created from repack exception process, excludes cancelled</md-tooltip></td>
+              <td class='order-data'><span class="padded-content">{{pqCarts.numCartonsAddedRepack?pqCarts.numCartonsAddedRepack:0}}</span></td>
+              <td class='order-data'><span class="padded-content">{{zoneRoute.numCartonsAddedRepack?zoneRoute.numCartonsAddedRepack:0}}</span></td>
+              <td class='order-data'><span class="padded-content">{{duCarts.numCartonsAddedRepack?duCarts.numCartonsAddedRepack:0}}</span></td>
+              <td class='order-data'><span class="padded-content">{{geek.numCartonsAddedRepack?geek.numCartonsAddedRepack:0}}</span></td>
+              <td class='order-data'><span class="padded-content">{{today.numCartonsAddedRepack?today.numCartonsAddedRepack:0}}</span></td>
+            </tr>
+            <tr class="alternate-row">
+              <td class='order-field'>Containers Cancelled<md-tooltip md-direction="right">Number of containers cancelled</md-tooltip></td>
+              <td class='order-data'><span class="padded-content">{{pqCarts.numCartonsCancelled?pqCarts.numCartonsCancelled:0}}</span></td>
+              <td class='order-data'><span class="padded-content">{{zoneRoute.numCartonsCancelled?zoneRoute.numCartonsCancelled:0}}</span></td>
+              <td class='order-data'><span class="padded-content">{{duCarts.numCartonsCancelled?duCarts.numCartonsCancelled:0}}</span></td>
+              <td class='order-data'><span class="padded-content">{{geek.numCartonsCancelled?geek.numCartonsCancelled:0}}</span></td>
+              <td class='order-data'><span class="padded-content">{{today.numCartonsCancelled?today.numCartonsCancelled:0}}</span></td>
+            </tr>
+            <tr>
+              <td class='order-field'>Current Number of Containers<md-tooltip md-direction="right">Number of containers for today's demand date and wave selected, excludes cancelled</md-tooltip></td>
+              <td class='order-data'><span class="padded-content">{{pqCarts.numCurrentCartons?pqCarts.numCurrentCartons:0}}</span></td>
+              <td class='order-data'><span class="padded-content">{{zoneRoute.numCurrentCartons?zoneRoute.numCurrentCartons:0}}</span></td>
+              <td class='order-data'><span class="padded-content">{{duCarts.numCurrentCartons?duCarts.numCurrentCartons:0}}</span></td>
+              <td class='order-data'><span class="padded-content">{{geek.numCurrentCartons?geek.numCurrentCartons:0}}</span></td>
+              <td class='order-data'><span class="padded-content">{{today.numCurrentCartons?today.numCurrentCartons:0}}</span></td>
+            </tr>
+            <tr>
+              <td colspan="6">
+                <hr class="hr-space">
+              </td>
+            </tr>
+            <tr class="alternate-row">
+              <td class='order-field' ng-class="{'red-text': today.numCartonsReleased && today.numCartonsReleased !== 0 && today.numCartonsReleased/today.numCartonsCartonized*100 !== 100}">Containers Released<md-tooltip md-direction="right">Number of containers release for picking, includes cancelled</md-tooltip></td>
+              <td class='order-data' ng-class="{'red-text': pqCarts.numCartonsReleased && pqCarts.numCartonsReleased !== 0 && pqCarts.numCartonsReleased/pqCarts.numCartonsCartonized*100 !== 100}"><span class="padded-content">{{pqCarts.numCartonsReleased?pqCarts.numCartonsReleased:0}}</span> - {{pqCarts.numCartonsCartonized?(pqCarts.numCartonsReleased/pqCarts.numCartonsCartonized*100).toFixed(2)+'%':'0%'}}</td>
+              <td class='order-data' ng-class="{'red-text': zoneRoute.numCartonsReleased && zoneRoute.numCartonsReleased !== 0 && zoneRoute.numCartonsReleased/zoneRoute.numCartonsCartonized*100 !== 100}"><span class="padded-content">{{zoneRoute.numCartonsReleased?zoneRoute.numCartonsReleased:0}}</span> - {{zoneRoute.numCartonsCartonized?(zoneRoute.numCartonsReleased/zoneRoute.numCartonsCartonized*100).toFixed(2)+'%':'0%'}}</td>
+              <td class='order-data' ng-class="{'red-text': duCarts.numCartonsReleased && duCarts.numCartonsReleased !== 0 && duCarts.numCartonsReleased/duCarts.numCartonsCartonized*100 !== 100}"><span class="padded-content">{{duCarts.numCartonsReleased?duCarts.numCartonsReleased:0}}</span> - {{duCarts.numCartonsCartonized?(duCarts.numCartonsReleased/duCarts.numCartonsCartonized*100).toFixed(2)+'%':'0%'}}</td>
+              <td class='order-data' ng-class="{'red-text': geek.numCartonsReleased && geek.numCartonsReleased !== 0 && geek.numCartonsReleased/geek.numCartonsCartonized*100 !== 100}"><span class="padded-content">{{geek.numCartonsReleased?geek.numCartonsReleased:0}}</span> - {{geek.numCartonsCartonized?(geek.numCartonsReleased/geek.numCartonsCartonized*100).toFixed(2)+'%':'0%'}}</td>
+              <td class='order-data' ng-class="{'red-text': today.numCartonsReleased && today.numCartonsReleased !== 0 && today.numCartonsReleased/today.numCartonsCartonized*100 !== 100}"><span class="padded-content">{{today.numCartonsReleased?today.numCartonsReleased:0}}</span> - {{today.numCartonsCartonized?(today.numCartonsReleased/today.numCartonsCartonized*100).toFixed(2)+'%':'0%'}}</td>
+            </tr>
+            <tr>
+              <td class='order-field' ng-class="{'red-text': today.numCartonsGeekReceived && today.numCartonsGeekReceived !== 0 && today.numCartonsGeekReceived/today.numCartonsCartonized*100 !== 100}">Containers Received By Geek+<md-tooltip md-direction="right">Number of containers received by Geek+, includes cancelled</md-tooltip></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td class='order-data' ng-class="{'red-text': geek.numCartonsGeekReceived && geek.numCartonsGeekReceived !== 0 && geek.numCartonsGeekReceived/geek.numCartonsCartonized*100 !== 100}"><span class="padded-content">{{geek.numCartonsGeekReceived?geek.numCartonsGeekReceived:0}}</span> - {{geek.numCartonsCartonized?(geek.numCartonsGeekReceived/geek.numCartonsCartonized*100).toFixed(2)+'%':'0%'}}</td>
+              <td class='order-data' ng-class="{'red-text': today.numCartonsGeekReceived && today.numCartonsGeekReceived !== 0 && today.numCartonsGeekReceived/today.numCartonsCartonized*100 !== 100}"><span class="padded-content">{{today.numCartonsGeekReceived?today.numCartonsGeekReceived:0}}</span> - {{today.numCartonsCartonized?(today.numCartonsGeekReceived/today.numCartonsCartonized*100).toFixed(2)+'%':'0%'}}</td>
+            </tr>
+            <tr class="alternate-row">
+              <td class='order-field'>Containers Assigned LPN<md-tooltip md-direction="right">Number of containers assigned LPN, excludes cancelled</md-tooltip></td>
+              <td class='order-data'><span class="padded-content">{{pqCarts.numCartonsAssigned?pqCarts.numCartonsAssigned:0}}</span> - {{pqCarts.numCurrentCartons?(pqCarts.numCartonsAssigned/pqCarts.numCurrentCartons*100).toFixed(2)+'%':'0%'}}</td>
+              <td class='order-data'><span class="padded-content">{{zoneRoute.numCartonsAssigned?zoneRoute.numCartonsAssigned:0}}</span> - {{zoneRoute.numCurrentCartons?(zoneRoute.numCartonsAssigned/zoneRoute.numCurrentCartons*100).toFixed(2)+'%':'0%'}}</td>
+              <td class='order-data'><span class="padded-content">{{duCarts.numCartonsAssigned?duCarts.numCartonsAssigned:0}}</span> - {{duCarts.numCurrentCartons?(duCarts.numCartonsAssigned/duCarts.numCurrentCartons*100).toFixed(2)+'%':'0%'}}</td>
+              <td class='order-data'><span class="padded-content">{{geek.numCartonsAssigned?geek.numCartonsAssigned:0}}</span> - {{geek.numCurrentCartons?(geek.numCartonsAssigned/geek.numCurrentCartons*100).toFixed(2)+'%':'0%'}}</td>
+              <td class='order-data'><span class="padded-content">{{today.numCartonsAssigned?today.numCartonsAssigned:0}}</span> - {{today.numCurrentCartons?(today.numCartonsAssigned/today.numCurrentCartons*100).toFixed(2)+'%':'0%'}}</td>
+            </tr>
+            <tr>
+              <td class='order-field'>Containers Primary Picking Complete<md-tooltip md-direction="right">Number of containers picked complete In primary location(s), excludes cancelled</md-tooltip></td>
+              <td class='order-data'><span class="padded-content">{{pqCarts.numCartonsPrimaryPicked?pqCarts.numCartonsPrimaryPicked:0}}</span> - {{pqCarts.numCurrentCartons?(pqCarts.numCartonsPrimaryPicked/pqCarts.numCurrentCartons*100).toFixed(2)+'%':'0%'}}</td>
+              <td class='order-data'><span class="padded-content">{{zoneRoute.numCartonsPrimaryPicked?zoneRoute.numCartonsPrimaryPicked:0}}</span> - {{zoneRoute.numCurrentCartons?(zoneRoute.numCartonsPrimaryPicked/zoneRoute.numCurrentCartons*100).toFixed(2)+'%':'0%'}}</td>
+              <td class='order-data'><span class="padded-content">{{duCarts.numCartonsPrimaryPicked?duCarts.numCartonsPrimaryPicked:0}}</span> - {{duCarts.numCurrentCartons?(duCarts.numCartonsPrimaryPicked/duCarts.numCurrentCartons*100).toFixed(2)+'%':'0%'}}</td>
+              <td class='order-data'><span class="padded-content">{{geek.numCartonsPrimaryPicked?geek.numCartonsPrimaryPicked:0}}</span> - {{geek.numCurrentCartons?(geek.numCartonsPrimaryPicked/geek.numCurrentCartons*100).toFixed(2)+'%':'0%'}}</td>
+              <td class='order-data'><span class="padded-content">{{today.numCartonsPrimaryPicked?today.numCartonsPrimaryPicked:0}}</span> - {{today.numCurrentCartons?(today.numCartonsPrimaryPicked/today.numCurrentCartons*100).toFixed(2)+'%':'0%'}}</td>
+            </tr>
+            <tr>
+              <td colspan="6">
+                <hr class="hr-space">
+              </td>
+            </tr>
+            <tr class="alternate-row">
+              <td class='order-field'>Containers Picking Complete<md-tooltip md-direction="right">Number of containers picked completely, excludes cancelled</md-tooltip></td>
+              <td class='order-data'><span class="padded-content">{{pqCarts.numCartonsPicked?pqCarts.numCartonsPicked:0}}</span> - {{pqCarts.numCurrentCartons?(pqCarts.numCartonsPicked/pqCarts.numCurrentCartons*100).toFixed(2)+'%':'0%'}}</td>
+              <td class='order-data'><span class="padded-content">{{zoneRoute.numCartonsPicked?zoneRoute.numCartonsPicked:0}}</span> - {{zoneRoute.numCurrentCartons?(zoneRoute.numCartonsPicked/zoneRoute.numCurrentCartons*100).toFixed(2)+'%':'0%'}}</td>
+              <td class='order-data'><span class="padded-content">{{duCarts.numCartonsPicked?duCarts.numCartonsPicked:0}}</span> - {{duCarts.numCurrentCartons?(duCarts.numCartonsPicked/duCarts.numCurrentCartons*100).toFixed(2)+'%':'0%'}}</td>
+              <td class='order-data'><span class="padded-content">{{geek.numCartonsPicked?geek.numCartonsPicked:0}}</span> - {{geek.numCurrentCartons?(geek.numCartonsPicked/geek.numCurrentCartons*100).toFixed(2)+'%':'0%'}}</td>
+              <td class='order-data'><span class="padded-content">{{today.numCartonsPicked?today.numCartonsPicked:0}}</span> - {{today.numCurrentCartons?(today.numCartonsPicked/today.numCurrentCartons*100).toFixed(2)+'%':'0%'}}</td>
+            </tr>
+            <tr>
+              <td class='order-field'>Containers Packing Complete<md-tooltip md-direction="right">Number of containers packed, excludes cancelled</md-tooltip></td>
+              <td class='order-data'><span class="padded-content">{{pqCarts.numCartonsPacked?pqCarts.numCartonsPacked:0}}</span> - {{pqCarts.numCurrentCartons?(pqCarts.numCartonsPacked/pqCarts.numCurrentCartons*100).toFixed(2)+'%':'0%'}}</td>
+              <td class='order-data'><span class="padded-content">{{zoneRoute.numCartonsPacked?zoneRoute.numCartonsPacked:0}}</span> - {{zoneRoute.numCurrentCartons?(zoneRoute.numCartonsPacked/zoneRoute.numCurrentCartons*100).toFixed(2)+'%':'0%'}}</td>
+              <td class='order-data'><span class="padded-content">{{duCarts.numCartonsPacked?duCarts.numCartonsPacked:0}}</span> - {{duCarts.numCurrentCartons?(duCarts.numCartonsPacked/duCarts.numCurrentCartons*100).toFixed(2)+'%':'0%'}}</td>
+              <td class='order-data'><span class="padded-content">{{geek.numCartonsPacked?geek.numCartonsPacked:0}}</span> - {{geek.numCurrentCartons?(geek.numCartonsPacked/geek.numCurrentCartons*100).toFixed(2)+'%':'0%'}}</td>
+              <td class='order-data'><span class="padded-content">{{today.numCartonsPacked?today.numCartonsPacked:0}}</span> - {{today.numCurrentCartons?(today.numCartonsPacked/today.numCurrentCartons*100).toFixed(2)+'%':'0%'}}</td>
+            </tr>
+            <tr class="alternate-row">
+              <td class='order-field'>Containers Labeled Complete<md-tooltip md-direction="right">Number of containers labeled, excludes cancelled</md-tooltip></td>
+              <td class='order-data'><span class="padded-content">{{pqCarts.numCartonsLabeled?pqCarts.numCartonsLabeled:0}}</span> - {{pqCarts.numCurrentCartons?(pqCarts.numCartonsLabeled/pqCarts.numCurrentCartons*100).toFixed(2)+'%':'0%'}}</td>
+              <td class='order-data'><span class="padded-content">{{zoneRoute.numCartonsLabeled?zoneRoute.numCartonsLabeled:0}}</span> - {{zoneRoute.numCurrentCartons?(zoneRoute.numCartonsLabeled/zoneRoute.numCurrentCartons*100).toFixed(2)+'%':'0%'}}</td>
+              <td class='order-data'><span class="padded-content">{{duCarts.numCartonsLabeled?duCarts.numCartonsLabeled:0}}</span> - {{duCarts.numCurrentCartons?(duCarts.numCartonsLabeled/duCarts.numCurrentCartons*100).toFixed(2)+'%':'0%'}}</td>
+              <td class='order-data'><span class="padded-content">{{geek.numCartonsLabeled?geek.numCartonsLabeled:0}}</span> - {{geek.numCurrentCartons?(geek.numCartonsLabeled/geek.numCurrentCartons*100).toFixed(2)+'%':'0%'}}</td>
+              <td class='order-data'><span class="padded-content">{{today.numCartonsLabeled?today.numCartonsLabeled:0}}</span> - {{today.numCurrentCartons?(today.numCartonsLabeled/today.numCurrentCartons*100).toFixed(2)+'%':'0%'}}</td>
+            </tr>
+            <tr>
+              <td class='order-field'>Containers Sortation Complete<md-tooltip md-direction="right">Number of containers sorted on sorter, excludes cancelled</md-tooltip></td>
+              <td class='order-data'><span class="padded-content">{{pqCarts.numCartonsSorted?pqCarts.numCartonsSorted:0}}</span> - {{pqCarts.numCurrentCartons?(pqCarts.numCartonsSorted/pqCarts.numCurrentCartons*100).toFixed(2)+'%':'0%'}}</td>
+              <td class='order-data'><span class="padded-content">{{zoneRoute.numCartonsSorted?zoneRoute.numCartonsSorted:0}}</span> - {{zoneRoute.numCurrentCartons?(zoneRoute.numCartonsSorted/zoneRoute.numCurrentCartons*100).toFixed(2)+'%':'0%'}}</td>
+              <td class='order-data'><span class="padded-content">{{duCarts.numCartonsSorted?duCarts.numCartonsSorted:0}}</span> - {{duCarts.numCurrentCartons?(duCarts.numCartonsSorted/duCarts.numCurrentCartons*100).toFixed(2)+'%':'0%'}}</td>
+              <td class='order-data'><span class="padded-content">{{geek.numCartonsSorted?geek.numCartonsSorted:0}}</span> - {{geek.numCurrentCartons?(geek.numCartonsSorted/geek.numCurrentCartons*100).toFixed(2)+'%':'0%'}}</td>
+              <td class='order-data'><span class="padded-content">{{today.numCartonsSorted?today.numCartonsSorted:0}}</span> - {{today.numCurrentCartons?(today.numCartonsSorted/today.numCurrentCartons*100).toFixed(2)+'%':'0%'}}</td>
+            </tr>
+            <tr>
+              <td colspan="6">
+                <hr class="hr-space">
+              </td>
+            </tr>
+            <tr class="alternate-row">
+              <td class='order-field' ng-class="{'red-text': geek.numCartonsFullSystemShorts && geek.numCartonsFullSystemShorts !== 0}">Full System Shorts In Geek+<md-tooltip md-direction="right">Number of containers fully short, excludes cancelled</md-tooltip></td>
+              <td class='order-data'></td>
+              <td class='order-data'></td>
+              <td class='order-data'></td>
+              <td class='order-data' ng-class="{'red-text': geek.numCartonsFullSystemShorts && geek.numCartonsFullSystemShorts !== 0}"><span class="padded-content">{{geek.numCartonsFullSystemShorts?geek.numCartonsFullSystemShorts:0}}</span></td>
+              <td class='order-data' ng-class="{'red-text': geek.numCartonsFullSystemShorts && geek.numCartonsFullSystemShorts !== 0}"><span class="padded-content">{{geek.numCartonsFullSystemShorts?geek.numCartonsFullSystemShorts:0}}</span></td>
+            </tr>
+            <tr>
+              <td class='order-field' ng-class="{'red-text': today.numCartonsOnChasePicks && today.numCartonsOnChasePicks !== 0}">Containers Waiting On Chase Picks<md-tooltip md-direction="right">Number of containers waiting for chase picks, excludes cancelled</md-tooltip></td>
+              <td class='order-data' ng-class="{'red-text': pqCarts.numCartonsOnChasePicks && pqCarts.numCartonsOnChasePicks !== 0}"><span class="padded-content">{{pqCarts.numCartonsOnChasePicks?pqCarts.numCartonsOnChasePicks:0}}</td>
+              <td class='order-data' ng-class="{'red-text': zoneRoute.numCartonsOnChasePicks && zoneRoute.numCartonsOnChasePicks !== 0}"><span class="padded-content">{{zoneRoute.numCartonsOnChasePicks?zoneRoute.numCartonsOnChasePicks:0}}</td>
+              <td class='order-data' ng-class="{'red-text': duCarts.numCartonsOnChasePicks && duCarts.numCartonsOnChasePicks !== 0}"><span class="padded-content">{{duCarts.numCartonsOnChasePicks?duCarts.numCartonsOnChasePicks:0}}</td>
+              <td class='order-data' ng-class="{'red-text': geek.numCartonsOnChasePicks && geek.numCartonsOnChasePicks !== 0}"><span class="padded-content">{{geek.numCartonsOnChasePicks?geek.numCartonsOnChasePicks:0}}</td>
+              <td class='order-data' ng-class="{'red-text': today.numCartonsOnChasePicks && today.numCartonsOnChasePicks !== 0}"><span class="padded-content">{{today.numCartonsOnChasePicks?today.numCartonsOnChasePicks:0}}</td>
+            </tr>
+            <tr>
+              <td colspan="6">
+                <hr class="hr-space">
+              </td>
+            </tr>
+            <tr class="alternate-row">
+              <td class='order-field'>Order Lines Downloaded<md-tooltip md-direction="right">Number of lines downloaded, includes cancelled</md-tooltip></td>
+              <td class='order-data'><span class="padded-content">{{pqCarts.numLinesDownloaded?pqCarts.numLinesDownloaded:0}}</span></td>
+              <td class='order-data'><span class="padded-content">{{zoneRoute.numLinesDownloaded?zoneRoute.numLinesDownloaded:0}}</span></td>
+              <td class='order-data'><span class="padded-content">{{duCarts.numLinesDownloaded?duCarts.numLinesDownloaded:0}}</span></td>
+              <td class='order-data'><span class="padded-content">{{geek.numLinesDownloaded?geek.numLinesDownloaded:0}}</span></td>
+              <td class='order-data'><span class="padded-content">{{today.numLinesDownloaded?today.numLinesDownloaded:0}}</span></td>
+            </tr>
+            <tr>
+              <td class='order-field'>Order Lines Cartonized<md-tooltip md-direction="right">Number of lines downloaded, includes cancelled</md-tooltip></td>
+              <td class='order-data'><span class="padded-content">{{pqCarts.numLinesCartonized?pqCarts.numLinesCartonized:0}}</span> - {{pqCarts.numLinesDownloaded?(pqCarts.numLinesCartonized/pqCarts.numLinesDownloaded*100).toFixed(2)+'%':'0%'}}</td>
+              <td class='order-data'><span class="padded-content">{{zoneRoute.numLinesCartonized?zoneRoute.numLinesCartonized:0}}</span> - {{zoneRoute.numLinesDownloaded?(zoneRoute.numLinesCartonized/zoneRoute.numLinesDownloaded*100).toFixed(2)+'%':'0%'}}</td>
+              <td class='order-data'><span class="padded-content">{{duCarts.numLinesCartonized?duCarts.numLinesCartonized:0}}</span> - {{duCarts.numLinesDownloaded?(duCarts.numLinesCartonized/duCarts.numLinesDownloaded*100).toFixed(2)+'%':'0%'}}</td>
+              <td class='order-data'><span class="padded-content">{{geek.numLinesCartonized?geek.numLinesCartonized:0}}</span> - {{geek.numLinesDownloaded?(geek.numLinesCartonized/geek.numLinesDownloaded*100).toFixed(2)+'%':'0%'}}</td>
+              <td class='order-data'><span class="padded-content">{{today.numLinesCartonized?today.numLinesCartonized:0}}</span> - {{today.numLinesDownloaded?(today.numLinesCartonized/today.numLinesDownloaded*100).toFixed(2)+'%':'0%'}}</td>
+            </tr>
+            <tr class="alternate-row">
+              <td class='order-field'>Order Lines Filled (Labeled)<md-tooltip md-direction="right">Number of lines labeled and uploaded, excludes cancelled</md-tooltip></td>
+              <td class='order-data'><span class="padded-content">{{pqCarts.numLinesFilledLabeled?pqCarts.numLinesFilledLabeled:0}}</span> - {{pqCarts.numLinesCartonized?(pqCarts.numLinesFilledLabeled/pqCarts.numLinesCartonized*100).toFixed(2)+'%':'0%'}}</td>
+              <td class='order-data'><span class="padded-content">{{zoneRoute.numLinesFilledLabeled?zoneRoute.numLinesFilledLabeled:0}}</span> - {{zoneRoute.numLinesCartonized?(zoneRoute.numLinesFilledLabeled/zoneRoute.numLinesCartonized*100).toFixed(2)+'%':'0%'}}</td>
+              <td class='order-data'><span class="padded-content">{{duCarts.numLinesFilledLabeled?duCarts.numLinesFilledLabeled:0}}</span> - {{duCarts.numLinesCartonized?(duCarts.numLinesFilledLabeled/duCarts.numLinesCartonized*100).toFixed(2)+'%':'0%'}}</td>
+              <td class='order-data'><span class="padded-content">{{geek.numLinesFilledLabeled?geek.numLinesFilledLabeled:0}}</span> - {{geek.numLinesCartonized?(geek.numLinesFilledLabeled/geek.numLinesCartonized*100).toFixed(2)+'%':'0%'}}</td>
+              <td class='order-data'><span class="padded-content">{{today.numLinesFilledLabeled?today.numLinesFilledLabeled:0}}</span> - {{today.numLinesCartonized?(today.numLinesFilledLabeled/today.numLinesCartonized*100).toFixed(2)+'%':'0%'}}</td>
+            </tr>
+            <tr>
+              <td class='order-field'>Order Lines Filled Complete<md-tooltip md-direction="right">Number of lines complete and not short picked, excludes cancelled</md-tooltip></td>
+              <td class='order-data'><span class="padded-content">{{pqCarts.numLinesFilledComplete?pqCarts.numLinesFilledComplete:0}}</span> - {{pqCarts.numLinesCartonized?(pqCarts.numLinesFilledComplete/pqCarts.numLinesCartonized*100).toFixed(2)+'%':'0%'}}</td>
+              <td class='order-data'><span class="padded-content">{{zoneRoute.numLinesFilledComplete?zoneRoute.numLinesFilledComplete:0}}</span> - {{zoneRoute.numLinesCartonized?(zoneRoute.numLinesFilledComplete/zoneRoute.numLinesCartonized*100).toFixed(2)+'%':'0%'}}</td>
+              <td class='order-data'><span class="padded-content">{{duCarts.numLinesFilledComplete?duCarts.numLinesFilledComplete:0}}</span> - {{duCarts.numLinesCartonized?(duCarts.numLinesFilledComplete/duCarts.numLinesCartonized*100).toFixed(2)+'%':'0%'}}</td>
+              <td class='order-data'><span class="padded-content">{{geek.numLinesFilledComplete?geek.numLinesFilledComplete:0}}</span> - {{geek.numLinesCartonized?(geek.numLinesFilledComplete/geek.numLinesCartonized*100).toFixed(2)+'%':'0%'}}</td>
+              <td class='order-data'><span class="padded-content">{{today.numLinesFilledComplete?today.numLinesFilledComplete:0}}</span> - {{today.numLinesCartonized?(today.numLinesFilledComplete/today.numLinesCartonized*100).toFixed(2)+'%':'0%'}}</td>
+            </tr>
+            <tr class="alternate-row">
+              <td class='order-field'>Order Lines Partially Filled<md-tooltip md-direction="right">Number of lines containing a short pick, excludes cancelled</md-tooltip></td>
+              <td class='order-data'><span class="padded-content">{{pqCarts.numLinesPartiallyFilled?pqCarts.numLinesPartiallyFilled:0}}</span> - {{pqCarts.numLinesCartonized?(pqCarts.numLinesPartiallyFilled/pqCarts.numLinesCartonized*100).toFixed(2)+'%':'0%'}}</td>
+              <td class='order-data'><span class="padded-content">{{zoneRoute.numLinesPartiallyFilled?zoneRoute.numLinesPartiallyFilled:0}}</span> - {{zoneRoute.numLinesCartonized?(zoneRoute.numLinesPartiallyFilled/zoneRoute.numLinesCartonized*100).toFixed(2)+'%':'0%'}}</td>
+              <td class='order-data'><span class="padded-content">{{duCarts.numLinesPartiallyFilled?duCarts.numLinesPartiallyFilled:0}}</span> - {{duCarts.numLinesCartonized?(duCarts.numLinesPartiallyFilled/duCarts.numLinesCartonized*100).toFixed(2)+'%':'0%'}}</td>
+              <td class='order-data'><span class="padded-content">{{geek.numLinesPartiallyFilled?geek.numLinesPartiallyFilled:0}}</span> - {{geek.numLinesCartonized?(geek.numLinesPartiallyFilled/geek.numLinesCartonized*100).toFixed(2)+'%':'0%'}}</td>
+              <td class='order-data'><span class="padded-content">{{today.numLinesPartiallyFilled?today.numLinesPartiallyFilled:0}}</span> - {{today.numLinesCartonized?(today.numLinesPartiallyFilled/today.numLinesCartonized*100).toFixed(2)+'%':'0%'}}</td>
+            </tr>
+            <tr>
+              <td class='order-field'>Order Lines Not Filled, Cancelled<md-tooltip md-direction="right">Number of lines cancelled</md-tooltip></td>
+              <td class='order-data'><span class="padded-content">{{pqCarts.numLinesCancelled?pqCarts.numLinesCancelled:0}}</span> - {{pqCarts.numLinesCartonized?(pqCarts.numLinesCancelled/pqCarts.numLinesCartonized*100).toFixed(2)+'%':'0%'}}</td>
+              <td class='order-data'><span class="padded-content">{{zoneRoute.numLinesCancelled?zoneRoute.numLinesCancelled:0}}</span> - {{zoneRoute.numLinesCartonized?(zoneRoute.numLinesCancelled/zoneRoute.numLinesCartonized*100).toFixed(2)+'%':'0%'}}</td>
+              <td class='order-data'><span class="padded-content">{{duCarts.numLinesCancelled?duCarts.numLinesCancelled:0}}</span> - {{duCarts.numLinesCartonized?(duCarts.numLinesCancelled/duCarts.numLinesCartonized*100).toFixed(2)+'%':'0%'}}</td>
+              <td class='order-data'><span class="padded-content">{{geek.numLinesCancelled?geek.numLinesCancelled:0}}</span> - {{geek.numLinesCartonized?(geek.numLinesCancelled/geek.numLinesCartonized*100).toFixed(2)+'%':'0%'}}</td>
+              <td class='order-data'><span class="padded-content">{{today.numLinesCancelled?today.numLinesCancelled:0}}</span> - {{today.numLinesCartonized?(today.numLinesCancelled/today.numLinesCartonized*100).toFixed(2)+'%':'0%'}}</td>
+            </tr>
+            <tr class="alternate-row">
+              <td class='order-field'>Order Lines Picked Complete In Primary<md-tooltip md-direction="right">Number of lines picked In primary location, excludes cancelled</md-tooltip></td>
+              <td class='order-data'><span class="padded-content">{{pqCarts.numLinesFilledCompletePrimary?pqCarts.numLinesFilledCompletePrimary:0}}</span> - {{pqCarts.numLinesCartonized?(pqCarts.numLinesFilledCompletePrimary/pqCarts.numLinesCartonized*100).toFixed(2)+'%':'0%'}}</td>
+              <td class='order-data'><span class="padded-content">{{zoneRoute.numLinesFilledCompletePrimary?zoneRoute.numLinesFilledCompletePrimary:0}}</span> - {{zoneRoute.numLinesCartonized?(zoneRoute.numLinesFilledCompletePrimary/zoneRoute.numLinesCartonized*100).toFixed(2)+'%':'0%'}}</td>
+              <td class='order-data'><span class="padded-content">{{duCarts.numLinesFilledCompletePrimary?duCarts.numLinesFilledCompletePrimary:0}}</span> - {{duCarts.numLinesCartonized?(duCarts.numLinesFilledCompletePrimary/duCarts.numLinesCartonized*100).toFixed(2)+'%':'0%'}}</td>
+              <td class='order-data'><span class="padded-content">{{geek.numLinesFilledCompletePrimary?geek.numLinesFilledCompletePrimary:0}}</span> - {{geek.numLinesCartonized?(geek.numLinesFilledCompletePrimary/geek.numLinesCartonized*100).toFixed(2)+'%':'0%'}}</td>
+              <td class='order-data'><span class="padded-content">{{today.numLinesFilledCompletePrimary?today.numLinesFilledCompletePrimary:0}}</span> - {{today.numLinesCartonized?(today.numLinesFilledCompletePrimary/today.numLinesCartonized*100).toFixed(2)+'%':'0%'}}</td>
+            </tr>
+            <tr>
+              <td class='order-field'>Order Lines Picked Complete With a Chase Pick<md-tooltip md-direction="right">Number of lines containing a chase pick, excludes cancelled</md-tooltip></td>
+              <td class='order-data'><span class="padded-content">{{pqCarts.numLinesFilledCompleteChasePick?pqCarts.numLinesFilledCompleteChasePick:0}}</span> - {{pqCarts.numLinesCartonized?(pqCarts.numLinesFilledCompleteChasePick/pqCarts.numLinesCartonized*100).toFixed(2)+'%':'0%'}}</td>
+              <td class='order-data'><span class="padded-content">{{zoneRoute.numLinesFilledCompleteChasePick?zoneRoute.numLinesFilledCompleteChasePick:0}}</span> - {{zoneRoute.numLinesCartonized?(zoneRoute.numLinesFilledCompleteChasePick/zoneRoute.numLinesCartonized*100).toFixed(2)+'%':'0%'}}</td>
+              <td class='order-data'><span class="padded-content">{{duCarts.numLinesFilledCompleteChasePick?duCarts.numLinesFilledCompleteChasePick:0}}</span> - {{duCarts.numLinesCartonized?(duCarts.numLinesFilledCompleteChasePick/duCarts.numLinesCartonized*100).toFixed(2)+'%':'0%'}}</td>
+              <td class='order-data'><span class="padded-content">{{geek.numLinesFilledCompleteChasePick?geek.numLinesFilledCompleteChasePick:0}}</span> - {{geek.numLinesCartonized?(geek.numLinesFilledCompleteChasePick/geek.numLinesCartonized*100).toFixed(2)+'%':'0%'}}</td>
+              <td class='order-data'><span class="padded-content">{{today.numLinesFilledCompleteChasePick?today.numLinesFilledCompleteChasePick:0}}</span> - {{today.numLinesCartonized?(today.numLinesFilledCompleteChasePick/today.numLinesCartonized*100).toFixed(2)+'%':'0%'}}</td>
+            </tr>
+            <tr class="alternate-row">
+              <td class='order-field'>Order Lines With SKU Exception<md-tooltip md-direction="right">Number of lines with a SKU exception, excludes cancelled</md-tooltip></td>
+              <td class='order-data'><span class="padded-content">{{pqCarts.numLinesSKUException?pqCarts.numLinesSKUException:0}}</span> - {{today.numLinesCartonized?(pqCarts.numLinesSKUException/today.numLinesCartonized*100).toFixed(2)+'%':'0%'}}</td>
+              <td class='order-data'><span class="padded-content">{{zoneRoute.numLinesSKUException?zoneRoute.numLinesSKUException:0}}</span> - {{today.numLinesCartonized?(zoneRoute.numLinesSKUException/today.numLinesCartonized*100).toFixed(2)+'%':'0%'}}</td>
+              <td class='order-data'><span class="padded-content">{{duCarts.numLinesSKUException?duCarts.numLinesSKUException:0}}</span> - {{today.numLinesCartonized?(duCarts.numLinesSKUException/today.numLinesCartonized*100).toFixed(2)+'%':'0%'}}</td>
+              <td class='order-data'><span class="padded-content">{{geek.numLinesSKUException?geek.numLinesSKUException:0}}</span> - {{today.numLinesCartonized?(geek.numLinesSKUException/today.numLinesCartonized*100).toFixed(2)+'%':'0%'}}</td>
+              <td class='order-data'><span class="padded-content">{{today.numLinesSKUException?today.numLinesSKUException:0}}</span> - {{today.numLinesCartonized?(today.numLinesSKUException/today.numLinesCartonized*100).toFixed(2)+'%':'0%'}}</td>
+            </tr>
+            <tr>
+              <td colspan="6">
+                <hr class="hr-space">
+              </td>
+            </tr>
+            <tr class="alternate-row">
+              <td class='order-field'>Chase Picks Unassigned<md-tooltip md-direction="right">Number of chase picks NOT assigned to operators</md-tooltip></td>
+              <td class='order-data'><span class="padded-content">{{pqCarts.numPQChasePickUnassigned?pqCarts.numPQChasePickUnassigned:0}}</span></td>
+              <td class='order-data'><span class="padded-content">{{zoneRoute.numZRChasePickUnassigned?zoneRoute.numZRChasePickUnassigned:0}}</span></td>
+              <td class='order-data'><span class="padded-content">{{duCarts.numDUChasePickUnassigned?duCarts.numDUChasePickUnassigned:0}}</span></td>
+              <td class='order-data'><span class="padded-content">{{geek.numGeekChasePickUnassigned?geek.numGeekChasePickUnassigned:0}}</span></td>
+              <td class='order-data'><span class="padded-content">{{today.numChasePickUnassigned?today.numChasePickUnassigned:0}}</span></td>
+            </tr>
+            <tr>
+              <td class='order-field'>Chase Picks Assigned<md-tooltip md-direction="right">Number of chase picks assigned to operators</md-tooltip></td>
+              <td class='order-data'><span class="padded-content">{{pqCarts.numPQChasePickAssigned?pqCarts.numPQChasePickAssigned:0}}</span></td>
+              <td class='order-data'><span class="padded-content">{{zoneRoute.numZRChasePickAssigned?zoneRoute.numZRChasePickAssigned:0}}</span></td>
+              <td class='order-data'><span class="padded-content">{{duCarts.numDUChasePickAssigned?duCarts.numDUChasePickAssigned:0}}</span></td>
+              <td class='order-data'><span class="padded-content">{{geek.numGeekChasePickAssigned?geek.numGeekChasePickAssigned:0}}</span></td>
+              <td class='order-data'><span class="padded-content">{{today.numChasePickAssigned?today.numChasePickAssigned:0}}</span></td>
+            </tr>
+          </table>
+        </md-content>
+      </md-tab>
+
+      <md-tab label="Demand Zone Route" md-on-select="refresh()">
+        <md-content class="md-padding">
+          <div layout="row">
+            <div flex>
+              <table>
+                <tr>
+                  <td class='order-field'>
+                    <h3>Demand Date:</h3>
+                  </td>
+                  <td class='order-data'>
+                    <h3>{{today.demandDate | date:'shortDate'}}</h3>
+                  </td>
+                  <td class='order-field'>
+                    <h3>&nbsp;&nbsp;&nbsp;&nbsp;Daily Wave Seq:</h3>
+                  </td>
+                  <td class='order-data'>
+                    <md-input-container>
+                      <md-select aria-label="Daily Wave Seq" ng-model="dailyWaveSeq" ng-change="refresh()">
+                        <md-option value="All">All</md-option>
+                        <md-option ng-repeat="waveSeq in waveSeqs" value="{{waveSeq}}">{{waveSeq}}</md-option>
+                      </md-select>
+                    </md-input-container>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+
+          <div layout="row" layout-align="center center">
+            <h3 class="center-text">Level 1</h3>
+          </div>
+
+          <div layout="row" layout-align="center center">
+            <div>
+              <table>
+                <tr>
+                  <td class='order-field'> <div class="h4 zone-title"> Zone 8&nbsp;&nbsp;&nbsp;&nbsp;</div></td>
+                  <td class='order-field'> Unpicked Containers:</td>
+                  <td class='order-data'> {{dzr[8].numCartonsUnPicked?dzr[8].numCartonsUnPicked:0}}</td>
+                  <td class='order-field'> Unpicked Lines:</td>
+                  <td class='order-data'> {{dzr[8].numLinesUnPicked?dzr[8].numLinesUnPicked:0}}</td>
+                </tr>
+                <tr>
+                  <td class='order-field'> <div class="h4 zone-title"> Zone 7&nbsp;&nbsp;&nbsp;&nbsp;</div></td>
+                  <td class='order-field'> Unpicked Containers:</td>
+                  <td class='order-data'> {{dzr[7].numCartonsUnPicked?dzr[7].numCartonsUnPicked:0}}</td>
+                  <td class='order-field'> Unpicked Lines:</td>
+                  <td class='order-data'> {{dzr[7].numLinesUnPicked?dzr[7].numLinesUnPicked:0}}</td>
+                </tr>
+                <tr>
+                  <td class='order-field'> <div class="h4 zone-title"> Zone 6&nbsp;&nbsp;&nbsp;&nbsp;</div></td>
+                  <td class='order-field'> Unpicked Containers:</td>
+                  <td class='order-data'> {{dzr[6].numCartonsUnPicked?dzr[6].numCartonsUnPicked:0}}</td>
+                  <td class='order-field'> Unpicked Lines:</td>
+                  <td class='order-data'> {{dzr[6].numLinesUnPicked?dzr[6].numLinesUnPicked:0}}</td>
+                </tr>
+                <tr>
+                  <td class='order-field'> <div class="h4 zone-title"> Zone 5&nbsp;&nbsp;&nbsp;&nbsp;</div></td>
+                  <td class='order-field'> Unpicked Containers:</td>
+                  <td class='order-data'> {{dzr[5].numCartonsUnPicked?dzr[5].numCartonsUnPicked:0}}</td>
+                  <td class='order-field'> Unpicked Lines:</td>
+                  <td class='order-data'> {{dzr[5].numLinesUnPicked?dzr[5].numLinesUnPicked:0}}</td>
+                </tr>
+              </table>
+            </div>
+
+            <div class="spacer">&nbsp;</div>
+
+            <div>
+              <table>
+                <tr>
+                  <td class='order-field'> <div class="h4 zone-title"> Zone 4&nbsp;&nbsp;&nbsp;&nbsp;</div></td>
+                  <td class='order-field'> Unpicked Containers:</td>
+                  <td class='order-data'> {{dzr[4].numCartonsUnPicked?dzr[4].numCartonsUnPicked:0}}</td>
+                  <td class='order-field'> Unpicked Lines:</td>
+                  <td class='order-data'> {{dzr[4].numLinesUnPicked?dzr[4].numLinesUnPicked:0}}</td>
+                </tr>
+                <tr>
+                  <td class='order-field'> <div class="h4 zone-title"> Zone 3&nbsp;&nbsp;&nbsp;&nbsp;</div></td>
+                  <td class='order-field'> Unpicked Containers:</td>
+                  <td class='order-data'> {{dzr[3].numCartonsUnPicked?dzr[3].numCartonsUnPicked:0}}</td>
+                  <td class='order-field'> Unpicked Lines:</td>
+                  <td class='order-data'> {{dzr[3].numLinesUnPicked?dzr[3].numLinesUnPicked:0}}</td>
+                </tr>
+                <tr>
+                  <td class='order-field'> <div class="h4 zone-title"> Zone 2&nbsp;&nbsp;&nbsp;&nbsp;</div></td>
+                  <td class='order-field'> Unpicked Containers:</td>
+                  <td class='order-data'> {{dzr[2].numCartonsUnPicked?dzr[2].numCartonsUnPicked:0}}</td>
+                  <td class='order-field'> Unpicked Lines:</td>
+                  <td class='order-data'> {{dzr[2].numLinesUnPicked?dzr[2].numLinesUnPicked:0}}</td>
+                </tr>
+                <tr>
+                  <td class='order-field'><div class="h4 zone-title"> Zone 1&nbsp;&nbsp;&nbsp;&nbsp;</div></td>
+                  <td class='order-field'> Unpicked Containers:</td>
+                  <td class='order-data'> {{dzr[1].numCartonsUnPicked?dzr[1].numCartonsUnPicked:0}}</td>
+                  <td class='order-field'> Unpicked Lines:</td>
+                  <td class='order-data'> {{dzr[1].numLinesUnPicked?dzr[1].numLinesUnPicked:0}}</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+
+          <div layout="row" layout-align="center center">
+            <h3 class="center-text">Level 2</h3>
+          </div>
+
+          <div layout="row" layout-align="center center">
+            <div>
+              <table>
+                <tr>
+                  <td class='order-field'> <div class="h4 zone-title"> Zone 16&nbsp;&nbsp;</div></td>
+                  <td class='order-field'> Unpicked Containers:</td>
+                  <td class='order-data'> {{dzr[16].numCartonsUnPicked?dzr[16].numCartonsUnPicked:0}}</td>
+                  <td class='order-field'> Unpicked Lines:</td>
+                  <td class='order-data'> {{dzr[16].numLinesUnPicked?dzr[16].numLinesUnPicked:0}}</td>
+                </tr>
+                <tr>
+                  <td class='order-field'> <div class="h4 zone-title"> Zone 15&nbsp;&nbsp;</div></td>
+                  <td class='order-field'> Unpicked Containers:</td>
+                  <td class='order-data'> {{dzr[15].numCartonsUnPicked?dzr[15].numCartonsUnPicked:0}}</td>
+                  <td class='order-field'> Unpicked Lines:</td>
+                  <td class='order-data'> {{dzr[15].numLinesUnPicked?dzr[15].numLinesUnPicked:0}}</td>
+                </tr>
+                <tr>
+                  <td class='order-field'> <div class="h4 zone-title"> Zone 14&nbsp;&nbsp;</div></td>
+                  <td class='order-field'> Unpicked Containers:</td>
+                  <td class='order-data'> {{dzr[14].numCartonsUnPicked?dzr[14].numCartonsUnPicked:0}}</td>
+                  <td class='order-field'> Unpicked Lines:</td>
+                  <td class='order-data'> {{dzr[14].numLinesUnPicked?dzr[14].numLinesUnPicked:0}}</td>
+                </tr>
+                <tr>
+                  <td class='order-field'> <div class="h4 zone-title"> Zone 13&nbsp;&nbsp;</div></td>
+                  <td class='order-field'> Unpicked Containers:</td>
+                  <td class='order-data'> {{dzr[13].numCartonsUnPicked?dzr[13].numCartonsUnPicked:0}}</td>
+                  <td class='order-field'> Unpicked Lines:</td>
+                  <td class='order-data'> {{dzr[13].numLinesUnPicked?dzr[13].numLinesUnPicked:0}}</td>
+                </tr>
+              </table>
+            </div>
+
+            <div class="spacer">&nbsp;</div>
+
+            <div>
+              <table>
+                <tr>
+                  <td class='order-field'> <div class="h4 zone-title"> Zone 12&nbsp;&nbsp;</div></td>
+                  <td class='order-field'> Unpicked Containers:</td>
+                  <td class='order-data'> {{dzr[12].numCartonsUnPicked?dzr[12].numCartonsUnPicked:0}}</td>
+                  <td class='order-field'> Unpicked Lines:</td>
+                  <td class='order-data'> {{dzr[12].numLinesUnPicked?dzr[12].numLinesUnPicked:0}}</td>
+                </tr>
+                <tr>
+                  <td class='order-field'> <div class="h4 zone-title"> Zone 11&nbsp;&nbsp;</div></td>
+                  <td class='order-field'> Unpicked Containers:</td>
+                  <td class='order-data'> {{dzr[11].numCartonsUnPicked?dzr[11].numCartonsUnPicked:0}}</td>
+                  <td class='order-field'> Unpicked Lines:</td>
+                  <td class='order-data'> {{dzr[11].numLinesUnPicked?dzr[11].numLinesUnPicked:0}}</td>
+                </tr>
+                <tr>
+                  <td class='order-field'> <div class="h4 zone-title"> Zone 10&nbsp;&nbsp;</div></td>
+                  <td class='order-field'> Unpicked Containers:</td>
+                  <td class='order-data'> {{dzr[10].numCartonsUnPicked?dzr[10].numCartonsUnPicked:0}}</td>
+                  <td class='order-field'> Unpicked Lines:</td>
+                  <td class='order-data'> {{dzr[10].numLinesUnPicked?dzr[10].numLinesUnPicked:0}}</td>
+                </tr>
+                <tr>
+                  <td class='order-field'> <div class="h4 zone-title"> Zone 9&nbsp;&nbsp;&nbsp;&nbsp;</div></td>
+                  <td class='order-field'> Unpicked Containers:</td>
+                  <td class='order-data'> {{dzr[9].numCartonsUnPicked?dzr[9].numCartonsUnPicked:0}}</td>
+                  <td class='order-field'> Unpicked Lines:</td>
+                  <td class='order-data'> {{dzr[9].numLinesUnPicked?dzr[9].numLinesUnPicked:0}}</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+
+          <div layout="row" layout-align="center center">
+            <h3 class="center-text">Level 3</h3>
+          </div>
+
+          <div layout="row" layout-align="center center">
+            <div>
+              <table>
+                <tr>
+                  <td class='order-field'> <div class="h4 zone-title"> Zone 24&nbsp;&nbsp;</div></td>
+                  <td class='order-field'> Unpicked Containers:</td>
+                  <td class='order-data'> {{dzr[24].numCartonsUnPicked?dzr[24].numCartonsUnPicked:0}}</td>
+                  <td class='order-field'> Unpicked Lines:</td>
+                  <td class='order-data'> {{dzr[24].numLinesUnPicked?dzr[24].numLinesUnPicked:0}}</td>
+                </tr>
+                <tr>
+                  <td class='order-field'> <div class="h4 zone-title"> Zone 23&nbsp;&nbsp;</div></td>
+                  <td class='order-field'> Unpicked Containers:</td>
+                  <td class='order-data'> {{dzr[23].numCartonsUnPicked?dzr[23].numCartonsUnPicked:0}}</td>
+                  <td class='order-field'> Unpicked Lines:</td>
+                  <td class='order-data'> {{dzr[23].numLinesUnPicked?dzr[23].numLinesUnPicked:0}}</td>
+                </tr>
+                <tr>
+                  <td class='order-field'> <div class="h4 zone-title"> Zone 22&nbsp;&nbsp;</div></td>
+                  <td class='order-field'> Unpicked Containers:</td>
+                  <td class='order-data'> {{dzr[22].numCartonsUnPicked?dzr[22].numCartonsUnPicked:0}}</td>
+                  <td class='order-field'> Unpicked Lines:</td>
+                  <td class='order-data'> {{dzr[22].numLinesUnPicked?dzr[22].numLinesUnPicked:0}}</td>
+                </tr>
+                <tr>
+                  <td class='order-field'> <div class="h4 zone-title"> Zone 21&nbsp;&nbsp;</div></td>
+                  <td class='order-field'> Unpicked Containers:</td>
+                  <td class='order-data'> {{dzr[21].numCartonsUnPicked?dzr[21].numCartonsUnPicked:0}}</td>
+                  <td class='order-field'> Unpicked Lines:</td>
+                  <td class='order-data'> {{dzr[21].numLinesUnPicked?dzr[21].numLinesUnPicked:0}}</td>
+                </tr>
+              </table>
+            </div>
+
+            <div class="spacer">&nbsp;</div>
+
+            <div>
+              <table>
+                <tr>
+                  <td class='order-field'> <div class="h4 zone-title"> Zone 20&nbsp;&nbsp;</div></td>
+                  <td class='order-field'> Unpicked Containers:</td>
+                  <td class='order-data'> {{dzr[20].numCartonsUnPicked?dzr[20].numCartonsUnPicked:0}}</td>
+                  <td class='order-field'> Unpicked Lines:</td>
+                  <td class='order-data'> {{dzr[20].numLinesUnPicked?dzr[20].numLinesUnPicked:0}}</td>
+                </tr>
+                <tr>
+                  <td class='order-field'> <div class="h4 zone-title"> Zone 19&nbsp;&nbsp;</div></td>
+                  <td class='order-field'> Unpicked Containers:</td>
+                  <td class='order-data'> {{dzr[19].numCartonsUnPicked?dzr[19].numCartonsUnPicked:0}}</td>
+                  <td class='order-field'> Unpicked Lines:</td>
+                  <td class='order-data'> {{dzr[19].numLinesUnPicked?dzr[19].numLinesUnPicked:0}}</td>
+                </tr>
+                <tr>
+                  <td class='order-field'> <div class="h4 zone-title"> Zone 18&nbsp;&nbsp;</div></td>
+                  <td class='order-field'> Unpicked Containers:</td>
+                  <td class='order-data'> {{dzr[18].numCartonsUnPicked?dzr[18].numCartonsUnPicked:0}}</td>
+                  <td class='order-field'> Unpicked Lines:</td>
+                  <td class='order-data'> {{dzr[18].numLinesUnPicked?dzr[18].numLinesUnPicked:0}}</td>
+                </tr>
+                <tr>
+                  <td class='order-field'> <div class="h4 zone-title"> Zone 17&nbsp;&nbsp;</div></td>
+                  <td class='order-field'> Unpicked Containers:</td>
+                  <td class='order-data'> {{dzr[17].numCartonsUnPicked?dzr[17].numCartonsUnPicked:0}}</td>
+                  <td class='order-field'> Unpicked Lines:</td>
+                  <td class='order-data'> {{dzr[17].numLinesUnPicked?dzr[17].numLinesUnPicked:0}}</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+
+          <div layout="row" layout-align="center center">
+            <span style='font-size:50px;'>&uarr;</span>
+            <br>Plan North (Sorter)
+          </div>
+        </md-content>
+      </md-tab>
+
+    </md-tabs>
+  </md-content>
+</div>

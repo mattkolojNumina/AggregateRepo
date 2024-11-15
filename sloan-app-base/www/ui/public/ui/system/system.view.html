@@ -1,0 +1,56 @@
+<div class="container-fluid" ng-cloak>
+  <md-content>
+    <md-tabs md-dynamic-height md-selected="selected">
+      
+      <md-tab label="Process Monitor" md-on-select="refresh()">
+        <md-content class="md-padding">
+          <table id="systemTable" class="display compact" width="100%"></table>
+        </md-content>
+      </md-tab>
+      
+      <md-tab label="Command Entry" md-on-select="refresh()">
+        <div layout-gt-sm="row">
+          <div flex>
+            <md-input-container>
+              <label>Host</label>
+              <md-select ng-model="host">
+                <md-option ng-repeat="host in hosts"
+                           value="{{host}}">{{host}}</md-option>
+              </md-select>
+            </md-input-container>
+          </div>
+          
+          <div flex>
+            <div layout="row">
+              <div>
+                <md-button class="md-raised"
+                           ng-disabled="!permit('systemEdit')"
+                           ng-click="reboot($event)">Reboot</md-button>
+              </div>
+              <div>
+                <md-button class="md-raised"
+                           ng-disabled="!permit('systemEdit')"
+                           ng-click="shutdown($event)">Shutdown</md-button>
+              </div>
+            </div>
+          </div>
+          
+          <div flex>
+            <form ng-submit="execute()">
+              <md-input-container class="md-block"
+                                  ng-disabled="!permit('systemEdit')">
+                <label>Execute on {{host}}:</label>
+                <input ng-model="command">
+              </md-input-container>
+            </form>
+          </div>
+        </div>
+        
+        <div>
+          <table id="commandTable" class="display" width="100%"></table>
+        </div>
+      </md-tab>
+      
+    </md-tabs>
+  </md-content>
+</div>

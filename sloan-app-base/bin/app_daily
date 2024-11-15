@@ -1,0 +1,159 @@
+#!/bin/bash
+
+### this script is run nightly via cron
+
+ulimit -c 10000000
+HOST=`hostname`
+
+
+### purge expired database entries and optimize (defragment) tables
+
+# add tables to this list for standard purging
+# NB: eventLog has special logic below
+TABLES="
+   execute
+   notifications
+   geekBinding
+   geekContainerOccupy
+   geekInternalFeedback
+   geekInternalFeedbackSku
+   geekInventory
+   geekInventoryQuery
+   geekInventoryQueryResponse
+   geekInventoryQuerySku
+   geekLog
+   geekPickCancel
+   geekPickConf
+   geekPickConfContainer
+   geekPickConfContainerSku
+   geekPickConfContainerSkuSeq
+   geekPickConfSku
+   geekPickConfSkuSeq
+   geekPickConfSkuShelf
+   geekPickContainerConf
+   geekPickContainerConfSku
+   geekPickContainerConfSkuSeq
+   geekPickContainerConfSkuShelf
+   geekPickOrder
+   geekPickOrderSku
+   geekPutawayCancel
+   geekPutawayConf
+   geekPutawayConfSku
+   geekPutawayConfSkuShelf
+   geekPutawayOrder
+   geekPutawayOrderSku
+   geekSequence
+   geekSkuPacking
+   geekSnapshot
+   geekStockAdjust
+   geekStockAdjustConf
+   geekStockAdjustConfSku
+   geekStockAdjustSku
+   geekStockCommand
+   geekStockCommandSku
+   geekStockFeedback
+   geekStockFeedbackSku
+   geekUser
+   geekUserRole
+   geekWorkstationStatusUpdate
+   gmsCallback
+   gmsOperation
+   log
+   gmsRequest
+   rdsActions
+   rdsCarts
+   rdsDocuments
+   rdsGeekInventoryAdjustments
+   rdsLocationData
+   rdsLocations
+   rdsPalletData
+   rdsPallets
+   rdsPickData
+   rdsPicks
+   rdsUploadQueue
+   rdsWaveData
+   rdsWaves
+   putawayRequests
+   putawayResponses
+   custFullcaseLines
+   custFullcaseLineData
+   custOrderData
+   custOrderLineData
+   custOrderLines
+   custOrders
+   custShipmentData
+   custShipments
+   custShippingInfo
+   cycleCountRequests
+   cycleCountResponses
+   victoryDevices
+   victoryExceptions
+   victoryMessages
+"
+EXPIRE=28  # days before database entries expire
+
+# add large tables to this list for aggressive purging
+LARGE_TABLES="
+   victoryInteractions
+   victoryJSON
+"
+LARGE_EXPIRE=14  # days before database entries expire
+
+# add large tables to this list for aggressive purging
+AGGRESSIVE_TABLES="
+   cartonStatus
+   docQueue
+   eastCartons
+   eastPackCartons
+   gmsCallback
+   sortCartons
+   status
+   victoryErrors
+   westCartons
+   westPackCartons
+"
+AGGRESSIVE_EXPIRE=7  # days before database entries expire
+
+ARCHIVE_TABLES="
+"
+ARCHIVE_EXPIRE=365  # days before database entries expire
+
+
+for i in $TABLES ; do
+   echo purging/optimizing $i table...
+   time /usr/bin/mysql -urds -prds -Drds -e "DELETE FROM $i WHERE stamp < DATE_SUB(NOW(),INTERVAL $EXPIRE DAY);OPTIMIZE TABLE $i;"
+done
+
+for i in $LARGE_TABLES ; do
+   echo purging/optimizing $i table...
+   time /usr/bin/mysql -urds -prds -Drds -e "DELETE FROM $i WHERE stamp < DATE_SUB(NOW(),INTERVAL $LARGE_EXPIRE DAY);OPTIMIZE TABLE $i;"
+done
+
+for i in $AGGRESSIVE_TABLES ; do
+   echo purging/optimizing $i table...
+   time /usr/bin/mysql -urds -prds -Drds -e "DELETE FROM $i WHERE stamp < DATE_SUB(NOW(),INTERVAL $AGGRESSIVE_EXPIRE DAY);OPTIMIZE TABLE $i;"
+done
+
+for i in $ARCHIVE_TABLES ; do
+   echo purging/optimizing $i table...
+   time /usr/bin/mysql -urds -prds -Drds -e "DELETE FROM $i WHERE stamp < DATE_SUB(NOW(),INTERVAL $ARCHIVE_EXPIRE DAY);OPTIMIZE TABLE $i;"
+done
+
+
+# eventLog table uses "start" rather than "stamp"
+time /usr/bin/mysql -urds -prds -Drds -e "DELETE FROM eventLog WHERE start < DATE_SUB(NOW(),INTERVAL $EXPIRE DAY);OPTIMIZE TABLE eventLog;"
+
+
+# compress production counts
+$HOME/app/bin/count_compress
+
+
+### purge voice logs
+RETAIN=30
+find $HOME/vftp/Server/share/logs -ctime +$RETAIN -delete
+find $HOME/vftp/Server/resource/log -ctime +$RETAIN -delete
+find $HOME/xfer/out/archive -ctime +$RETAIN -delete
+find $HOME/xfer/in/archive -ctime +$RETAIN -delete
+
+
+/usr/bin/mysql -urds -prds -Drds -e "REPLACE INTO runtime SET name='/$HOST/app_daily', value=NOW();"

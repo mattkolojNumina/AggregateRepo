@@ -1,0 +1,58 @@
+#!/bin/bash
+
+###
+
+DATE=$1
+HOST=$2
+
+USB=/mnt/usb
+DATADIR=$HOME/app/data
+
+###
+
+mount $USB
+if [ "$?" -ne 0 ] ; then
+   echo "unable to mount USB device"
+   exit 1
+fi
+
+if [[ -z $DATE ]] ; then
+   ARCHIVE=`ls -rt $USB/app*.tgz | tail -1`
+else
+   [ -z $HOST ] && HOST=`hostname`
+   ARCHIVE=$USB/app_${HOST}_${DATE}.tgz
+fi
+
+if ! [[ -e $ARCHIVE ]] ; then
+   echo "unable to locate archive $ARCHIVE"
+   umount $USB
+   exit 1
+fi
+
+echo "restoring archive $ARCHIVE..."
+
+cd $HOME
+rm -rf app.old
+mv app app.old
+tar -xzf $ARCHIVE
+umount $USB
+
+echo "rebuilding database..."
+cd $DATADIR/tables
+for file in *.sql ; do
+   cat $file | mysql -urds -prds rds
+done
+cd $DATADIR/views
+for file in *.sql ; do
+   cat $file | mysql -urds -prds rds
+done
+cd $DATADIR/routines
+for file in *.sql ; do
+   cat $file | mysql -urds -prds rds
+done
+
+cd $HOME/app/config
+sudo /home/rds/bin/config/install-config recover
+sudo /sbin/reboot
+
+echo "done"

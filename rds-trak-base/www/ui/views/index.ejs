@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html ng-app="ui">
+<head>
+<title><%= title %></title>
+<%- include ../public/ui/style %>
+<%- include ../public/app/style %>
+</head>
+<body>
+<%- include ../public/ui/head/head.view.html %>
+<md-content style="min-height: inherit;">
+  <div id="body">
+    <%- include ../public/ui/left/left.view.html %>
+    <div ng-view></div>
+    <%- include ../public/ui/right/right.view.html %>
+  </div>
+</md-content>
+<%- include ../public/ui/foot/foot.view.html %>
+<%- include ../public/ui/script %>
+<%- include ../public/app/script %>
+</body>
+</html>

@@ -1,0 +1,5 @@
+#!/bin/bash
+
+#run as a root
+install -m 644 php_rds.ini /etc/php.d/
+

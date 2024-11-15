@@ -1,0 +1,4 @@
+#!/bin/bash
+
+gs -sDEVICE=fs600 -sOutputFile=/tmp/packlist.pcl -dNOPAUSE -dBATCH -dSAFER -sPAPERSIZE=letter -dSusbsetFonts=true -dEmbedFonts=true -c "<</InputAttributes << currentpagedevice /InputAttributes get { pop null } forall >> dup 0 << /PageSize [ 612 792 ] >> put >> setpagedevice" save pop -f $1
+

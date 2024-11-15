@@ -1,0 +1,15 @@
+#!/bin/bash
+
+###
+
+BINDIR=$HOME/app/bin
+HOST=`hostname`
+
+###
+
+cd $BINDIR
+
+./backup_app
+
+/usr/bin/mysql -urds -prds -Drds -e "REPLACE INTO runtime SET name='/$HOST/app_weekly', value=NOW();"
+

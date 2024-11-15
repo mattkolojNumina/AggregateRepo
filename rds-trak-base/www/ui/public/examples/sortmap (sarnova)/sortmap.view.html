@@ -1,0 +1,66 @@
+<div class="container-fluid" ng-cloak>
+
+  <md-content class="md-padding">
+    <div layout="row">
+      <div flex>
+        <md-content class="md-padding"> 
+          <table id="sortmap" class="display compact"></table>
+        </md-content>
+      </div>
+
+      <div flex>
+        <md-toolbar>
+          <div class="md-toolbar-tools">
+            <span flex>{{edit.seq}}</span>
+            <span flex></span>
+            <md-button aria-label="New"
+                       ng-click="editNew()">New</md-button>
+            <md-button aria-label="Update"
+                       ng-disabled="editDisabled()"
+                       ng-click="editUpdate()">Save</md-button>
+            <md-button aria-label="Delete"
+                       ng-disabled="editDisabled()"
+                       ng-click="editDelete()">Delete</md-button>
+          </div>
+        </md-toolbar>
+        <md-content class="md-padding">
+          <div layout="column">
+            <div class="md-block">
+              <table>
+                <tbody>
+                  <tr>
+                    <td class="sortmap-field">Carrier:&nbsp;</td>
+                    <td class="sortmap-data">{{edit.carrier}}</td>
+                  </tr>
+                  <tr>
+                    <td class="sortmap-field">Service:&nbsp;</td>
+                    <td class="sortmap-data">{{edit.service}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <md-input-container md-no-float class="md-block">
+              <label>Description</label>
+              <input ng-model="edit.description">
+            </md-input-container>
+             
+            <md-input-container md-no-float class="md-block">
+              <label>Sort Lane</label>
+              <input ng-model="edit.sortLane">
+            </md-input-container>
+
+            <md-input-container md-no-float class="md-block">
+              <label>Enabled</label>
+              <md-select ng-model="edit.enabled">
+                <md-option value="false">False</md-option>
+                <md-option value="true">True</md-option>
+              </md-select>
+            </md-input-container>
+
+          </div>
+        </md-content>
+      </div>
+    </div>
+  </md-content>
+</div>

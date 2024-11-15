@@ -1,0 +1,125 @@
+#!/bin/bash
+
+###
+#
+# archive script for app/config
+#
+###
+
+###
+# config variables
+###
+
+USER=rds
+GROUP=rds
+HOMEDIR=/home/$USER
+
+
+###
+# archive functions
+###
+
+archive_app() {
+   [ $APP ] && return
+   APP="app"
+   echo "archiving application-specific configuration files..."
+   mkdir -p app && chown rds.rds app/
+   install -o rds -g rds -pm 644 $HOMEDIR/.bashrc app/bashrc
+   crontab -u rds -l > app/crontab
+   install -o rds -g rds -pm 644 /etc/hosts app/
+   install -o rds -g rds -pm 644 /etc/netplan/*.yaml app/
+   install -o rds -g rds -pm 644 /etc/hostname app/
+   install -o rds -g rds -pm 644 /etc/ethercat.conf app/
+   install -o rds -g rds -pm 644 /etc/resolv.conf app/
+   readlink /etc/localtime > app/timezone.txt
+}
+
+archive_sys() {
+   [ $SYS ] && return
+   SYS="sys"
+   echo "archiving system configuration files..."
+   mkdir -p sys && chown rds.rds sys/
+   install -o rds -g rds -pm 644 /etc/udev/rules.d/20-mei.rules sys/
+   install -o rds -g rds -pm 644 /etc/udev/rules.d/99-CIF.rules sys/
+   install -o rds -g rds -pm 644 /etc/udev/rules.d/99-EtherCAT.rules sys/
+   install -o rds -g rds -pm 644 $HOMEDIR/.bash_profile sys/bash_profile
+   install -o rds -g rds -pm 644 /etc/default/grub sys/
+   install -o rds -g rds -pm 644 /etc/systemd/system/rds.service sys/
+   install -o rds -g rds -pm 644 /etc/apache2/apache2.conf sys/
+   install -o rds -g rds -pm 644 /etc/apache2/ports.conf sys/
+   install -o rds -g rds -pm 644 /etc/apache2/sites-enabled/000-default.conf sys/
+   install -o rds -g rds -pm 644 /etc/systemd/system/mysqld@.service sys/
+   install -o rds -g rds -pm 644 /etc/mysql/conf.d/rds.cnf sys/
+   install -o rds -g rds -pm 644 /etc/mysql/mariadb.conf.d/50-server.cnf sys/
+   install -o rds -g rds -pm 644 /etc/mysql/mariadb.conf.d/50-client.cnf sys/
+   install -o rds -g rds -pm 644 /etc/systemd/system/ethercat.service sys/
+   install -o rds -g rds -pm 644 /etc/systemd/system/cif.service sys/
+   install -o rds -g rds -pm 644 /etc/ld.so.conf.d/rds.conf sys/
+   install -o rds -g rds -pm 644 /etc/security/limits.conf sys/
+   install -o rds -g rds -pm 644 /etc/iptables/rules.v4 sys/
+}
+
+archive_ntp() {
+   [ $NTP ] && return
+   NTP="ntp"
+   echo "archiving ntp configuration files..."
+   mkdir -p ntp && chown rds.rds ntp/
+   install -o rds -g rds -pm 644 /etc/ntp.conf ntp/
+}
+
+archive_ups() {
+   [ $UPS ] && return
+   UPS="ups"
+   echo "archiving ups configuration files..."
+   mkdir -p ups && chown rds.rds ups/
+   install -o rds -g rds -pm 644 /etc/apcupsd/apcupsd.conf ups/
+}
+
+
+###
+# begin script
+###
+
+if [ $# -eq 0 ] ; then
+   echo "usage: $0 [args]"
+   echo "where 'args' is any combination of the following:"
+   echo "   app -- archive application-specific config files"
+   echo "   sys -- archive system configuration files"
+   echo "   ntp -- archive ntp configuration files"
+   echo "   ups -- archive ups configuration files"
+   echo "   all -- all of the above"
+   exit 1
+fi
+
+if [ $UID -ne 0 ] ; then
+   echo "Administrator privileges required"
+   su -c "$0 $*"
+   exit
+fi
+
+while (( $# )) ; do
+   case "$1" in
+      app)
+         archive_app
+         ;;
+      sys)
+         archive_sys
+         ;;
+      ntp)
+         archive_ntp
+         ;;
+      ups)
+         archive_ups
+         ;;
+      all)
+         archive_app
+         archive_sys
+         archive_ntp
+         archive_ups
+         ;;
+      *)
+         echo "unknown argument '$1'"
+         ;;
+   esac
+   shift
+done

@@ -1,0 +1,16 @@
+#!/bin/sh
+# modstatus	Checks if the specified module loaded
+
+if [ "$#" != 1 ] ; then
+  echo $"Usage: $0 <module>"
+  exit 1
+fi
+
+mod=$(/sbin/lsmod | grep "$1   ")
+if [ -n "$mod" ]; then
+  echo $"Module $1 loaded..."
+  exit 0
+fi
+
+echo $"Module $1 unloaded"
+exit 2

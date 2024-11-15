@@ -1,0 +1,6 @@
+{
+    "repeatPhrase": "REPEAT",
+    "wakeWord": "VICTORIA START",
+    "sleepWord": "VICTORIA STOP",
+    "terminalPhrase": "OK"  
+}

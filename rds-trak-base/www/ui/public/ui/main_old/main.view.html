@@ -1,0 +1,64 @@
+<div class="container-fluid" ng-cloak>
+
+  <div class="main" layout="row" layout-padding layout-wrap layout-fill>
+    <md-button ng-repeat="tile in tiles[0]"
+         ng-style="{'background': tile.background}"
+         class="tile"
+         href="{{tile.href}}"
+         md-whiteframe="5" layout="column" layout-align="center center">
+      <div><md-icon class="icon" md-svg-src="{{tile.icon}}"></md-icon></div>
+      <div>{{tile.title}}</div> 
+      <md-tooltip>{{tile.tooltip}}</md-tooltip>
+    </md-button>
+  </div>
+
+  <div class="main" layout="row" layout-padding layout-wrap layout-fill>
+    <md-button ng-repeat="tile in tiles[1]"
+         ng-style="{'background': tile.background}"
+         class="tile"
+         href="{{tile.href}}"
+         md-whiteframe="5" layout="column" layout-align="center center">
+      <div><md-icon class="icon" md-svg-src="{{tile.icon}}"></md-icon></div>
+      <div>{{tile.title}}</div> 
+      <md-tooltip>{{tile.tooltip}}</md-tooltip>
+    </md-button>
+  </div>
+
+  <div class="main" layout="row" layout-padding layout-wrap layout-fill>
+    <md-button ng-repeat="tile in tiles[2]"
+         ng-style="{'background': tile.background}"
+         class="tile"
+         href="{{tile.href}}"
+         md-whiteframe="5" layout="column" layout-align="center center">
+      <div><md-icon class="icon" md-svg-src="{{tile.icon}}"></md-icon></div>
+      <div>{{tile.title}}</div> 
+      <md-tooltip>{{tile.tooltip}}</md-tooltip>
+    </md-button>
+  </div>
+
+  <div class="main" layout="row" layout-padding layout-wrap layout-fill>
+    <md-button ng-repeat="tile in tiles[3]"
+         ng-style="{'background': tile.background}"
+         class="tile"
+         href="{{tile.href}}"
+         md-whiteframe="5" layout="column" layout-align="center center">
+      <div><md-icon class="icon" md-svg-src="{{tile.icon}}"></md-icon></div>
+      <div>{{tile.title}}</div> 
+      <md-tooltip>{{tile.tooltip}}</md-tooltip>
+    </md-button>
+  </div>
+
+  <div class="main" layout="row" layout-padding layout-wrap layout-fill>
+    <md-button ng-repeat="tile in tiles[4]"
+         ng-style="{'background': tile.background}"
+         class="tile"
+         href="{{tile.href}}"
+         md-whiteframe="5" layout="column" layout-align="center center">
+      <div><md-icon class="icon" md-svg-src="{{tile.icon}}"></md-icon></div>
+      <div>{{tile.title}}</div> 
+      <md-tooltip>{{tile.tooltip}}</md-tooltip>
+    </md-button>
+  </div>
+
+</div>
+

@@ -1,0 +1,17 @@
+#!/bin/bash
+
+###
+
+BINDIR=$HOME/app/bin
+HOST=`hostname`
+
+. $HOME/.bash_profile
+
+###
+
+cd $BINDIR
+
+#cat ctr_reset.sql | /usr/bin/mysql -urds -prds rds
+
+#/usr/bin/mysql -urds -prds -Drds -e "UPDATE rdsCartons SET lpn=CONCAT(lpn,'-',DATE_FORMAT(stamp, \"%y%m%d\")) WHERE lpn REGEXP '^TT[0-9]{7}$' AND ( DATE(labelStamp)<CURDATE() OR DATE(cancelStamp)<CURDATE());"
+/usr/bin/mysql -urds -prds -Drds -e "INSERT status SET appName='statusApp', statusType='updateToteLpn', operator='rds' ,status='idle';"

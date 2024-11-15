@@ -1,0 +1,23 @@
+#
+#  RDS3 makefile 
+#
+DIR = msg vt100 trn sql role tag \
+      ann b64 busy ctr dashboard evt execute hist javautil launch logix net \
+      par par/parout q qctr qevt qhist runtime sm sqld tag/dsd tq tty util
+
+all:
+	@set -e; for i in $(DIR); do make -C $$i; done
+lib:
+	@set -e; for i in $(DIR); do make lib -C $$i; done
+doc:
+	@set -e; for i in $(DIR); do make doc -C $$i; done
+pdf:
+	@set -e; for i in $(DIR); do make pdf -C $$i; done
+install:
+	@su -c ' \
+	  set -e; for i in $(DIR); do make HOME=/home/rds install -C $$i; done; \
+	  /sbin/ldconfig \
+	'
+clean:
+	@set -e; for i in $(DIR); do make clean -C $$i; done
+

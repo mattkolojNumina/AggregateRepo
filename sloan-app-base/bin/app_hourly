@@ -1,0 +1,15 @@
+#!/bin/bash
+
+###
+
+BINDIR=$HOME/app/bin
+HOST=`hostname`
+
+###
+
+cd $BINDIR
+
+#cat ctr_reset.sql | /usr/bin/mysql -urds -prds rds
+
+/usr/bin/mysql -urds -prds -Drds -e "REPLACE INTO runtime SET name='/$HOST/app_hourly', value=NOW();"
+

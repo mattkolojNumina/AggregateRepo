@@ -1,0 +1,1 @@
+ALTER TABLE rdsLocations ADD amrWayPoint CHAR(32) NOT NULL DEFAULT '';

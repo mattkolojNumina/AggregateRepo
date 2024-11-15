@@ -1,0 +1,13 @@
+{
+    "filename":"grammar05",
+    "key":"2",
+    "type": "standard",
+    "minAlphaNumeric": "0",
+    "maxAlphaNumeric": "0",
+    "minNumeric": "1",
+    "maxNumeric": "4",
+    "phraseMap": {
+      "EXCEPTION": "exception",
+      "BREAK SHELF PACK": "breakPack"
+    }
+}

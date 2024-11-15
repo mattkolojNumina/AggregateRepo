@@ -1,0 +1,299 @@
+<div class="container-fluid" ng-cloak>
+  <md-content>
+    <md-tabs md-dynamic-height md-selected='selected'>
+
+      <md-tab label="Voice Operators" md-on-select="refresh()">
+        <div layout="column">
+          <md-content class="md-padding">
+            <table id="operator" class="display" width="100%"></table>
+          </md-content>
+
+          <div layout="row">
+            <span flex></span>
+            <md-button class="md-raised" 
+                       ng-disabled="!permit('voiceEdit')"
+                       ng-click="goEdit()">New</md-button>
+           </div>
+        </div> 
+      </md-tab>
+
+      <md-tab label="Operator Details" md-on-select="refresh()">
+        <md-content class="md-padding">
+          <div layout="row">
+            <div flex>
+              <table class='voice'>
+                <tr>
+                  <td class='voice-field'>Operator ID:</td>
+                  <td class='voice-data'>{{detail.operatorID}}</td>
+                </tr>
+                <tr>
+                  <td class='voice-field'>Operator name:</td>
+                  <td class='voice-data'>{{detail.operatorName}}</td>
+                </tr>
+                <tr>
+                  <td class='voice-field'>Level:</td>
+                  <td class='voice-data'>{{detail.voiceLevel}}</td>
+                </tr>
+                <tr>
+                  <td class='voice-field'>Allowed tasks:</td>
+                  <td class='voice-data'>{{detail.allowedTasks}}</td>
+                </tr>
+              </table>
+            </div>
+            
+            <div flex layout="column">
+              <div>
+              <md-button class="md-raised"
+                         ng-click="logoffOperator(detail.operatorID)">Log off operator</md-button>
+              </div>
+              <div>
+              <md-button class="md-raised"
+                         ng-disabled="!permit('voiceEdit')"
+                         ng-click="getEditValues(detail.operatorID)">Edit operator</md-button>
+              </div>
+              <div>
+              <md-button class="md-raised"
+                         ng-disabled="!permit('voiceEdit')"
+                         ng-show="deleteButton=='preliminary'"
+                         ng-click="beginDelete()">Delete operator</md-button>
+              <md-button class="md-ohno"
+                         ng-disabled="deleteButton=='really' || !permit('voiceEdit')"
+                         ng-show="deleteButton=='really' || deleteButton=='reallyReally'"
+                         ng-click="deleteOperator(detail.operatorID)">Really delete</md-button>
+              <md-button class="md-separate"
+                         ng-show="deleteButton=='really' || deleteButton=='reallyReally'"
+                         ng-click="endDelete()">Cancel</md-button>
+              </div>
+            </div>
+            
+            <div flex>
+              <form ng-submit="doLookup()">
+                <md-input-container md-no-float class='md-block'>
+                  <label>Look up operator</label>
+                  <input ng-model='lookup'>
+                </md-input-container> 
+              </form>
+            </div>
+          </div>
+          <div>
+            <table id="talk" class="display" width="100%"></table>
+          </div>
+          
+        </md-content>
+      </md-tab>
+      
+      <md-tab label="Edit Operator" md-on-select="">
+        <md-content class="md-padding">
+          <div layout="row">
+            <div flex layout="column">
+              <md-toolbar>
+                <span flex></span>
+                <span flex>&nbsp;&nbsp;&nbsp;New</span>
+                <span flex></span>
+              </md-toolbar>
+              <br/>
+              <form>
+                <md-input-container>
+                  <label>Operator ID</label>
+                  <input type="text"
+                         class="form-control"
+                         ng-model="opData.id">
+                </md-input-container>
+                <md-button class="md-separate"
+                           ng-disabled="!opData.id"
+                           ng-click="newOperator(opData.id)">
+                  Create
+                </md-button>
+              </form>
+            </div>
+            <div flex>
+              <md-toolbar>
+                <span flex></span>
+                <span flex>&nbsp;&nbsp;&nbsp;Edit
+                  <span ng-hide="!thisOpID">
+                    &nbsp;operator {{thisOpID}}
+                  </span>
+                </span>
+                <span flex></span>
+              </md-toolbar>
+              
+              <br/>
+              <form>
+                  <div class="form-group" layout="column">
+                    <label for="editUsername">Operator name:</label>
+                    <input type="text" class="form-control" id="editUsername"
+                           ng-change="changeOp()"
+                           ng-model="opData.userName"
+                           ng-disabled="!thisOpID">
+                    <!--<label for="editGrammar">Grammar:</label>
+                    <input type="text" class="form-control" id="editGrammar"
+                           ng-model="opData.grammar"
+                           ng-disabled="!thisOpID">-->
+                    <!--<label for="editSoundFilePath">Language file:</label>
+                    <input type="text" class="form-control" id="editSoundFilePath"
+                           ng-model="opData.soundFilePath"
+                           ng-disabled="!thisOpID">-->
+                    <label for="editPdaName">Voice terminal:</label>
+                    <input type="text" class="form-control" id="editPdaName"
+                           ng-change="changeOp()"
+                           ng-model="opData.pdaName"
+                           ng-disabled="!thisOpID">
+                    <label for="editHeadsetName">Headset type:</label>
+                    <input type="text" class="form-control" id="editHeadsetName"
+                           ng-change="changeOp()"
+                           ng-model="opData.headsetName"
+                           ng-disabled="!thisOpID">
+                    
+                    <label for="editMicGain">Mic gain: {{opData.micGain}}</label>
+                    <!--<input type="number" min="0" max="100" step="1"
+                           class="form-control"
+                           id="editMicGain"
+                           ng-model="opData.micGain"
+                           ng-disabled="!thisOpID">-->
+                    <input type="range" min="0" max="100"
+                           ng-change="changeOp()"
+                           class="form-control"
+                           id="editMicGain"
+                           ng-model="opData.micGain"
+                           ng-disabled="!thisOpID">
+                    <label for="editPhoneVolume">Headset volume: {{opData.phoneVolume}}</label>
+                    <!--<input type="number" min="0" max="100" step="1"
+                           class="form-control"
+                           id="editPhoneVolume"
+                           ng-model="opData.phoneVolume"
+                           ng-disabled="!thisOpID">-->
+                    <input type="range" min="0" max="100"
+                           ng-change="changeOp()"
+                           class="form-control"
+                           id="editPhoneVolume"
+                           ng-model="opData.phoneVolume"
+                           ng-disabled="!thisOpID">
+                    
+                    <label for="editLanguage">Language:</label>
+                    <md-select ng-model="opData.language"
+                               ng-change="changeOp()"
+                               id="editLanguage"
+                               ng-disabled="!thisOpID">
+                      <md-option ng-repeat="lang in langChoices"
+                                 ng-value="lang.language">
+                        {{lang.language}}
+                      </md-option>
+                    </md-select>
+                    
+                    <!--<label for="editAcousticModel">Acoustic model:</label>
+                    <input type="text" class="form-control" id="editAcousticModel"
+                           ng-model="opData.acousticModel"
+                           ng-disabled="!thisOpID">-->
+                    
+                    <span>Auto gain control:&nbsp;
+                    <input type="checkbox" class="form-control" id="editAgc"
+                           ng-change="changeOp()"
+                           ng-model="opData.agc"
+                           ng-disabled="!thisOpID"></span>
+                    <br/>
+                    <span>Barge-in mode:&nbsp;
+                    <input type="checkbox" class="form-control" id="editBargeIn"
+                           ng-change="changeOp()"
+                           ng-model="opData.bargeIn"
+                           ng-disabled="!thisOpID"></span>
+                    <br/>
+                    <span>Advanced:&nbsp;
+                    <input type="checkbox" class="form-control" id="editAdvanced"
+                           ng-change="changeOp()"
+                           ng-model="opData.advanced"
+                           ng-disabled="!thisOpID"></span>
+                    <br/>
+                </div>
+                <md-button class="md-separate"
+                           ng-disabled="!thisOpID || opIsUnchanged"
+                           ng-click="editOperator()">
+                  Save
+                </md-button>
+              </form>
+              
+            </div>
+          </div>
+        </md-content>
+      </md-tab>
+      
+      <md-tab label="Scanner Config" md-on-select="">
+        <div layout="row">
+          <div flex=60>
+            <md-content class="md-padding">
+              <table id="pairsTable" class="display" width="100%"></table>
+            </md-content>
+          </div>
+          
+          <div flex>
+            <md-toolbar>
+              <div class="md-toolbar-tools" ng-show="barShown=='tool'">
+                <span flex></span>
+                <md-button  aria-label="New"
+                            ng-disabled="!permit('voiceEdit')"
+                            ng-click="pairNew()">New</md-button>
+                <md-button  aria-label="Update"
+                            ng-disabled="!permit('voiceEdit')||!pair.name"
+                            ng-click="pairUpdate()">Update</md-button>
+                <md-button  aria-label="Delete"
+                            ng-disabled="!permit('voiceEdit')||!pair.name"
+                            ng-click="pairDelete()">Delete</md-button>
+                <md-button  aria-label="Commit"
+                            ng-disabled="!permit('voiceEdit')||!changed"
+                            ng-click="pairsCommit()">Commit</md-button>
+                <md-button  aria-label="Reload"
+                            ng-disabled="!permit('voiceEdit')"
+                            ng-click="showReload()">Reload</md-button>
+              </div>
+              <div class="md-toolbar-tools" ng-show="barShown=='reload'">
+                <span flex>Reload pairings from file?</span>
+                <md-button aria-label="Yes"
+                           ng-disabled="!permit('voiceEdit')"
+                           ng-click="reloadPairing()">Yes</md-button>
+                <md-button aria-label="No"
+                           ng-click="barReset()">No</md-button>
+              </div>
+            </md-toolbar>
+            
+            <span ng-show="changed" style="color: red">
+              &nbsp;&nbsp;&nbsp;Uncommitted changes are pending.
+            </span>
+            
+            <div layout="row">
+              <div flex>
+                <md-content class="md-padding">
+                  <div layout="column">
+                    <div>
+                      <md-input-container class="md-block">
+                        <label>Name</label>
+                        <input ng-model="pair.name">
+                      </md-input-container>
+                    </div>
+                    <div>
+                      <md-input-container class="md-block">
+                        <label>Client</label>
+                        <input ng-model="pair.client">
+                      </md-input-container>
+                    </div>
+                    <div>
+                      <md-input-container class="md-block">
+                        <label>MAC</label>
+                        <input ng-model="pair.mac">
+                      </md-input-container>
+                    </div>
+                    <div>
+                      <md-input-container class="md-block">
+                        <label>PIN</label>
+                        <input ng-model="pair.pin">
+                      </md-input-container>
+                    </div>
+                  </div>
+                </md-content>
+              </div>
+            </div>
+          </div>
+        </div>
+      </md-tab>
+      
+    </md-tabs>
+  </md-content>
+</div>

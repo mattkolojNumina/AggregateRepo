@@ -1,0 +1,53 @@
+#!/bin/sh
+#
+# rds   run RDS processes
+#
+# chkconfig: 234 99 01
+# description: System service to control the automated startup/shutdown of \
+#              RDS applications; the applications themselves are controlled \
+#              via a script that is located in user space.
+
+
+RDS_SCRIPT=/home/rds/app/bin/rc.all
+LOCK_FILE=/var/lock/subsys/rds
+
+# source function library
+. /etc/rc.d/init.d/functions
+
+# See how we were called.
+case "$1" in
+   start)
+      echo -n $"Starting RDS: "
+      $RDS_SCRIPT start && success || failure
+      RETVAL=$?
+      [ $RETVAL = 0 ] && touch $LOCK_FILE
+      echo
+      ;;
+   stop)
+      echo -n $"Stopping RDS: "
+      $RDS_SCRIPT stop && success || failure
+      RETVAL=$?
+      [ $RETVAL = 0 ] && rm -f $LOCK_FILE
+      echo
+      ;;
+   restart)
+      $0 stop
+      sleep 1
+      $0 start
+      ;;
+   status)
+      if [ -f $LOCK_FILE ]; then
+         echo "RDS service is running"
+      else
+         echo "RDS service is stopped"
+      fi
+
+      $RDS_SCRIPT status
+      RETVAL=$?
+      ;;
+   *)
+      echo "Usage: $0 {start|stop|restart|status}"
+      RETVAL=1
+esac
+
+exit $RETVAL

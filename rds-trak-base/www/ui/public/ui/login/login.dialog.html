@@ -1,0 +1,33 @@
+<md-dialog>
+  <form ng-submit="login()">
+    <md-toolbar>
+      <div class="md-toolbar-tools">
+        <h2>Log in</h2>
+        <span flex></span>
+        <md-button class="md-icon-button" aria-label="Close"
+                   ng-click="cancel()">
+          <md-icon md-svg-src="icons/close.svg" aria-label="Close">
+          </md-icon>
+        </md-button>
+      </div> 
+    </md-toolbar>
+
+    <md-dialog-content>
+      <div class="md-dialog-content">
+        <md-input-container class="md-block">
+          <label>Username</label>
+          <input name="username" ng-model="login.username" md-autofocus required/>
+        </md-input-container>
+        <md-input-container class="md-block">
+          <label>Password</label>
+          <input type="password" name="password" ng-model="login.password"required/>
+        </md-input-container>
+      </div>
+    </md-dialog-content>
+
+    <md-dialog-actions layout="row">
+      <span flex></span>
+      <md-button type="submit" class="md-raised md-primary">Log In</md-button>
+    </md-dialog-actions>
+  </form>
+</md-dialog>

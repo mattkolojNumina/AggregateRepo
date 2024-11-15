@@ -1,0 +1,231 @@
+v 32 -- 2021/08/09
+ * bin/config/restore_app: add recovery of SQL routines  --RME
+ * sql/rds_sql.w: new function sql_affected_rows() --ANK
+ * trak/io/ersc/app/ersctrak.w: prevent crash when trak not running  --ANK
+
+v 31 -- 2021/01/08
+ * minor cleanup for checkin and build image  --AHM
+ * trak/io/ethercat updates for writing to registers and using KBus  --MRW/MDO
+
+v 30 -- 2020/05/13
+ * config/recovery scripts updated for Ubuntu (netplan, systemctl, etc.) --MRW
+ * trak engine re-written for 64-bit; i/o modules as application-space programs  --MRW/MDO
+
+v 29
+   (not checked in--intermediate build to support 64-bit TRAK on Ubuntu distro)
+
+v 28 -- 2017/11/13
+ * update/cleanup various scripts  --AHM/RME
+ * trak/ethercat: update ethercat.pm to include support for EL2088 module  --ANK
+ * trak/condition: fix on/off values for reversed elements  --MDO
+ * LEGACY/b64: update some alphabet characters for compliance with current
+   standards  --ANK
+ * trn/tracer.w: use printf-safe tracing functions instead of escaping
+   certain characters  --ANK
+ * javautil/logging: use printf-safe tracing functions for throwables  --ANK
+ * email/text notifications (notifier, evtd, RDSEvent) added  --RME
+ * AbstractPollingApp added  --AHM/RME
+ * MySQL/MariaDB/rds.cnf max connections set to 1024, open files to 8192
+   (prevents 214 connection limit)  --RME
+ * added updated MS SQL drivers  --RME
+ * added routines (stored procs and functions) to backup_db  --RME
+ * changed notification db tables from InnoDB to MyISAM  --RME
+
+
+v 27 -- 2016/04/01
+ * launch: check for db connectivity before processing  --MDO
+ * trak/lib/event.i: handle event exhaustion  --MDO/MRW
+ * trak/ethercat: update ethercat.pm to include support for EL2042 module  --ANK
+ * backup_db (and restore_app) split sql dumps for tables and views into
+   separate directories  --RME
+
+
+v 26 -- 2015/10/19
+ * sql: added connection timeout and reconnection attempts  --ANK
+ * tag: added #include's for 64-bit compatibility  --MDO
+ * 3gtrak: start event on communication loss  --RME
+ * trak/engine/engine_cif.i: updated to work with new kernel  --MRW/MDO
+ * update java keystore file with renewed certificate, re-sign 3rd-party
+   jars  --MRW/AHM
+ * update scripts for archiving/installing system config and restoring
+   application tree, move out of app into ~/bin/config  --RME/AHM
+ * increase/standardize database field widths (controls, runtime, various
+   dashboardData...)  --ANK/AHM
+
+
+v 25 -- 2015/07/16
+ * launch: eliminate periodic timestamp update  --ANK
+ * new host-aware functions in RDSDatabase  --AHM/ANK
+ * update mysql rds.cnf; sign mysql jars  --ANK/AHM
+ * remove utility functions from app_lib into new rds_util library; clean
+   up app_lib  --AHM/RME
+ * remove ~/examples folder in favor of hosted repository for application
+   source  --RME
+
+
+v 24 -- 2015/01/20
+ * src: reorder subdirs in Makefile to resolve dependencies  --AHM/MRW
+ * javautil: reference column aliases, new method in RDSDatabase; fix
+   getEventMap() in RDSEvent  --AHM/ANK
+ * sql: update Makefile with flags for 64-bit systems  --AHM/ANK
+ * trak: update ethercat.pm  --MRW/RME
+ * app/src/trak/util: add spread.pl  --RME
+ * examples: update zonetrak apps and Makefile, add example.jnlp  --AHM
+ * examples: update zone_printer for pnp (via compile flag)  --AHM/MRW
+ * general: update Java manifest file  --MDO
+ * make some rds libraries legacy; cleanup src, bin, and lib; move
+   alternate jar files to lib subdirectory  --AHM/RME/MDO
+
+
+v 23 -- 2014/07/14
+ * javautil: RDSDatabase closes ResultSets explicitly; execute (and variants)
+   return -1 on exception  --ANK/AHM
+ * java security: create jarsign script, reference this from Makefiles; install
+   singly signed 3rd-party jars  --AHM/RME
+ * trak: change name creation for report methods (traksort.pm) to allow longer
+   input names  --AHM
+ * more consistent usage of 'db' alias across libraries, hostname field added
+   to tables and scripts (controls, trak, tkd_fill, rpload/rpsave) --RME/MDO/AHM
+ * handle reserved word "get" for MySQL > 5.6 (trakd.w, tkd_fill.c,
+   TuningPanel.java)  --RME
+
+
+v 22 -- 2013/01/14
+ * sql: default database now 'db' (hosts table entry)
+ * launch: fix race condition w/ forked sql connection, default trak entry in
+   table runs 'rc.trak' rather than 'rc.trak start'  --MDO/AHM/ANK
+ * hist: error handling for long carton id  --RME
+ * java utilities: new methods + cleanup in RDSDatabase, separate
+   interface/class for logging, new utility methods  --AHM
+ * dashboard: DataViewPanel (and associated subpanels), DimPanel, add
+   jmathplot to lib dir for DimPanel  --RME/AHM
+ * libraries: update Makefiles, minor cleanup, checkin  --AHM
+ * misc: create keystore + sign jars for use in web pages, create public RSA
+   key + directions for automatic login  --AHM/MRW
+ * applications: update examples  --AHM
+
+
+v 21 -- 2011/09/27
+ * dashboard: colors in ProcessPanel, 'area' field and new indicator
+   object in rdsGraphics, many new small features and minor cleanup  --AHM
+ * javautil: new database methods, updated RDSTableCellRenderer w/ button
+   renderer/editor, cleanup, etc.  --AHM
+ * launch: 'throttled' field for rapid restarts  --MDO
+ * trak: change quantum to 1 ms, increase registers to 50, increase number
+   of rp's, bugfix in dead.pm, revlink change in dp.pm, support for KBus
+   couplers/modules in engine.ecat and ecat.pm, tracktrace cleanup
+   --MDO/AHM/MRW
+ * trakd: add register field for dp's  --MRW
+ * trn: minor cleanup  --AHM
+ * add/update java connectors for jt400, jtds, jconn  --ANK
+ * misc: default .keystore for jar signing, app_weekly in crontab that
+   runs backup_app, update app/src/Makefile  --AHM
+
+
+v 20 -- 2011/01/06
+ * update SQL Server java connector, add apache net-commons jar  --ANK
+ * runtime: runtimed app mirrors runtime table to tags  --MRW/AHM
+ * database: add index to cartonLog and dashboardLinks tables  --ANK/AHM
+ * ethercat: add full path to lsmod in ethercat system service script  --ANK
+ * execute/hist/launch: remove references to unused libraries  --AHM
+ * add template.w and Makefile to examples directory  --AHM
+
+
+v 19 -- 2010/10/06
+ * trak: fix engine driver out-of-range error; add 'virtual' type and other
+   minor cleanup to ecat.pm  --MDO/AHM
+ * ctr/evt/hist: string handling and other minor cleanup  --AHM/ANK
+ * launch: throttling for rapid application restarts  --MDO
+ * dashboard: add panel display callback; new features in rdsGraphics  --AHM
+ * backup_app: add app2usb; error checking; don't require root passwd  --RME/AHM
+ * sql: added replication monitor (java app)  --RME/AHM
+ * runtime: new folder in src, contains table definition  --AHM
+
+
+v 18 -- 2010/07/29
+ * backup_app saves to usb, if mounted  --RME
+ * ctr: rds_ctr.w and ctrd cleanup; ctr_bump now wraps ctr_incr  --AHM
+ * evt: evtd.w cleanup; change 'duration' field to int (addresses bug
+   in dashboard for values longer than 24 hrs)  --AHM
+ * updated java utils: database (log slow queries), event (as evt above),
+   counter (as evt above)  --AHM
+ * add oracle jdbc connector(s)  --ANK/AHM
+ * minor Makefile cleanups in some src directories  --AHM
+ * minor RDS directory cleanup and updates to build document  --AHM
+
+
+v 17 -- 2010/05/06
+ * variety of script/config changes (.bashrc, rc.launch, make secure)  --AHM
+ * trak: smart3g module, 3gtrak app, lib changes  --MDO
+ * updates to launch/stop and execute  --MDO
+ * webtron: catch sigchild to avoid zombie processes  --MDO
+ * sql: alert long queries  --RME
+ * minor db updates (zerofill in cartonLog; larger text fields in dashboard,
+   reportItems, reports, webObjects)  --AHM/ANK
+ * update datetimepicker jar to fix focus issue  --AHM
+ * update dashboard webpage (index.html, style.css, deployJava.js)  --ANK
+ * java utility classes updated and moved to javautils  --AHM
+ * dashboard: update report panels, NuminaGroup logo  --AHM
+ * added shared libraries and header files for Prosilica cameras --ANK
+ * added snmp config files to ~/app/config/snmp/ --ANK
+
+
+v 16 -- 2009/11/17
+ * import tables required for reports in dashboard  --AHM
+ * updates to launch/stop and execute  --MDO
+
+
+v 15 -- 2009/09/29
+ * support for EtherCAT and Hilmot 3G in TRAK  --MDO
+ * use 'launch' instead of 'daemon' to control process execution  --MDO
+ * updated dashboard src  --AHM
+ * updated src Makefiles  --AHM/ANK
+ * general OS and RDS cleanup  --ANK/AHM/MDO
+
+
+v 14 -- 2008/11/20
+ * added microsleep in trakinit method of traksh.w to avoid race condition
+   that occasionally leads to lockup on trak restart  --MDO
+ * added 'tty_connect' kermit script for serial communication  --AHM
+ * updated app/config/sys/ with udev, limits, rds service  --AHM
+ * move rc.all to app/bin/ to be consistent with rds service  --AHM
+
+
+v 13 -- 2008/09/03
+ * updated TRAK engine compilation for Fedora Core 8  --MDO
+ * added support for pci-based pcif in TRAK  --MRW/MDO
+ * new rds library apps: launch and execute  --MDO
+ * add #includes in rds src files to avoid compiler warnings  --AHM
+ * webtron now uses net_serve rather than build the port itself  --AHM
+ * cleanup in src/trak folders
+
+
+v 12 -- 2008/03/27
+ * daemon.w: fixed memory bug for long command-line strings  --AHM
+ * changed '/home/rds' to '$HOME' in many scripts and Makefiles  --AHM
+ * added separate 'stop' and 'kill' functions in rc scripts  --AHM
+ * app/bin/app_daily: added 'daemonCommand' to list of daily purged sql
+   tables  --AHM
+ * backup_app: moved script into app tree and added modifiable list of db
+   tables to dump  --AHM
+ * app/data/roles.txt: created this file and added reference to it when
+   starting roled in rc.rds  --AHM
+ * dashboard: updated source to newest versions (CounterPanel, EventPanel,
+   RDSGraphics, etc.)  --AHM
+ * regularized most src folders, added RCS directories + check-in, moved
+   .web -> .w, and changed Makefiles accordingly  --AHM
+
+
+v 11 -- 2007/05/17
+ * sql/rds_sql.w: modified reconnect logic
+ * daemon/daemon.w: command queue now clears on startup
+ * net/rds_net.w: changed options to re-use sockets in net_serve
+ * dashboard: cleanup, many fixes, some new functionality
+ * app/bin/ctr_reset: field order switched in select to match insert
+
+
+v 10 -- 2006/11/13
+ * dashboard: added dashboard files to src tree
+ * ctr: added timestamp field to counters table
+ * daemon.w: bug fix
+

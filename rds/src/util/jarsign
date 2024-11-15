@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# note: jar signing is currently not required; remove the following
+# line to re-enable
+exit 0
+
+if [ $# -eq 0 ] ; then
+   echo "usage: $0 <jar>"
+   exit 1
+fi
+
+
+JAR=$1
+
+KEYSTORE=$HOME/numina.jks
+STOREPASS=10331Werch
+#TSA=https://timestamp.geotrust.com/tsa
+#TSA=http://sha256timestamp.ws.symantec.com/sha256/timestamp
+TSA=http://sha1timestamp.ws.symantec.com/sha1/timestamp
+ALIAS=numinagroup.com
+#OPTIONS=-J-Dhttps.protocols=TLSv1.2
+OPTIONS=
+
+echo jarsigner $OPTIONS -keystore $KEYSTORE -storepass $STOREPASS -tsa $TSA \
+               $JAR $ALIAS
+jarsigner $OPTIONS -keystore $KEYSTORE -storepass $STOREPASS -tsa $TSA \
+          $JAR $ALIAS
+

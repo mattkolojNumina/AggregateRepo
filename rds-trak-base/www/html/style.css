@@ -1,0 +1,25 @@
+body {
+  font-size: 12px; font-family: Arial, Helvetica, sans-serif;
+  padding: 0px 0px 0px 0px; margin: 0px 0px 0px 0px;
+  border-width: 0px 0px 0px 0px; outline-width: 0px 0px 0px 0px;
+  overflow: hidden;
+}
+table {
+  font-size: 12px; font-family: Arial, Helvetica, sans-serif;
+  padding: 0px 0px 0px 0px; margin: 0px 0px 0px 0px;
+  border-width: 0px 0px 0px 0px; outline-width: 0px 0px 0px 0px;
+}
+tr {
+  padding: 0px 0px 0px 0px; margin: 0px 0px 0px 0px;
+  border-width: 0px 0px 0px 0px; outline-width: 0px 0px 0px 0px;
+}
+td {
+  padding: 0px 0px 0px 0px; margin: 0px 0px 0px 0px;
+  border-width: 0px 0px 0px 0px; outline-width: 0px 0px 0px 0px;
+}
+p  { color: #000020 }
+h1 { color: #B02030 }
+h2 { color: #000000 }
+th { color: #000000; background-color: #FFF0F0 }
+a:link, a:visited, a:active { color: #B02030; text-decoration: none }
+

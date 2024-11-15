@@ -1,0 +1,21 @@
+#
+#  RDS3 makefile for TRAK libraries
+#
+DIR = trak trakd
+
+all:
+	@set -e; for i in $(DIR); do make -C $$i; done
+lib:
+	@set -e; for i in $(DIR); do make lib -C $$i; done
+doc:
+	@set -e; for i in $(DIR); do make doc -C $$i; done
+pdf:
+	@set -e; for i in $(DIR); do make pdf -C $$i; done
+install:
+	@su -c ' \
+	  set -e; for i in $(DIR); do make install -C $$i; done; \
+	  /sbin/ldconfig \
+	'
+clean:
+	@set -e; for i in $(DIR); do make clean -C $$i; done
+

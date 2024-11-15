@@ -1,0 +1,5 @@
+#!/bin/bash
+
+echo -n "clearing rds src tree... "
+rm -rf $HOME/src
+echo "done"

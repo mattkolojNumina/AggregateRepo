@@ -1,0 +1,86 @@
+flowchart TB
+    start(((Exception\nProcess\nStart)))
+        start -->|Scan| scanCartonLPN
+        start -->|Unreadable\nLPN Button| unreadableLPN
+
+    scanCartonLPN(Scan carton LPN)
+        scanCartonLPN --> isCartonLPNValid?
+
+    isCartonLPNValid?{Is carton\nLPN valid?}
+        isCartonLPNValid?-->|No| invalidCartonLPN
+        isCartonLPNValid?-->|Yes| isCartonCanceled?
+
+    isCartonCanceled?{Is carton\ncancelled?}
+        isCartonCanceled?-->|Yes| cancelledCarton
+        isCartonCanceled?-->|No| doesCartonHaveOpenPicks?
+
+    doesCartonHaveOpenPicks?{Does carton have\nopen picks?}
+        doesCartonHaveOpenPicks?-->|Yes| beginAuditProcess
+        doesCartonHaveOpenPicks?-->|No| isCartonMarkedForAudit?
+
+    isCartonMarkedForAudit?{Is carton marked\nfor audit?}
+        isCartonMarkedForAudit?-->|Yes| beginAuditProcess
+        isCartonMarkedForAudit?-->|No| doesCartonHaveShortPicks?
+
+    doesCartonHaveShortPicks?{Does carton have\nshort picks?}
+        doesCartonHaveShortPicks?-->|Yes| shortPicks
+        doesCartonHaveShortPicks?-->|No| isCartonMarkedForRepack?
+
+    isCartonMarkedForRepack?{Is carton marked\nfor repack?}
+        isCartonMarkedForRepack?-->|Yes| beginRepackProcess
+        isCartonMarkedForRepack?-->|No| isLabelException?
+
+    isLabelException?{Did a label\nexception occur?}
+        isLabelException?-->|Yes| labelException
+        isLabelException?-->|No| reprint
+
+    %% INVALID LPN %%
+
+    invalidCartonLPN(Msg: No carton exists with LPN X.\nRestock product.)
+        invalidCartonLPN --> exceptionEnd
+
+    %% UNREADABLE LPN %%
+
+    unreadableLPN(TRANSFER LPN PROCESS??????)
+        unreadableLPN --> exceptionEnd
+
+    %% CANCELED CARTON %%
+
+    cancelledCarton(Msg: Carton with LPN X cancelled.\nRestock product)
+        cancelledCarton --> exceptionEnd
+
+    %% AUDIT %%
+
+    beginAuditProcess(((AUDIT)))
+
+    %% SHORT %%
+
+    shortPicks(Msg: Carton has short picks\nPlease place at hold area.\nMark last seen location as hold area.)
+        shortPicks --> exceptionEnd
+
+    %% REPACK %%
+
+    beginRepackProcess(((REPACK)))
+
+    %% Label Exception %%
+
+    labelException(Display message from label exception.\nAllow reprint of all docs.\nRequire scan validation of shipping label.\nAllow repack.)
+        labelException -->|Done Button| exceptionEnd
+        labelException -->|Repack Button| beginRepackProcess
+        labelException -->|Reprint Ship Label| reprintShipLabel
+
+    %% default / reprint %%
+
+    reprint(Msg: 'Carton complete.'\nAllow reprint of all docs.\nRequire scan validation of shipping label.\nAllow repack.)
+        reprint -->|Done Button| exceptionEnd
+        reprint -->|Repack Button| beginRepackProcess
+        reprint -->|Reprint Ship Label| reprintShipLabel
+
+    reprintShipLabel{Was shipping\nlabel printed?}
+        reprintShipLabel -->|No| exceptionEnd
+        reprintShipLabel -->|Yes| scanValidate
+
+    scanValidate(Scan validate ship label.\nSet label stamp.)
+        scanValidate --> exceptionEnd
+
+    exceptionEnd(((END)))

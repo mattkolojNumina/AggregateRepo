@@ -1,0 +1,3 @@
+[submodule "trak/node"]
+	path = trak/node
+	url = https://gitlab.com/NuminaGroup/product/app/traknode.git

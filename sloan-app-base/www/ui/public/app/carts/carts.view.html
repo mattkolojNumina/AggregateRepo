@@ -1,0 +1,146 @@
+<div class="container-fluid" ng-cloak>
+  <md-content>
+    <md-tabs md-dynamic-height md-selected="selected">
+    
+      <md-tab label="Open Carts" md-on-select="refresh()">
+        <md-content class="md-padding"> 		  
+      		<table id="openCarts" class="display" width="100%"></table>
+        </md-content>
+      </md-tab>	   	 	  	  
+         
+      <md-tab label="Cart Details" md-on-select="">
+        <md-content ng-show='working'>
+          <div layout="row">
+            <span flex></span>
+            <div layout="column" layout-align="center center">
+            <h2>WORKING</h2>
+            <md-progress-circular md-mode="indeterminate"></md-progress-circular>
+            <h3></h3>
+            </div>
+            <span flex></span>
+          </div>
+        </md-content >		  
+        <md-content class="md-padding" ng-show='!working'>
+          <div layout="row">
+            <div flex=80 layout="column">
+              <h3>Cart Seq: {{cart.cartSeq}}</h3> 
+              <div ng-show="cart.cartSeq">	  
+                  <table>
+                    <tr>
+                       <td class='order-field'>Cart ID:</td>
+					   <td class='order-data'>{{cart.cartId}}</td>	
+                    </tr>                   
+                    
+                    <tr>
+                      <td class='order-field'>Cart Type:</td>
+                      <td class='order-data'>{{cart.cartType}}</td>				  
+                    </tr>					  
+                    
+                    <tr>
+                      <td class='order-field'>Reserved:</td>
+                      <td class='order-data'>{{cart.reservedBy}}</td>
+                    </tr>	
+	
+                    <tr>
+                      <td class='order-field'>Created:</td>
+                      <td class='order-data'>
+                        {{cart.createStamp|date:'y-MM-dd HH:mm:ss'}}
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td class='order-field'>Built:</td>
+                      <td class='order-data'>
+                        {{cart.buildStamp|date:'y-MM-dd HH:mm:ss'}}
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td class='order-field'>Completed:</td>
+                      <td class='order-data'>
+                        {{cart.completeStamp|date:'y-MM-dd HH:mm:ss'}}
+                      </td>
+                    </tr>					
+                  </table>       
+              </div>
+            </div>
+            <div flex> <!-- layout="row"-->
+              <md-toolbar>
+                <div class="md-toolbar-tools" ng-show="cart.cartSeq">
+                  <md-button aria-label="Cancel"
+                    ng-show="(cart.cartSeq>0 && !cart.completeStamp)"
+                    ng-disabled="!permit('cartsEdit')"
+                    ng-click="completeCart()">Complete Cart</md-button>
+                </div>
+              </md-toolbar>
+              <br/>   
+              <form ng-submit="lookupCartId()">
+                <md-input-container>
+                  <label>Look up cart</label>
+                  <md-tooltip md-direction="bottom">cartId</md-tooltip>
+                  <input ng-model="cartId">
+                </md-input-container>
+              </form>
+            </div>
+          </div>
+          
+          <div ng-show="cart.cartSeq>0">
+            <md-tabs md-dynamic-height class="md-padding">
+            
+              <md-tab label="Cartons">
+                <table id="cartons" class="display" width="100%"></table>
+              </md-tab>				  	
+
+              <md-tab label="History">
+                <table id="history" class="display" width="100%"></table>
+              </md-tab>	    
+          
+            </md-tabs>
+          </div>
+
+        </md-content>
+      </md-tab>
+      
+    </md-tabs>
+  </md-content>
+</div>
+
+<script type="text/ng-template" id="lookup.html">
+  <md-dialog ng-cloak>
+    <form>
+      <md-toolbar>
+        <div class="md-toolbar-tools">
+          <h2>Select a record</h2>              
+        </div>
+      </md-toolbar>	
+      <md-dialog-content>
+          <div class="md-dialog-content">
+            <table>
+              <thead>
+                <tr>
+                  <th>Cart Seq&nbsp;</th>
+                  <th>Cart ID&nbsp;</th>
+                  <th>Created&nbsp;</th>					  
+                  <th>Select &nbsp;</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="order in candidates">
+                  <td> {{cart.cartSeq}} </td>
+                  <td> {{cart.cartId}} </td>
+                  <td> {{cart.createStamp|date:'y-MM-dd HH:mm:ss'}} </td>				  
+                  <td>
+                    <md-button class="md-raised md-primary"
+                         ng-click="selectCart(cart)">
+                    Select
+                    </md-button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+      </md-dialog-content>
+    </form>
+  </md-dialog>
+</script>
+

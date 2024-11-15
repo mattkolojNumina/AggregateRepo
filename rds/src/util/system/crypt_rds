@@ -1,0 +1,12 @@
+#!/bin/bash
+
+echo "encrypting rds source archive... "
+cd $HOME/archive
+rm -f rds.tgz.gpg
+gpg -q --cipher-algo BLOWFISH -c rds.tgz
+if [ "$?" -ne 0 ] ; then
+   echo "failed"
+   exit 1
+fi
+rm -f rds.tgz
+echo "done"

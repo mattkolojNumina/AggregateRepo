@@ -1,0 +1,109 @@
+<div class="container-fluid" ng-cloak>
+  <md-tabs md-dynamic-height md-selected="selected">
+
+    <md-tab label="VAS Assignment" md-on-select="refresh()">
+      <md-content>
+        <div layout="row">
+          <div flex>
+            <md-content class="md-padding">
+              <table id="bin" class="display compact" width="100%"></table>
+            </md-content>
+          </div>
+    
+          <div flex class="md-padding">
+          <md-toolbar>
+            <div class="md-toolbar-tools">
+              <span flex></span>
+              <md-button aria-label="Clear"
+                         ng-disabled="(bin.pod=='')||(!permit('vasAssign'))" 
+                         ng-click="binClear()">Clear</md-button>
+              <md-button aria-label="Update"
+                         ng-disabled="(bin.pod=='')||(!permit('vasAssign'))" 
+                         ng-click="binUpdate()">Update</md-button>
+            </div>
+          </md-toolbar>
+    
+            <md-content class="md-padding">
+              <div layout="row">
+                <md-input-container>
+                  <label>Pod</label>
+                  <input ng-model="bin.pod" ng-readonly="true">
+                </md-input-container>
+                <md-input-container>
+                  <label>Bin</label>
+                  <input ng-model="bin.vasBin" ng-readonly="true">
+                </md-input-container>
+              </div>
+            </md-content>
+
+          <div layout="column" class="shade">
+            <md-content class="md-padding">
+              <div>
+                <md-input-container class="md-block">
+                  <label>VAS</label>
+                  <md-select ng-model="bin.choice">
+                    <md-option ng-repeat="code in codes"
+                               value="{{code.vasCode}}">
+                      {{code.vasCode}}: {{code.vasDesc}}
+                    </md-option>
+                  </md-select>
+                </md-input-container>
+              </div>
+        
+            </md-content>
+          </div>
+        </div>
+      </md-content>
+    </md-tab>
+
+    <md-tab label="VAS Maintenance" md-on-select="refresh()">
+      <md-content>
+        <div layout="row">
+          <div flex>
+            <md-content class="md-padding">
+              <table id="vas" class="display compact" width="100%"></table>
+            </md-content>
+          </div>
+    
+          <div flex class="md-padding">
+          <md-toolbar>
+            <div class="md-toolbar-tools">
+              <span flex></span>
+              <md-button aria-label="New"
+                         ng-disabled="!permit('vasEdit')"
+                         ng-click="vasNew()">New</md-button>
+              <md-button aria-label="Update"
+                         ng-disabled="!permit('vasEdit')" 
+                         ng-click="vasUpdate()">Update</md-button>
+              <md-button aria-label="Delete"
+                         ng-disabled="!permit('vasEdit')" 
+                         ng-click="vasDelete()">Delete</md-button>
+            </div>
+          </md-toolbar>
+    
+          <div layout="column">
+            <md-content class="md-padding">
+              <div>
+                <md-input-container class="md-block">
+                  <label>VAS Code</label>
+                  <input type="text"
+                         ng-model="vas.vasCode"
+                         md-maxlength="2">
+                </md-input-container>
+              </div>
+        
+              <div>
+                <md-input-container class="md-block">
+                  <label>Description</label>
+                  <input type="text" 
+                         ng-model="vas.vasDesc">
+                </md-input-container>
+              </div>
+    
+            </md-content>
+          </div>
+        </div>
+      </md-content>
+    </md-tab>
+  </md-tabs>
+</div>

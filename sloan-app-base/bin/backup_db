@@ -1,0 +1,167 @@
+#!/bin/bash
+
+NODATA_TABLES="
+   _adminLog
+   cartonLog
+   counts_old
+   eventLog
+   execute
+   notifications
+   boxData
+   cartonStatus
+   counts
+   docs
+   docQueue
+   eastCartons
+   eastPackCartons
+   events
+   hostLog
+   labels
+   log
+   piScreenshots
+   geekBinding
+   geekContainerOccupy
+   geekInternalFeedback
+   geekInternalFeedbackSku
+   geekInventory
+   geekInventoryQuery
+   geekInventoryQueryResponse
+   geekInventoryQuerySku
+   geekLog
+   geekPickCancel
+   geekPickConf
+   geekPickConfContainer
+   geekPickConfContainerSku
+   geekPickConfContainerSkuSeq
+   geekPickConfSku
+   geekPickConfSkuSeq
+   geekPickConfSkuShelf
+   geekPickContainerConf
+   geekPickContainerConfSku
+   geekPickContainerConfSkuSeq
+   geekPickContainerConfSkuShelf
+   geekPickOrder
+   geekPickOrderSku
+   geekPutawayCancel
+   geekPutawayConf
+   geekPutawayConfSku
+   geekPutawayConfSkuShelf
+   geekPutawayOrder
+   geekPutawayOrderSku
+   geekSequence
+   geekSku
+   geekSkuBarcode
+   geekSkuPacking
+   geekSnapshot
+   geekStockAdjust
+   geekStockAdjustConf
+   geekStockAdjustConfSku
+   geekStockAdjustSku
+   geekStockCommand
+   geekStockCommandSku
+   geekStockFeedback
+   geekStockFeedbackSku
+   geekUser
+   geekUserRole
+   geekWorkstationStatusUpdate
+   gmsCallback
+   gmsOperation
+   gmsRequest
+   log
+   rdsActions
+   rdsCartonData
+   rdsCartonExceptions
+   rdsCartons
+   rdsCartonImages
+   rdsCarts
+   rdsDocuments
+   rdsGeekInventoryAdjustments
+   rdsLocationData
+   rdsLocations
+   rdsMarkOutSkus
+   rdsOperatorActivity
+   rdsOrderLineConfirmationUpload
+   rdsPalletData
+   rdsPallets
+   rdsPickData
+   rdsPicks
+   rdsToteContentsUpload
+   rdsTotesPerOrderUpload
+   rdsUploadQueue
+   rdsWaveData
+   rdsWaves
+   putawayRequests
+   putawayResponses
+   custFullcaseLineData
+   custFullcaseLines
+   custOrderData
+   custOrderLineData
+   custOrderLines
+   custOrders
+   custOutboundOrderFiles
+   custPutawayOrders
+   custShipmentData
+   custShipments
+   custShippingInfo
+   cycleCountRequests
+   cycleCountResponses
+   proOperations
+   proOperatorLog
+   proTracker
+   status
+   shipDocs
+   shipCartons
+   shipPackages
+   shipShipments
+   shipItems
+   shipContainers
+   sortCartons
+   victoryDevices
+   victoryMessages
+   victoryInteractions
+   victoryParams
+   victoryLog
+   victoryDevices
+   victoryExceptions
+   victoryErrors
+   victoryJSON
+   westCartons
+   westPackCartons
+   xpalCartons
+"
+DATADIR=$HOME/app/data/rds
+DUMP="mysqldump --order-by-primary --skip-extended-insert --hex-blob -urds -prds rds"
+
+mkdir -p $DATADIR/tables
+mkdir -p $DATADIR/views
+mkdir -p $DATADIR/routines
+
+mysql -s -urds -prds rds -e "SHOW FULL TABLES" | while read tablename tabletype; do
+   if [ "$tabletype" == "VIEW" ]; then
+      echo "view" $tablename
+      $DUMP -d $tablename > $DATADIR/views/$tablename.sql
+   else
+      no_data=0
+      if [ "$NODATA_TABLES" != "" ];
+      then
+         for t in $NODATA_TABLES
+         do
+            if [ "$tablename" == "$t" ] ; then
+               no_data=1
+            fi
+         done
+      fi
+
+      if [ "$no_data" == "1" ] ; then
+         echo "nodata table" $tablename
+         $DUMP -d $tablename > $DATADIR/tables/$tablename.sql
+      else
+         echo "table" $tablename
+         $DUMP $tablename > $DATADIR/tables/$tablename.sql
+      fi
+   fi
+done
+
+echo "routines"
+$DUMP -d -t --routines > $DATADIR/routines/routines.sql
+

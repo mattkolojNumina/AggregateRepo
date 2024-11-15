@@ -1,0 +1,286 @@
+<div class="container-fluid" ng-cloak>
+  <md-content>
+    <md-tabs md-dynamic-height md-selected='selected'>
+
+      <md-tab label="Victory Operators" md-on-select="refresh()">
+        <div layout="column">
+          <md-content class="md-padding">
+            <table id="operator" class="display" width="100%"></table>
+          </md-content>
+
+          <div layout="row">
+            <span flex></span>
+            <md-button class="md-raised" 
+                       ng-disabled="!permit('victoryEdit')"
+                       ng-click="goEdit()">New</md-button>
+           </div>
+        </div> 
+      </md-tab>
+
+      <md-tab label="Operator Details" md-on-select="refresh()">
+        <md-content class="md-padding">
+          <section layout="row" layout-wrap>
+                  
+            <div layout="row">
+              <md-button class="pointless">From:</md-button>
+              <mdp-date-picker ng-model='date1'></mdp-date-picker>
+              <mdp-time-picker ng-model='date1'></mdp-time-picker>
+            </div>
+          
+            <div layout="row">
+              <md-button class="pointless">To:</md-button>
+              <mdp-date-picker ng-model='date2'></mdp-date-picker>
+              <mdp-time-picker ng-model='date2'></mdp-time-picker>
+            </div>
+          
+            <md-input-container>
+              <md-button class="md-raised" ng-click="displayTimeRange()" >Display</md-button>
+            </md-input-container>
+          </section>
+          <div layout="row">
+            <div flex>
+              <table class='victory'>
+                <tr>
+                  <td class='victory-field'>Operator ID:</td>
+                  <td class='victory-data' maxlength="8">{{detail.operatorID}}</td>
+                </tr>
+                <tr>
+                  <td class='victory-field'>Operator name:</td>
+                  <td class='victory-data' maxlength="8">{{detail.operatorName}}</td>
+                </tr>
+                <tr>
+                  <td class='victory-field'>Level:</td>
+                  <td class='victory-data'>{{detail.voiceLevel}}</td>
+                </tr>
+              </table>
+            </div>
+            
+            <div flex layout="column">
+              <div>
+                <md-button class="md-raised"
+                           ng-disabled="!permit('victoryEdit')"
+                           ng-click="logoffOperator(detail.operatorID)">Log off operator</md-button>
+              </div>
+              <div>
+              <md-button class="md-raised"
+                         ng-disabled="!permit('victoryEdit')"
+                         ng-click="getEditValues(detail.operatorID)">Edit operator</md-button>
+              </div>
+              <div>
+              <md-button class="md-raised"
+                         ng-disabled="!permit('victoryEdit')"
+                         ng-show="deleteButton=='preliminary'"
+                         ng-click="beginDelete()">Delete operator</md-button>
+              <md-button class="md-ohno"
+                         ng-disabled="deleteButton=='really' || !permit('victoryEdit')"
+                         ng-show="deleteButton=='really' || deleteButton=='reallyReally'"
+                         ng-click="deleteOperator(detail.operatorID)">Really delete</md-button>
+              <md-button class="md-separate"
+                         ng-show="deleteButton=='really' || deleteButton=='reallyReally'"
+                         ng-click="endDelete()">Cancel</md-button>
+              </div>
+            </div>
+            
+            <div flex>
+              <form ng-submit="doLookup()">
+                <md-input-container md-no-float class='md-block'>
+                  <label>Look up operator</label>
+                  <input ng-model='lookup'>
+                </md-input-container> 
+              </form>
+            </div>
+          </div>
+          <div>
+            <table id="talk" class="display" width="100%"></table>
+          </div>
+          
+        </md-content>
+      </md-tab>
+      
+      <md-tab label="Edit Operator" md-on-select="refresh()">
+        <md-content class="md-padding">
+          <div layout="row">
+            <div flex layout="column">
+              <md-toolbar>
+                <span flex></span>
+                <span flex>&nbsp;&nbsp;&nbsp;New</span>
+                <span flex></span>
+              </md-toolbar>
+              <br/>
+              <form>
+                <md-input-container>
+                  <label>Operator ID</label>
+                  <input type="text"
+                         class="form-control"
+                         ng-model="opData.id" maxlength="8">
+                </md-input-container>
+                <md-button class="md-separate"
+                           ng-disabled="!opData.id"
+                           ng-click="newOperator(opData.id)">
+                  Create/Lookup
+                </md-button>
+              </form>
+            </div>
+            <div flex>
+              <md-toolbar>
+                <span flex></span>
+                <span flex>&nbsp;&nbsp;&nbsp;Edit
+                  <span ng-hide="!thisOpID">
+                    &nbsp;operator {{thisOpID}}
+                  </span>
+                </span>
+                <span flex></span>
+              </md-toolbar>
+              
+              <br/>
+              <form>
+                  <div class="form-group" layout="column">
+                    <label for="editUsername">Operator name:</label>
+                    <input type="text" class="form-control" id="editUsername" maxlength="8"
+                           ng-change="changeOp()"
+                           ng-model="opData.userName"
+                           ng-disabled="!thisOpID"/>
+                    <!-- <label for="editMicGain">Mic sensitivity: {{opData.micGain}}</label>
+                    <input type="range" min="0" max="1" step = ".01"
+                           ng-change="changeOp()"
+                           class="form-control"
+                           id="editMicGain"
+                           ng-model="opData.micGain"
+                           ng-disabled="!thisOpID"> -->
+                    <label for="editPhoneVolume">Headset volume: {{opData.phoneVolume}}</label>
+                    <input type="range" min="0" max="1" step = ".01"
+                           ng-change="changeOp()"
+                           class="form-control"
+                           id="editPhoneVolume"
+                           ng-model="opData.phoneVolume"
+                           ng-disabled="!thisOpID"/>                   
+                    <label for="editSpeed">Victoria speed: {{opData.speed}}</label>
+                    <input type="range" min="0.8" max="1.5" step = ".1"
+                           ng-change="changeOp()"
+                           class="form-control"
+                           id="editSpeed"
+                           ng-model="opData.speed"
+                           ng-disabled="!thisOpID"/>                    
+                    <label for="editPitch">Victoria pitch: {{opData.pitch}}</label>
+                    <input type="range" min="0.8" max="1.5" step = ".1"
+                           ng-change="changeOp()"
+                           class="form-control"
+                           id="editPitch"
+                           ng-model="opData.pitch"
+                           ng-disabled="!thisOpID"/>  
+                    <label for="editLanguage">Language:</label>
+                    <md-select ng-model="opData.language"
+                              aria-label="language"
+                              ng-change="changeOp()"
+                              id="editLanguage"
+                              ng-disabled="!thisOpID">
+                      <md-option ng-repeat="lang in langChoices"
+                                ng-value="lang.language">
+                        {{lang.language}}
+                      </md-option>
+                    </md-select>
+                    <label for="editGangingLevel">Ganging Level:</label>
+                    <md-select ng-model="opData.gangingLevel"
+                              aria-label="gangingLevel"
+                              ng-change="changeGangingLevel()"
+                              id="editGangingLevel"
+                              ng-disabled="!thisOpID">
+                      <md-option ng-repeat="level in gangingLevels"
+                                ng-value="level">
+                        {{level}}
+                      </md-option>
+                    </md-select>
+
+                    <md-input-container class="md-block">
+                      Random UPC Scan Percentage
+                      <input aria-label="Random UPC Scan Percentage" 
+                        ng-model="opData.upcScanProbability" ng-change="changeOp()"
+                        ng-disabled="!thisOpID" 
+                        type='number' min=0 max=1 step=0.05>
+                    </md-input-container>
+
+                    <md-input-container class="md-block">
+                      Random Carton Audit Percentage
+                      <input aria-label="Random Carton Audit Percentage" 
+                        ng-model="opData.randomQc" ng-change="changeOp()"
+                        ng-disabled="!thisOpID" 
+                        type='number' min=0 max=1 step=0.05>
+                    </md-input-container>
+
+                    <span>Advanced:&nbsp;
+                    <input type="checkbox" class="form-control" id="editAdvanced"
+                           ng-change="changeOp()"
+                           ng-model="opData.advanced"
+                           ng-disabled="!thisOpID"></span>
+
+                    <span>Allowed to Reverse:&nbsp;
+                    <input type="checkbox" class="form-control" id="editAudit"
+                           ng-change="changeOp()"
+                           ng-model="opData.allowReverse"
+                           ng-disabled="!thisOpID"></span>
+                    <br/>
+                </div>
+                <md-button class="md-separate"
+                           ng-disabled="!thisOpID || opIsUnchanged"
+                           ng-click="editOperator()">
+                  Save
+                </md-button>
+              </form>
+              
+            </div>
+          </div>
+        </md-content>
+      </md-tab>
+      
+      <md-tab label="Operator Contact" md-on-select="refresh()">
+        <div layout="row">
+          <div flex=60>
+            <md-content class="md-padding">
+              <table id="messagesTable" class="display" width="100%"></table>
+            </md-content>
+          </div>
+          
+          <div flex>
+            <md-toolbar>
+              <div class="md-toolbar-tools">
+                <span flex></span>
+                <md-button  aria-label="message"
+                            ng-disabled="!permit('victoryEdit')"
+                            ng-click="sendMessage()">Send Message</md-button>
+              </div>
+            </md-toolbar>
+            
+            
+            <div layout="row">
+              <div flex>
+                <md-content class="md-padding">
+                  <div layout="column">
+                    <div>
+                      <md-input-container class="md-block">
+                        <label>Recipient</label>
+                        <input ng-model="message.to">
+                      </md-input-container>
+                    </div>
+                    <div>
+                      <md-input-container class="md-block">
+                        <label>Message</label>
+                        <input ng-model="message.message">
+                      </md-input-container>
+                    </div>
+                  </div>
+                </md-content>
+              </div>
+            </div>
+          </div>
+        </div>
+      </md-tab>
+      
+      <md-tab label="Victory Devices" md-on-select="refresh()">
+        <md-content class="md-padding">
+          <table id="devices" class="display" width="100%"></table>
+        </md-content>
+      </md-tab>
+      
+    </md-tabs>
+  </md-content>
+</div>

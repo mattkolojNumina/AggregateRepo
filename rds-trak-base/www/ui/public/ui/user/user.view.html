@@ -1,0 +1,212 @@
+<div class="container-fluid" ng-cloak>
+  <md-content>
+    <md-tabs md-dynamic-height md-selected="selected">
+      
+      <md-tab label="Users" md-on-select="refresh()">
+        <md-content class="md-padding">
+          <div layout="row">
+            <div flex=40>
+              <md-content class="md-padding">
+                <table id="user" class="display" width="100%"></table>
+              </md-content>
+            </div>
+            
+            <div flex>
+              <md-toolbar>
+                <div class="md-toolbar-tools">
+                  <span flex></span>
+                  <md-button aria-label="New"
+                             ng-disabled="!permit('userEdit')"
+                             ng-click="userNew()">New</md-button>
+                  <md-button aria-label="Update"
+                             ng-disabled="!permit('userEdit')||!user.user"
+                             ng-click="userUpdate()">Update</md-button>
+                  <md-button aria-label="Delete"
+                             ng-disabled="!permit('userEdit')||!user.user"
+                             ng-click="userDelete()">Delete</md-button>
+                </div>
+              </md-toolbar>
+              
+              <div layout="row">
+                
+                <div flex>
+                  <md-content class="md-padding">
+                    <div layout="column">
+                      <div>
+                      <md-input-container class="md-block">
+                        <label>User</label>
+                        <input ng-model="user.user" ng-readonly="userLock">
+                      </md-input-container>
+                      </div>
+                      
+                      <div>
+                      <md-input-container class="md-block">
+                        <label>Name</label>
+                        <input ng-model="user.name">
+                      </md-input-container>
+                      </div>
+
+                      <div ng-show="permit('userEdit')">
+                      <md-input-container class="md-block">
+                        <label>Password</label>
+                        <input type="password" ng-model="user.password">
+                      </md-input-container>
+                      </div>
+                    </div>
+                  </md-content> 
+                </div>
+                
+                <div flex>
+                  <md-content class="md-padding">
+                    <div ng-repeat="userRole in userRoles"
+                         ng-show="permit('userEdit')||userRole.on"> 
+                    <md-switch ng-model="userRole.on"
+                               ng-disabled="!permit('userEdit')"
+                               aria-label="userRole.role">
+                      {{userRole.description}}
+                    </md-switch>
+                    </div>
+                  </md-content>
+                </div>
+                
+              </div>
+            </div>
+          </div>
+        </md-content>
+      </md-tab>
+      
+      <md-tab label="Roles" md-on-select="refresh()">
+        <md-content class="md-padding">
+          <div layout="row">
+            <div flex=40>
+              <md-content class="md-padding">
+                <table id="role" class="display" width="100%"></table>
+              </md-content>
+            </div>
+            <div flex>
+              <md-toolbar>
+                <div class="md-toolbar-tools">
+                  <span flex></span>
+                  <md-button aria-label="New"
+                             ng-disabled="!permit('userEdit')"
+                             ng-click="roleNew()">New</md-button>
+                  <md-button aria-label="Update"
+                             ng-disabled="!permit('userEdit')||!role.role"
+                             ng-click="roleUpdate()">Update</md-button>
+                  <md-button aria-label="Delete"
+                             ng-disabled="!permit('userEdit')||!role.role"
+                             ng-click="roleDelete()">Delete</md-button>
+                </div>
+              </md-toolbar>
+              
+              <div layout="row">
+                <div flex>
+                  <md-content class="md-padding">
+                    <div layout="column">
+                      <div>
+                      <md-input-container class="md-block">
+                        <label>Role</label>
+                        <input ng-model="role.role" ng-readonly="roleLock">
+                      </md-input-container>
+                      </div>
+                      
+                      <div>
+                      <md-input-container class="md-block">
+                        <label>Description</label>
+                        <input ng-model="role.description">
+                      </md-input-container>
+                      </div>
+                      
+                    </div>
+                  </md-content> 
+                </div>
+                
+                <div flex style="height: 600px; overflow: auto">
+                  <md-content class="md-padding">
+                    <div ng-repeat="rolePerm in rolePerms"> 
+                      <md-switch ng-model="rolePerm.on"
+                                 ng-show="permit('userEdit')||rolePerm.on"
+                                 ng-disabled="!permit('userEdit')"
+                                 aria-label="rolePerm.description">
+                        {{rolePerm.description}}
+                      </md-switch>
+                    </div>
+                  </md-content>
+                </div>
+              </div>
+              
+            </div>
+          </div>
+        </md-content>
+      </md-tab>
+      
+      <md-tab label="Permissions" md-on-select="refresh()">
+        <md-content class="md-padding">
+          <div layout="row">
+            <div flex>
+              <md-content class="md-padding">
+                <table id="perm" class="display" width="100%"></table>
+              </md-content>
+            </div>
+            
+            <div flex>
+              
+              <md-toolbar>
+                <div class="md-toolbar-tools">
+                  <span flex></span>
+                  <md-button aria-label="New"
+                             ng-disabled="!permit('userEdit')"
+                             ng-click="permNew()">New</md-button>
+                  <md-button aria-label="Update"
+                             ng-disabled="!permit('userEdit')||!perm.perm"
+                             ng-click="permUpdate()">Update</md-button>
+                  <md-button aria-label="Delete"
+                             ng-disabled="!permit('userEdit')||!perm.perm"
+                             ng-click="permDelete()">Delete</md-button>
+                </div>
+              </md-toolbar>
+              
+              <div layout="row">
+                <div flex>
+                  <md-content class="md-padding">
+                    <div layout="column">
+                      <div>
+                      <md-input-container class="md-block">
+                        <label>Permission</label>
+                        <input ng-model="perm.perm" ng-readonly="permLock">
+                      </md-input-container>
+                      </div>
+                      
+                      <div>
+                      <md-input-container class="md-block">
+                        <label>Description</label>
+                        <input ng-model="perm.description">
+                      </md-input-container>
+                      </div>
+                      
+                      <div>
+                      <md-input-container class="md-block">
+                        <label>Enforced</label>
+                        <md-select ng-model="perm.enforced">
+                          <md-option value="yes">yes</md-option>
+                          <md-option value="no">no</md-option>
+                        </md-select>
+                      </md-input-container>
+                      </div>
+                      
+                    </div>
+                  </md-content>
+                </div>
+              </div>
+            </div>
+          </div>
+        </md-content>
+      </md-tab>
+		<md-tab label="Access Log" md-on-select="refresh()">			
+			<md-content class="md-padding">
+				<table id="adminLogTable" class="display" width="100%"></table>				
+			</md-content>
+		</md-tab>	  
+    </md-tabs>
+  </md-content>
+</div>

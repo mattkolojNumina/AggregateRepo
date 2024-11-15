@@ -1,0 +1,297 @@
+<div class="container-fluid" ng-cloak>
+  <md-content>
+    <md-tabs md-dynamic-height md-selected="selected">
+
+      <md-tab label="Cartons" ng-disabled="" 
+              md-on-select="refresh()">
+
+        <md-content class="md-padding">
+          <div layout="row">
+            <div flex="60">
+              <md-content class="md-padding"> 
+                <table id="cartons" class="display"></table>
+              </md-content>
+            </div>
+
+            <div flex>
+              <md-toolbar>
+                <div class="md-toolbar-tools">
+                  <span>Carton type:&nbsp;{{cartonType}}</span>
+                  <span flex></span>
+                  <md-button aria-label="New"
+                             ng-disabled="!permit('configCartons') || !cartonEdit.cartonType_new"
+                             ng-click="cartonNew()">New</md-button>
+                  <md-button aria-label="Update"
+                             ng-disabled="!permit('configCartons') || !cartonType"
+                             ng-click="cartonUpdate()">Update</md-button>
+                  <md-button aria-label="Delete"
+                             ng-disabled="!permit('configCartons') || !cartonType"
+                             ng-click="cartonDelete()">Delete</md-button>
+                </div>
+              </md-toolbar>
+
+              <md-content class="md-padding">
+                <div layout="column">
+                  <md-input-container md-no-float class="md-block">
+                    <label>Type (new)</label>
+                    <input type="text"
+                           ng-model="cartonEdit.cartonType_new">
+                  </md-input-container>
+                  <md-input-container md-no-float class="md-block">
+                    <label>Weight</label>
+                    <input type="number" 
+                           min="0.0" step="0.01"
+                           ng-model="cartonEdit.weight">
+                  </md-input-container>
+                  <md-input-container md-no-float class="md-block">
+                    <label>Length</label>
+                    <input type="number" 
+                           min="0.0" step="0.1"
+                           ng-model="cartonEdit.length">
+                  </md-input-container>
+                  <md-input-container md-no-float class="md-block">
+                    <label>Width</label>
+                    <input type="number" 
+                           min="0.0" step="0.1"
+                           ng-model="cartonEdit.width">
+                  </md-input-container>
+                  <md-input-container md-no-float class="md-block">
+                    <label>Height</label>
+                    <input type="number" 
+                           min="0.0" step="0.1"
+                           ng-model="cartonEdit.height">
+                  </md-input-container>
+                  <md-input-container md-no-float class="md-block">
+                    <label>Kits</label>
+                    <input type="number" 
+                           min="0" step="1"
+                           ng-model="cartonEdit.numKits">
+                  </md-input-container>
+                  <md-input-container md-no-float class="md-block">
+                    <label>Small kits</label>
+                    <input type="number" 
+                           min="0" step="1"
+                           ng-model="cartonEdit.numSmallKits">
+                  </md-input-container>
+                  <md-input-container md-no-float class="md-block">
+                    <label>Description</label>
+                    <input type="text" 
+                           ng-model="cartonEdit.description">
+                  </md-input-container>
+                </div>
+
+              </md-content>
+            </div>
+          </div>
+        </md-content>
+        
+      </md-tab>
+      <md-tab label="SKUs" ng-disabled="" 
+              md-on-select="refresh()">
+
+        <md-content class="md-padding">
+          <div layout="row">
+            <div flex="60">
+              <md-content class="md-padding"> 
+                <table id="skus" class="display"></table>
+              </md-content>
+            </div>
+
+            <div flex>
+              <md-toolbar>
+                <div class="md-toolbar-tools">
+                  <span>SKU:&nbsp;{{itemId}}</span>
+                  <span flex></span>
+                  <md-button aria-label="New"
+                             ng-disabled="!permit('configSKUs') || !skuEdit.itemId_new"
+                             ng-click="skuNew()">New</md-button>
+                  <md-button aria-label="Update"
+                             ng-disabled="!permit('configSKUs') || !itemId"
+                             ng-click="skuUpdate()">Update</md-button>
+                  <md-button aria-label="Delete"
+                             ng-disabled="!permit('configSKUs') || !itemId"
+                             ng-click="skuDelete()">Delete</md-button>
+                </div>
+              </md-toolbar>
+
+              <md-content class="md-padding">
+                <div layout="column">
+                  <md-input-container md-no-float class="md-block">
+                    <label>SKU (new)</label>
+                    <input type="text"
+                           ng-model="skuEdit.itemId_new">
+                  </md-input-container>
+                  <md-input-container md-no-float class="md-block">
+                    <label>Barcode</label>
+                    <input type="text"
+                           ng-model="skuEdit.barcode">
+                  </md-input-container>
+                  <md-input-container md-no-float class="md-block">
+                    <label>Description</label>
+                    <input type="text" 
+                           ng-model="skuEdit.description">
+                  </md-input-container>
+                  <md-input-container md-no-float class="md-block">
+                    <label>Weight</label>
+                    <input type="number" 
+                           min="0.0" step="0.0001"
+                           ng-model="skuEdit.weight">
+                  </md-input-container>
+                  <md-input-container md-no-float class="md-block">
+                    <label>Box?</label>
+                    <input type="checkbox" 
+                           ng-model="skuEdit.isBox">
+                  </md-input-container>
+                  <md-input-container md-no-float class="md-block">
+                    <label>Subkit?</label>
+                    <input type="checkbox" 
+                           ng-model="skuEdit.isSubkit">
+                  </md-input-container>
+                  <md-input-container md-no-float class="md-block">
+                    <label>Serial?</label>
+                    <input type="checkbox" 
+                           ng-model="skuEdit.isSerial">
+                  </md-input-container>
+                  <md-input-container md-no-float class="md-block">
+                    <label>Notes</label>
+                    <input type="text" 
+                           ng-model="skuEdit.notes">
+                  </md-input-container>
+                </div>
+
+              </md-content>
+            </div>
+          </div>
+        </md-content>
+        
+      </md-tab>
+      <md-tab label="Shipping" ng-disabled="" 
+              md-on-select="refresh()">
+
+        <md-content class="md-padding">
+          <div layout="row">
+            <div flex="60">
+              <md-content class="md-padding"> 
+                <table id="shippers" class="display"></table>
+              </md-content>
+            </div>
+
+            <div flex>
+              <md-toolbar>
+                <div class="md-toolbar-tools">
+                  <span>Shipper:&nbsp;{{carrier}}&nbsp;{{class}}</span>
+                  <span flex></span>
+                  <md-button aria-label="New"
+                             ng-disabled="!permit('configShipping') || !(shipperEdit.carrier_new && shipperEdit.class_new)"
+                             ng-click="shipperNew()">New</md-button>
+                  <md-button aria-label="Update"
+                             ng-disabled="!permit('configShipping') || !(carrier && class)"
+                             ng-click="shipperUpdate()">Update</md-button>
+                  <md-button aria-label="Delete"
+                             ng-disabled="!permit('configShipping') || !(carrier && class)"
+                             ng-click="shipperDelete()">Delete</md-button>
+                </div>
+              </md-toolbar>
+
+              <md-content class="md-padding">
+                <div layout="column">
+                  <md-input-container md-no-float class="md-block">
+                    <label>Carrier (new)</label>
+                    <input type="text"
+                           ng-model="shipperEdit.carrier_new">
+                  </md-input-container>
+                  <md-input-container md-no-float class="md-block">
+                    <label>Class (new)</label>
+                    <input type="text"
+                           ng-model="shipperEdit.class_new">
+                  </md-input-container>
+                  <md-input-container md-no-float class="md-block">
+                    <label>Sort lane</label>
+                    <input type="text"
+                           ng-model="shipperEdit.sortLane">
+                  </md-input-container>
+                  <md-input-container md-no-float class="md-block">
+                    <label>Service</label>
+                    <input type="text"
+                           ng-model="shipperEdit.service">
+                  </md-input-container>
+                  <md-input-container md-no-float class="md-block">
+                    <label>Description</label>
+                    <input type="text" 
+                           ng-model="shipperEdit.description">
+                  </md-input-container>
+                </div>
+
+              </md-content>
+            </div>
+          </div>
+        </md-content>
+        
+      </md-tab>
+      <md-tab label="Inventory" ng-disabled="" 
+              md-on-select="refresh()">
+
+        <md-content class="md-padding">
+          <div layout="row">
+            <div flex="60">
+              <md-content class="md-padding"> 
+                <table id="locations" class="display"></table>
+              </md-content>
+            </div>
+
+            <div flex>
+              <md-toolbar>
+                <div class="md-toolbar-tools">
+                  <span>Location:&nbsp;{{locationId}}</span>
+                  <span flex></span>
+                  <md-button aria-label="New"
+                             ng-disabled="!permit('configInventory') || !locationEdit.locationId_new"
+                             ng-click="locationNew()">New</md-button>
+                  <md-button aria-label="Update"
+                             ng-disabled="!permit('configInventory') || !locationId"
+                             ng-click="locationUpdate()">Update</md-button>
+                  <md-button aria-label="Delete"
+                             ng-disabled="!permit('configInventory') || !locationId"
+                             ng-click="locationDelete()">Delete</md-button>
+                </div>
+              </md-toolbar>
+
+              <md-content class="md-padding">
+                <div layout="column">
+                  <md-input-container md-no-float class="md-block">
+                    <label>Location (new)</label>
+                    <input type="text"
+                           ng-model="locationEdit.locationId_new">
+                  </md-input-container>
+                  <md-input-container md-no-float class="md-block">
+                  <label>Type</label>
+                      <md-select ng-model="locationEdit.locationType">
+                        <md-option ng-repeat="locationType in locationTypes"
+                                   ng-value="locationType">
+                          {{locationType}}
+                        </md-option>
+                      </md-select>
+                  </md-input-container>
+                  <md-input-container md-no-float class="md-block">
+                    <label>Item</label>
+                    <input type="text"
+                           ng-model="locationEdit.itemId">
+                  </md-input-container>
+                  <md-input-container md-no-float class="md-block">
+                    <label>Ordinal</label>
+                    <input type="number" 
+                           min="0" step="1"
+                           ng-model="locationEdit.ordinal">
+                  </md-input-container>
+                </div>
+
+              </md-content>
+            </div>
+          </div>
+        </md-content>
+        
+      </md-tab>
+
+    </md-tabs>
+  </md-content>
+</div>

@@ -1,0 +1,124 @@
+<div class="container-fluid" ng-cloak>
+  <md-content>
+    <md-tabs md-dynamic-height md-selected="selected">
+      
+      <md-tab label="XPAL" md-on-select="">
+        <md-button class="md-cpause"
+                   ng-click="pauseRefresh()"
+                   ng-disabled="!cartonRefreshEnabled">Pause refresh</md-button>
+        <md-content class="md-padding">
+          <table id="recents" class="display" width="100%"></table>
+        </md-content>
+      </md-tab>
+      
+      <md-tab label="Sorter" md-on-select="">
+        <md-button class="md-cpause"
+                   ng-click="pauseRefresh()"
+                   ng-disabled="!cartonRefreshEnabled">Pause refresh</md-button>
+        <md-content class="md-padding">
+          <table id="sorters" class="display" width="100%"></table>
+        </md-content>
+      </md-tab>
+      
+      <md-tab label="Details" md-on-select="">
+        <md-content class="md-padding">
+          <div layout="row">
+            <div flex=5></div>
+            <div flex
+                 ng-show="carton.cartonSeq || true"> <!--TODO-->
+              <table class="carton">  <!--class="table-responsive borderless"-->
+                <tbody>
+                  <tr>
+                    <td class="carton-field">LPN:&nbsp;</td>
+                    <td class="carton-data">{{carton.cartonLpn}}</td>
+                  </tr>
+                  <tr>
+                    <td class="carton-field">OrderID:&nbsp;</td>
+                    <td class="carton-data">{{carton.orderID}}</td>
+                  </tr>
+                  <tr>
+                    <td class="carton-field">Tracking:&nbsp;</td>
+                    <td class="carton-data">{{carton.trackingNumber}}</td>
+                  </tr>
+                  <tr>
+                    <td class="carton-field">UCC:&nbsp;</td>
+                    <td class="carton-data">{{carton.ucc}}</td>
+                  </tr>
+                  <tr>
+                    <td class="carton-field">Weight:&nbsp;</td>
+                    <td class="carton-data">{{carton.weight}}</td>
+                  </tr>
+                  <tr>
+                    <td class="carton-field">Type:&nbsp;</td>
+                    <td class="carton-data">{{carton.cartonType}}</td>
+                  </tr>
+                  <tr>
+                    <td class="carton-field">Started:&nbsp;</td>
+                    <td class="carton-data">{{carton.startStamp | date:'medium'}}</td>
+                  </tr>
+                  <tr>
+                    <td class="carton-field">Picked:&nbsp;</td>
+                    <td class="carton-data">{{carton.pickStamp | date:'medium'}}</td>
+                  </tr>
+                  <tr>
+                    <td class="carton-field">Audited:&nbsp;</td>
+                    <td class="carton-data">{{carton.auditStamp | date:'medium'}}</td>
+                  </tr>
+                  <tr>
+                    <td class="carton-field">Sorted:&nbsp;</td>
+                    <td class="carton-data">{{carton.sortStamp | date:'medium'}}</td>
+                  </tr>
+                  <tr>
+                    <td class="carton-field">Confirmed:&nbsp;</td>
+                    <td class="carton-data">{{carton.confirmStamp | date:'medium'}}</td>
+                  </tr>
+                  <tr>
+                    <td class="carton-field">Shipped:&nbsp;</td>
+                    <td class="carton-data">{{carton.shipStamp | date:'medium'}}</td>
+                  </tr>
+                  <tr>
+                    <td class="carton-field">Completed:&nbsp;</td>
+                    <td class="carton-data">{{carton.completeStamp | date:'medium'}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div flex> <!-- layout="row"-->
+              <div layout="column">
+                <div>
+                  <div>
+                    <md-button class="md-cpause"
+                               ng-click="pauseRefresh()"
+                               ng-disabled="!cartonRefreshEnabled">Pause refresh</md-button>
+                  </div>
+                  <div flex></div>
+                </div>
+                <form ng-submit="lookup()">
+                  <md-input-container>
+                    <label>LPN lookup</label>
+                    <input ng-model="lpn">
+                  </md-input-container>
+                </form>
+              </div>
+            </div>
+          </div>
+          
+          <div>
+            <md-tabs md-dynamic-height class="md-padding">
+              <md-tab label="Carton History">
+                <table id="history" class="display" width="100%"></table>
+              </md-tab>
+              
+              <md-tab label="Carton Picks">
+                <table id="picks" class="display" width="100%"></table>
+              </md-tab>
+            </md-tabs>
+        </div>
+
+        </md-content>
+      </md-tab>
+      
+    </md-tabs>
+  </md-content>
+</div>

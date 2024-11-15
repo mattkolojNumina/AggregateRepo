@@ -1,0 +1,12 @@
+#!/bin/bash
+
+cd $HOME
+
+echo -n "archiving src tree... "
+if [[ ! -d src ]] ; then
+   echo "src tree not found"
+   exit 1
+fi
+
+tar -czf $HOME/archive/rds.tgz src
+echo "done"

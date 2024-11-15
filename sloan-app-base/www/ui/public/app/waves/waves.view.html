@@ -1,0 +1,351 @@
+<div class="wave-fluid" ng-cloak>
+  <md-content>
+    <md-tabs md-dynamic-height md-selected="selected"> 
+      <md-tab label="Wave Release" md-on-select="refresh()">
+	  	<md-content ng-show='working'>
+		  <div layout="row">
+		    <span flex></span>
+		    <div layout="column" layout-align="center center">
+			  <h2>WORKING</h2>
+			  <md-progress-circular md-mode="indeterminate"></md-progress-circular>
+			  <h3></h3>
+		    </div>
+		    <span flex></span>
+		  </div>
+	    </md-content>	  
+        <md-content ng-hide='working'>
+          <md-toolbar class="md-hue-1">
+            <div class="md-toolbar-tools" layout="row">
+              <span>
+                Message place holder
+              </span>
+              <span>
+                <md-button ng-click="showConfig=true"
+                    ng-hide="showConfig"
+                    class="md-raised md-primary">
+                Show Config
+                </md-button>
+              </span>
+              <span>
+                <md-button ng-click="showConfig=false"
+                    ng-show="showConfig"
+                    class="md-raised md-primary">
+                Hide Config
+                </md-button>
+              </span>  
+              <span>
+                <md-button ng-click="updateConfig()"
+                    ng-show="showConfig"
+                    class="md-raised md-primary">
+                Update Config
+                </md-button>
+              </span>			  
+            </div>
+          </md-toolbar> 
+          
+          <div ng-show='showConfig'>	
+            <div>
+              <div>
+				  <label>ZoneRoute Auto Release</label>
+				  <input ng-model="zoueRouteAutoReleaseTime"
+				         ng-change="pauseRefresh()"
+						 type="time"
+						 placeholder="HH:mm:ss"
+						 min="05:00:00"
+						 max="08:59:00">
+              </div> 
+              <div>
+				  <label>CartPick Auto Release</label>
+				  <input ng-model="cartPickAutoReleaseTime"
+				         ng-change="pauseRefresh()"
+						 type="time"
+						 placeholder="HH:mm:ss"
+						 min="05:00:00"
+						 max="08:59:00">
+              </div>
+              <div>
+				  <label>Geek Auto Release</label>
+				  <input ng-model="geekAutoReleaseTime"
+				         ng-change="pauseRefresh()"
+						 type="time"
+						 placeholder="HH:mm"
+						 min="05:00:00"
+						 max="08:59:00">
+              </div>		  
+              <div>
+                <md-input-container>
+                  <md-checkbox ng-model="autoRelease" aria-label="Auto Release">Auto Release</md-checkbox>
+                </md-input-container>
+              </div>             
+            </div>          
+          </div>          
+          
+          <md-content class="md-padding">
+            <table id="unreleasedWaves" class="display" width="100%"></table>
+          </md-content> 
+        </md-content>       
+      </md-tab>	 	        
+      
+      <md-tab label="Started" md-on-select="refresh()">	      
+        <md-content class="md-padding">
+          <table id="startedWaves" class="display" width="100%"></table>
+        </md-content>
+      </md-tab>	      
+
+      <md-tab label="Completed" md-on-select="displayTodayCompleted()">
+        <section layout="row" layout-wrap>
+          <div layout="row">
+           <md-button>From:</md-button>
+           <mdp-date-picker ng-model='date1'
+              ng-change='changeStart()'></mdp-date-picker>
+          </div>
+          <div layout="row">
+           <md-button>To:</md-button>
+           <mdp-date-picker ng-model='date2'
+              ng-change='changeEnd()'></mdp-date-picker>
+          </div>
+          <md-input-container>
+           <md-button class='md-raised' ng-click='displayCompleted()'>Display</md-button>
+          </md-input-container>
+        </section>  	  
+        <md-content class="md-padding">
+          <table id="completedWaves" class="display" width="100%"></table>
+        </md-content>
+      </md-tab>	
+
+      <md-tab label="Wave Details" md-on-select="">
+        <md-content ng-show='working'>
+          <div layout="row">
+            <span flex></span>
+            <div layout="column" layout-align="center center">
+              <h2>WORKING</h2>
+              <md-progress-circular md-mode="indeterminate"></md-progress-circular>
+              <h3></h3>
+            </div>
+            <span flex></span>
+          </div>
+        </md-content >		  
+        <md-content class="md-padding" ng-show='!working'>
+          <div layout="row">
+            <div flex=60 layout="column">
+              <h3>{{wave.waveName}}</h3> 
+              <md-tabs md-dynamic-height ng-show="wave.waveSeq">	  
+                <md-tab label='Basic'>
+                  <table>
+						 
+                    <tr>
+                    <td class='order-field'>RDS WaveSeq:</td>
+                    <td class='order-data'>{{wave.waveSeq}}</td>
+                    </tr>
+						 
+                    <tr>
+                    <td class='order-field'>Batch ID:</td>
+                    <td class='order-data'>{{wave.waveName}}</td>				  
+                    </tr>					  
+       
+                    <tr>
+                    <td class='order-field'>Demand Date:</td>
+                    <td class='order-data'>{{wave.demandDate}}</td>
+                    </tr>
+					
+                    <tr>
+                    <td class='order-field'>Dailey WaveSeq:</td>
+                    <td class='order-data'>{{wave.dailyWaveSeq}}</td>
+                    </tr>					
+                    
+                    <tr>
+                    <td class='order-field'># Orders:</td>
+                    <td class='order-data'>{{wave.numOrders}}</td>
+                    </tr>
+                    
+                    <tr>
+                    <td class='order-field'># Repack Cartons:</td>
+                    <td class='order-data'>{{wave.numCartons}}</td>
+                    </tr>                    
+                    
+                    <tr>
+                      <td class='order-field'># Cartons Picked:</td>
+                      <td class='order-data'>{{wave.numCartonsPicked}}</td>
+                    </tr> 
+
+                    <tr>
+                      <td class='order-field'># Cartons Labeled:</td>
+                      <td class='order-data'>{{wave.numCartonsLabeled}}</td>
+                    </tr>                     
+
+                    <tr>
+                      <td class='order-field'># Cartons Sorted:</td>
+                      <td class='order-data'>{{wave.numCartonsSorted}}</td>
+                    </tr>             
+							
+                  </table>
+                </md-tab>	
+					  
+                <md-tab label='Progress'>
+                  <table>
+ 
+                    <tr>
+                    <td class='order-field'>Created:</td>
+                    <td class='order-data'>{{wave.createStamp|date:'y-MM-dd HH:mm:ss'}}
+                    </td>
+                    </tr>
+							
+                    <tr>
+                    <td class='order-field'>ZoneRoute Released:</td>
+                    <td class='order-data'>{{wave.zoneRouteReleaseStamp|date:'y-MM-dd HH:mm:ss'}}
+                    </td>
+                    </tr>	
+
+                    <tr>
+                    <td class='order-field'>CartPick Released:</td>
+                    <td class='order-data'>{{wave.cartPickReleaseStamp|date:'y-MM-dd HH:mm:ss'}}
+                    </td>
+                    </tr>	
+
+                    <tr>
+                    <td class='order-field'>Geek Released:</td>
+                    <td class='order-data'>{{wave.geekReleaseStamp|date:'y-MM-dd HH:mm:ss'}}
+                    </td>
+                    </tr>						
+
+                    <tr>
+                    <td class='order-field'>Picked:</td>
+                    <td class='order-data'>{{wave.pickEndStamp|date:'y-MM-dd HH:mm:ss'}}
+                    </td>
+                    </tr>     
+
+                    <tr>
+                    <td class='order-field'>Labeled:</td>
+                    <td class='order-data'>{{wave.labelStamp|date:'y-MM-dd HH:mm:ss'}}
+                    </td>
+                    </tr>    
+       
+                    <tr>
+                    <td class='order-field'>Completed:</td>
+                    <td class='order-data'>{{wave.completeStamp|date:'y-MM-dd HH:mm:ss'}}
+                    </td>
+                    </tr>
+ 
+                  </table>
+                </md-tab>
+              </md-tabs>
+            </div>
+            <div flex> <!-- layout="row"-->
+              <md-toolbar>
+                <div class="md-toolbar-tools">             
+                  <md-button aria-label="Cancel"
+                        ng-show="wave.labelStamp && (!wave.completeStamp)"
+                        ng-disabled="!permit('ordersEdit')"
+                        ng-click="completeWave()">Mark Complete</md-button>                  
+                </div>
+              </md-toolbar>
+					
+              <br/>
+              <br/>
+					
+              <form ng-submit="lookup()">
+                <md-input-container>
+                  <label>Look up wave</label>
+                  <md-tooltip md-direction="bottom">RDS waveSeq or batch ID</md-tooltip>
+                    <input ng-model="lookupId">
+                  </md-input-container>
+              </form>
+            </div>
+          </div>
+			  
+          <div ng-show="wave.waveSeq">
+            <md-tabs md-dynamic-height class="md-padding">
+			 
+              <md-tab label="Orders">
+                <table id="waveOrders" class="display" width="100%"></table>
+              </md-tab>	    
+
+              <md-tab label="Lines">
+                <table id="waveLines" class="display" width="100%"></table>
+              </md-tab>				  
+              
+              <md-tab label="Repack Cartons">
+                <table id="waveCartons" class="display" width="100%"></table>
+              </md-tab>
+              
+              <md-tab label="Fullcase Cartons">
+                <table id="waveCartonsFullcase" class="display" width="100%"></table>
+              </md-tab>
+              
+              <md-tab label="History">
+                <table id="history" class="display" width="100%"></table>
+              </md-tab>		  
+				
+            </md-tabs>
+          </div>
+			</md-content>
+		 </md-tab>
+
+
+	  </md-tabs>
+	</md-content>
+ </div>
+ 
+ <script type="text/ng-template" id="lookup.html">
+	<md-dialog ng-cloak>
+	  <form>
+		 <md-toolbar>
+			<div class="md-toolbar-tools">
+			  <h2>Select a record</h2>              
+			</div>
+		 </md-toolbar>	
+		 <md-dialog-content>
+			  <div class="md-dialog-content">
+				 <table>
+					<thead>
+					  <tr>
+						 <th>RDS Wave Seq&nbsp;</th>
+						 <th>Batch ID&nbsp;</th>	
+						 <th>Demand Date&nbsp;</th>		
+						 <th>Daily Wave Seq&nbsp;</th>
+						 <th>Created&nbsp;</th>			
+						 <th>Select &nbsp;</th>
+					  </tr>
+					</thead>
+					<tbody>
+					  <tr ng-repeat="wave in candidates">
+						 <td> {{wave.waveSeq}} </td>
+						 <td> {{wave.waveName}} </td>
+						 <td> {{wave.demandDate}} </td>
+						 <td> {{wave.dailyWaveSeq}} </td>
+						 <td> {{wave.createdStamp|date:'y-MM-dd HH:mm:ss'}} </td>
+						 <td>
+							<md-button class="md-raised md-primary"
+								  ng-click="selectWave(wave)">
+							Select
+							</md-button>
+						 </td>
+					  </tr>
+					</tbody>
+				 </table>
+			  </div>
+		 </md-dialog-content>
+	  </form>
+	</md-dialog>
+ </script>
+ 
+ <script type="text/ng-template" id="lpnReassign.html">
+  <md-dialog ng-cloak>
+    <form>
+      <md-dialog-content>
+        <div class="md-dialog-content">
+          <h2>Re-Assign LPN for Carton</h2>
+        </div>
+      </md-dialog-content>
+      
+      <md-dialog-actions>
+	    <md-input-container>
+	      <label>LPN</label>
+	      <input ng-model="newCartonLpn">
+	    </md-input-container>
+		<md-button ng-click="doReassignLpn()">Assign</md-button>
+		<md-button ng-click="cancelReassignLpn()">Cancel</md-button>
+      </md-dialog-actions>
+    </form>
+  </md-dialog>
+</script>

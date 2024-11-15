@@ -1,0 +1,51 @@
+flowchart TB
+    start(((Audit Process Start)))
+        start --> displayExpectedContents
+
+    displayExpectedContents(Display all expected contents\nInstruct user to validate each item.\nValidation can be done via scan or inspection.)
+        displayExpectedContents --> skusToAudit?
+    
+    skusToAudit?{Are there more\nskus to audit?}
+        skusToAudit?-->|Yes|auditSku
+        skusToAudit?-->|No - Push Complete Button|shortOrOpenPicks?
+    
+    auditSku{Scan or Inspect?}
+        auditSku-->|Scan| scanBarcode
+        auditSku-->|Inspect| inspectItem
+    
+    inspectItem(Operator use +1/-1 buttons to\nconfirm quantity of item.\n)
+        inspectItem --> skusToAudit?
+    
+    scanBarcode(Scan a sku)
+        scanBarcode --> isBarcodeValid?
+    
+    isBarcodeValid?{Is barcode valid?}
+        isBarcodeValid?-->|Yes| shouldSkuBeInCarton?
+        isBarcodeValid?-->|No| invalidBarcode
+    
+    invalidBarcode(/RED/ Msg: No sku can be found for barcode X.\nLookup barcode on RDS Webview.)
+        invalidBarcode --> skusToAudit?
+    
+    shouldSkuBeInCarton?{Should sku be\nin carton?}
+        shouldSkuBeInCarton?-->|Yes| packSku
+        shouldSkuBeInCarton?-->|No| noDemand
+    
+    noDemand(/RED/ Msg: No demand for sku in carton. Restock.)
+        noDemand --> skusToAudit?
+    
+    packSku(/GREEN/ Msg: Return sku to carton.)
+        packSku --> skusToAudit?
+    
+    shortOrOpenPicks?{Are there short\nor open picks\nin the carton?}
+        shortOrOpenPicks?-->|No| reinductCarton
+        shortOrOpenPicks?-->|Yes| addressUnfulfilledPicks
+    
+    addressUnfulfilledPicks(Mark all unfulfilled picks as short)
+        addressUnfulfilledPicks --> beginShortProcess
+    
+    beginShortProcess(((Begin Short Process)))
+    
+    reinductCarton(Msg: Audit complete.\nReinduct carton.\nRegenerate documents.\nRemove audit flag.)
+        reinductCarton-->auditResolved
+    
+    auditResolved(((Audit Resolved)))

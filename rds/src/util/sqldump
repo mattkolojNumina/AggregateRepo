@@ -1,0 +1,6 @@
+#!/bin/bash
+
+TABLES=$*
+
+mysqldump --order-by-primary --skip-extended-insert --hex-blob -hdb -urds -prds rds $TABLES
+

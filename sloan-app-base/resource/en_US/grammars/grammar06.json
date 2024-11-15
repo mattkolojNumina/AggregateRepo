@@ -1,0 +1,13 @@
+{
+    "filename":"grammar06",
+    "key":"16",
+    "type": "standard",
+    "minAlphaNumeric": "0",
+    "maxAlphaNumeric": "0",
+    "minNumeric": "0",
+    "maxNumeric": "0",
+    "phraseMap": {
+      "CHANGE TASK": "changeTask",
+      "CHANGE AREA": "changeArea"
+    }
+}

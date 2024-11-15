@@ -1,0 +1,188 @@
+<div class="container-fluid" ng-cloak>
+  <md-content>
+    <md-tabs md-dynamic-height md-selected="selected">
+      
+      <md-tab label="CP1" md-on-select="refresh()">
+        <md-content class="md-padding">
+        <h2>CP-1</h2>
+        <h3>{{state}}</h3>
+        <div layout="column">
+
+        <md-button class="md-raised panel-button"
+                   ng-disable="!permit('editPanel')"           
+                   ng-click="start()">
+        <span class="panel-start">Start</span>
+        </md-button>
+
+        <md-button class="md-raised panel-button"
+               ng-disable="!permit('editPanel')"
+               ng-click="stop()">
+        <span class="panel-stop">Stop</span>
+        </md-button>
+
+        <md-button class="md-raised panel-button"
+                   ng-disable="!permit('editPanel')"
+                   ng-click="reset()">
+        <span class="panel-reset">Reset</span>
+        </md-button>
+        
+        <h2>Boom-Room Throw-On</h2>
+        <div layout="column">
+
+        <md-button class="md-raised panel-button"
+                   ng-disable="!permit('editPanel')"           
+                   ng-click="startBoom()">
+        <span class="panel-start">Start</span>
+        </md-button>
+
+        <md-button class="md-raised panel-button"
+               ng-disable="!permit('editPanel')"
+               ng-click="stopBoom()">
+        <span class="panel-stop">Stop</span>
+        </md-button>
+
+        </div>
+        </md-content>
+      </md-tab>
+      
+      
+      <md-tab label="CP2" md-on-select="refresh()">
+        <md-content class="md-padding">
+        <h2>CP-2</h2>
+        <h3>{{state}}</h3>
+        <div layout="column">
+
+        <md-button class="md-raised panel-button"
+                   ng-disable="!permit('editPanel')"           
+                   ng-click="start()">
+        <span class="panel-start">Start</span>
+        </md-button>
+
+        <md-button class="md-raised panel-button"
+               ng-disable="!permit('editPanel')"
+               ng-click="stop()">
+        <span class="panel-stop">Stop</span>
+        </md-button>
+
+        <md-button class="md-raised panel-button"
+                   ng-disable="!permit('editPanel')"
+                   ng-click="reset()">
+        <span class="panel-reset">Reset</span>
+        </md-button>
+ 
+        </div>
+
+        <h2>Trash</h2>
+        <h3>{{trashState}}</h3>
+        <div layout="column">
+
+        <md-button class="md-raised panel-button"
+                   ng-disable="!permit('editPanel')"           
+                   ng-click="startTrash()">
+        <span class="panel-start">Start</span>
+        </md-button>
+
+        <md-button class="md-raised panel-button"
+               ng-disable="!permit('editPanel')"
+               ng-click="stopTrash()">
+        <span class="panel-stop">Stop</span>
+        </md-button>
+
+        <md-button class="md-raised panel-button"
+                   ng-disable="!permit('editPanel')"
+                   ng-click="resetTrash()">
+        <span class="panel-reset">Reset</span>
+        </md-button>
+ 
+        </div>
+        </md-content>
+      </md-tab>
+      
+      <md-tab label="CP3" md-on-select="refresh()">
+        <md-content class="md-padding">
+        <h2>CP-3</h2>
+        <h3>{{state}}</h3>
+        <div layout="column">
+
+        <md-button class="md-raised panel-button"
+                   ng-disable="!permit('editPanel')"           
+                   ng-click="start()">
+        <span class="panel-start">Start</span>
+        </md-button>
+
+        <md-button class="md-raised panel-button"
+               ng-disable="!permit('editPanel')"
+               ng-click="stop()">
+        <span class="panel-stop">Stop</span>
+        </md-button>
+
+        <md-button class="md-raised panel-button"
+                   ng-disable="!permit('editPanel')"
+                   ng-click="reset()">
+        <span class="panel-reset">Reset</span>
+        </md-button>
+ 
+        </div>
+        </md-content>
+      </md-tab>
+      
+      <md-tab label="CP4" md-on-select="refresh()">
+        <md-content class="md-padding">
+        <h2>CP-4</h2>
+        <h3>{{state}}</h3>
+        <div layout="column">
+
+        <md-button class="md-raised panel-button"
+                   ng-disable="!permit('editPanel')"           
+                   ng-click="start()">
+        <span class="panel-start">Start</span>
+        </md-button>
+
+        <md-button class="md-raised panel-button"
+               ng-disable="!permit('editPanel')"
+               ng-click="stop()">
+        <span class="panel-stop">Stop</span>
+        </md-button>
+
+        <md-button class="md-raised panel-button"
+                   ng-disable="!permit('editPanel')"
+                   ng-click="reset()">
+        <span class="panel-reset">Reset</span>
+        </md-button>
+ 
+        </div>
+        </md-content>
+      </md-tab>
+     
+      <md-tab label="CP5" md-on-select="refresh()">
+        <md-content class="md-padding">
+        <h2>CP-5</h2>
+        <h3>Sorter: {{state}}</h3>
+        <h3>DownLine: {{state2}}</h3>
+        <div layout="column">
+
+        <md-button class="md-raised panel-button"
+                   ng-disable="!permit('editPanel')"           
+                   ng-click="start()">
+        <span class="panel-start">Start</span>
+        </md-button>
+
+        <md-button class="md-raised panel-button"
+               ng-disable="!permit('editPanel')"
+               ng-click="stop()">
+        <span class="panel-stop">Stop</span>
+        </md-button>
+
+        <md-button class="md-raised panel-button"
+                   ng-disable="!permit('editPanel')"
+                   ng-click="reset()">
+        <span class="panel-reset">Reset</span>
+        </md-button>
+ 
+        </div>
+        </md-content>
+      </md-tab>
+     
+    </md-tabs>
+  </md-content>
+</div>

@@ -1,0 +1,14 @@
+#!/bin/bash
+
+GIT_DIR=/home/rds/app
+GRADLE_LIB_DIR=$GIT_DIR/rdsjava/build/install/orgill-app-base/lib
+RDS_APP_LIB_DIR=/home/rds/app/lib
+
+cd $GIT_DIR
+echo "Running gradlew installDist..."
+$GIT_DIR/gradlew installDist
+
+echo "Copying files from $GRADLE_LIB_DIR to $RDS_APP_LIB_DIR"
+cp $GRADLE_LIB_DIR/*.jar $RDS_APP_LIB_DIR
+
+ls $RDS_APP_LIB_DIR -lF --color=auto

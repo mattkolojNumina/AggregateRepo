@@ -1,0 +1,7 @@
+#!/bin/bash
+
+HOST=HOST_PLACEHOLDER
+
+
+echo "QUERY: UPDATE trak SET state = 'standard' WHERE host = '$HOST' AND zone = 'rp'"
+/usr/bin/mysql -hdb -urds -prds rds -e "UPDATE trak SET state = 'standard' WHERE host = '$HOST' AND zone = 'rp'"

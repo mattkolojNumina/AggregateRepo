@@ -1,0 +1,81 @@
+<div class="container-fluid" ng-cloak>
+  <md-content>
+    <md-tabs md-dynamic-height md-selected="selected">
+      <md-tab label="Host Logs" md-on-select="refresh()">
+        <md-content class="md-padding">
+          <div>
+            <table id="hostLog" class="display" width="100%"></table>
+          </div>
+        </md-content>
+      </md-tab>
+
+      <md-tab label="Log Details" md-on-select="refresh()">
+        <md-content class="md-padding">
+          <div layout="row">
+            <div flex>
+              <table class="searchRes">
+                <tbody>
+                  <tr>
+                    <td class='data-field'>Log Seq:</td>
+                    <td class='data-data'>{{logDetails.logSeq}}</td>
+                  </tr>
+                  <tr>
+                    <td class='data-field'>Message Type:</td>
+                    <td class='data-data'>{{logDetails.messageType}}</td>
+                  </tr>
+                  <tr>
+                    <td class='data-field'>Ref Value:</td>
+                    <td class='data-data'>{{logDetails.refType}}</td>
+                  </tr>
+                  <tr>
+                    <td class='data-field'>Ref Type:</td>
+                    <td class='data-data'>{{logDetails.refValue}}</td>
+                  </tr>
+                  <tr>
+                    <td class='data-field'>URL:</td>
+                    <td class='data-data'>{{logDetails.url}}</td>
+                  </tr>
+                  <tr>
+                    <td class='data-field'>Request:</td>
+                    <td class='data-data'>{{logDetails.request}}</td>
+                  </tr>
+                  <tr>
+                    <td class='data-field'>Response:</td>
+                    <td class='data-data'>{{logDetails.response}}</td>
+                  </tr>
+                  <tr>
+                    <td class='data-field'>Error:</td>
+                    <td class='data-data'>{{logDetails.isError}}</td>
+                  </tr>
+                  <tr>
+                    <td class='data-field'>Error Message:</td>
+                    <td class='data-data'>{{logDetails.errorMessage}}</td>
+                  </tr>
+                  <tr>
+                    <td class='data-field'>Stamp:</td>
+                    <td class='data-data'>{{logDetails.stamp | date:'medium'}}</td>
+                  </tr>
+                  
+                </tbody>
+              </table>
+            </div>
+   
+            <!-- <div flex>
+              <div layout="column">
+                <md-toolbar></md-toolbar>
+                <md-content class="md-padding">
+                  <form ng-submit="lpnSearchDetails()">
+                    <md-input-container>
+                      <label>Search for Log Seq</label>
+                      <input ng-model="lpnBySearch" id="lpnSearch">
+                    </md-input-container>
+                  </form>
+                </md-content>
+              </div>
+            </div> -->
+          </div>
+        </md-content>
+      </md-tab>
+    </md-tabs>
+  </md-content>
+</div>

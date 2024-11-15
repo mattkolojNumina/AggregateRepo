@@ -1,0 +1,20 @@
+<div class="container-fluid" ng-cloak>
+  <div class="device" layout="row" layout-padding layout-wrap layout-fill>
+    <md-button ng-repeat="device in devices"
+               ng-style="{'background': device.background}"
+               class="tile" md-whiteframe="5" layout="row" layout-align="center center"
+               href="{{device.href}}" target="_blank">
+      <div flex=25>
+        <md-icon class="icon" md-svg-src="{{device.icon}}"></md-icon>
+      </div>
+      <div layout="column" flex ng-if="device.style=='titled'">
+        <div class="title" flex>{{device.title}}</div>
+        <div class="desc" flex>{{device.desc}}</div>
+      </div>
+      <div layout="column" flex ng-if="device.style=='unitary'">
+        <div class="uni" flex>{{device.desc}}</div>
+      </div>
+      <md-tooltip>{{device.tooltip}}</md-tooltip>
+    </md-button>
+  </div>
+</div>

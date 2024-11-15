@@ -1,0 +1,12 @@
+.poditem {
+   color: #000 ; 
+   background: #ddd ;
+   font-size: 12px ;}
+.poditem .bin {
+   margin: 5px ;
+   display: block ;
+   background: #f0f0f0 ;
+   min-width: 55px ;
+   height: 50px ;
+   width:  55px ; }
+

@@ -1,0 +1,6 @@
+[submodule "numina-shared-library"]
+	path = numina-shared-library
+	url = ../numina-shared-library.git
+[submodule "Numina-Shared-Library"]
+	path = Numina-Shared-Library
+	url = https://github.com/Numina-Group/Numina-Shared-Library.git

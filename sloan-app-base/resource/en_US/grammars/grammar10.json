@@ -1,0 +1,12 @@
+{
+    "filename":"grammar10",
+    "key":"1",
+    "type": "standard",
+    "minAlphaNumeric": "1",
+    "maxAlphaNumeric": "1",
+    "minNumeric": "0",
+    "maxNumeric": "0",
+    "phraseMap": {
+      "" : ""
+    }
+}

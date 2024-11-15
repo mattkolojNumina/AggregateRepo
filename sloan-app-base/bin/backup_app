@@ -1,0 +1,41 @@
+#!/bin/bash
+
+###
+
+RETAIN_ARCHIVE=180
+RETAIN_USB=90
+
+HOST=`hostname`
+DATE=`date +%y%m%d`
+ARCHIVE=$HOME/archive/app_${HOST}_${DATE}.tgz
+
+SERVER=$1
+
+###
+
+cd $HOME
+
+$HOME/app/bin/backup_db
+
+echo "taking snapshot of system configuration... "
+(cd $HOME/app/config/ ; sudo $HOME/bin/config/archive-config all)
+
+echo "archiving app tree... "
+find $HOME/archive/app_*.tgz -ctime +$RETAIN_ARCHIVE -delete
+tar -czf $ARCHIVE app
+
+if [ $SERVER ] ; then
+   echo "copying archive to '${SERVER}'... "
+   scp $ARCHIVE ${SERVER}:archive/
+fi
+
+mount /mnt/usb
+if [ "$?" -eq 0 ] ; then
+   echo "copying archive to USB drive... "
+   find /mnt/usb/app_*.tgz -ctime +$RETAIN_USB -delete
+   cp $ARCHIVE /mnt/usb
+   umount /mnt/usb
+fi
+
+echo "done"
+

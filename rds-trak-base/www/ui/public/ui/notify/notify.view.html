@@ -1,0 +1,173 @@
+<div class="container-fluid" ng-cloak>
+  <md-content>
+
+    <md-tabs md-dynamic-height md-selected="selected">
+      
+      <md-tab label="Individuals" md-on-select="refresh()">
+        <md-content class="md-padding">
+          <div layout="row">
+            <div flex>
+              <md-content class="md-padding"> 
+                <table id="individualChoose" class="display compact" width="100%"></table>
+              </md-content>
+            </div>
+
+            <div flex>
+              <md-toolbar>
+                <div class="md-toolbar-tools">
+                  <span flex></span>
+                  <md-button aria-label="New"
+                             ng-click="individualNew()">New</md-button>
+                  <md-button aria-label="Update"
+                             ng-disabled="!individual.individual" 
+                             ng-click="individualUpdate()">Save</md-button>
+                  <md-button aria-label="Test"
+                             ng-disabled="!individual.individual" 
+                             ng-click="individualTest()">Test</md-button>
+                  <md-button aria-label="Delete"
+                             ng-disabled="!individual.individual" 
+                             ng-click="individualDelete()">Delete</md-button>
+                </div>
+              </md-toolbar>
+              <md-content class="md-padding">
+                <div layout="column">
+                  <div>
+                    <md-input-container md-no-float class="md-block" >
+                      <label>Individual</label>      
+                      <input ng-model="individual.individual">
+                    </md-input-container>
+                  </div>                
+
+                  <div>
+                    <md-input-container md-no-float class="md-block">
+                      <label>Email</label>      
+                      <input ng-model="individual.email">
+                    </md-input-container>
+                  </div>                
+  
+                  <div>
+                    <md-input-container md-no-float class="md-block">
+                      <label>Text phone number</label>      
+                      <input ng-model="individual.phone">
+                    </md-input-container>
+                  </div>                
+
+                  <div>
+                    <md-input-container md-no-float class="md-block">
+                      <label>Text phone carrier</label>      
+                      <md-select ng-model="individual.carrier">
+                        <md-option ng-repeat="carrier in carriers"
+                                   ng-value="carrier">
+                          {{carrier}}
+                        </md-option>
+                      </md-select>
+                    </md-input-container>
+                  </div>                
+
+                </div>
+              </md-content>
+            </div>
+          </div>
+        </md-content>
+      </md-tab>
+
+      <md-tab label="Groups" md-on-select="refresh()">
+        <md-content class="md-padding">
+          <div layout="row">
+            <div flex>
+              <md-content class="md-padding"> 
+                <table id="groupChoose" class="display compact" width="100%"></table>
+              </md-content>
+            </div>
+
+            <div flex>
+              <md-toolbar>
+                <div class="md-toolbar-tools">
+                  <span flex></span>
+                  <md-button aria-label="New"
+                             ng-click="groupNew()">New</md-button>
+                  <md-button aria-label="Update"
+                             ng-disabled="groupDisabled()" 
+                             ng-click="groupUpdate()">Save</md-button>
+                  <md-button aria-label="Delete"
+                             ng-disabled="groupDisabled()"
+                             ng-click="groupDelete()">Delete</md-button>
+                </div>
+              </md-toolbar>
+              <md-content class="md-padding">
+                <div layout="column">
+                  <div>
+                    <md-input-container md-no-float class="md-block" >
+                      <label>Group</label>      
+                      <input ng-model="group.groupName">
+                    </md-input-container>
+                  </div>                
+
+                  <div>
+                    <md-input-container md-no-float class="md-block">
+                      <label>Individual</label>      
+                      <md-select ng-model="group.individual">
+                        <md-option ng-repeat="individual in individuals"
+                                   ng-value="individual">
+                          {{individual}}
+                        </md-option>
+                      </md-select>
+                    </md-input-container>
+                  </div>                
+  
+                </div>
+              </md-content>
+            </div>
+          </div>
+        </md-content>
+      </md-tab>
+
+      <md-tab label="Carriers" md-on-select="refresh()">
+        <md-content class="md-padding">
+          <div layout="row">
+            <div flex>
+              <md-content class="md-padding"> 
+                <table id="carrierChoose" class="display compact" width="100%"></table>
+              </md-content>
+            </div>
+
+            <div flex>
+              <md-toolbar>
+                <div class="md-toolbar-tools">
+                  <span flex></span>
+                  <md-button aria-label="New"
+                             ng-click="carrierNew()">New</md-button>
+                  <md-button aria-label="Update"
+                             ng-disabled="carrierDisabled()"
+                             ng-click="carrierUpdate()">Save</md-button>
+                  <md-button aria-label="Delete"
+                             ng-disabled="carrierDisabled()"
+                             ng-click="carrierDelete()">Delete</md-button>
+                </div>
+              </md-toolbar>
+              <md-content class="md-padding">
+                <div layout="column">
+                  <div>
+                    <md-input-container md-no-float class="md-block" >
+                      <label>Carrier</label>      
+                      <input ng-model="carrier.carrier">
+                    </md-input-container>
+                  </div>                
+
+                  <div>
+                    <md-input-container md-no-float class="md-block">
+                      <label>Domain</label>      
+                      <input ng-model="carrier.domain">
+                    </md-input-container>
+                  </div>                
+  
+                </div>
+              </md-content>
+            </div>
+          </div>
+        </md-content>
+      </md-tab>
+
+    </md-tabs>
+  </md-content>
+</div>

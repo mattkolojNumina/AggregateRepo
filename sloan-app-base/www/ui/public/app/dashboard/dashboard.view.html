@@ -1,0 +1,752 @@
+<div class="container-fluid" ng-cloak>
+  <md-content>
+    <md-tabs md-dynamic-height md-selected="selected">
+
+      <md-tab label="Demand Today" md-on-select="refresh()">
+
+        <md-content class="md-padding">
+          <div layout="row">
+            <div flex>
+              <table>
+                <tr>
+                  <td class='order-field'>
+                    <h3>Demand Date:</h3>
+                  </td>
+                  <td class='order-data'>
+                    <h3>{{today.demandDate | date:'shortDate'}}</h3>
+                  </td>
+                  <td class='order-field'>
+                    <h3>&nbsp;&nbsp;&nbsp;&nbsp;Daily Wave Seq:</h3>
+                  </td>
+                  <td class='order-data'>
+                    <md-input-container>
+                      <md-select aria-label="Daily Wave Seq" ng-model="dailyWaveSeq" ng-change="refresh()">
+                        <md-option value="All">All</md-option>
+                        <md-option ng-repeat="waveSeq in waveSeqs" value="{{waveSeq}}">{{waveSeq}}</md-option>
+                      </md-select>
+                    </md-input-container>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+
+          <div layout="row">
+            <div flex>
+              <table>
+                <tr>
+                  <td class='order-field'>
+                    <h3>Total Repack</h3>
+                  </td>
+                </tr>
+                <tr>
+                  <td class='order-field'> <b>Total Orders:</b></td>
+                  <td class='order-data'>
+                    {{today.numOrders}}
+                  </td>
+                </tr>
+                <tr>
+                  <td class='order-field'> <b>Total Lines:</b></td>
+                  <td class='order-data'>
+                    {{today.numLines}}
+                  </td>
+                </tr>
+                <tr>
+                  <td class='order-field'> Lines Canceled:</td>
+                  <td class='order-data'>
+                    {{today.numLinesCanceled}}</td>
+                  <td class='order-data'> - {{today.numLines ? (today.numLinesCanceled / today.numLines *
+                    100).toFixed(2) + '%' : '0%'}}</td>
+                  </td>
+                </tr>
+                <tr>
+                  <td class='order-field'> Lines Picked:</td>
+                  <td class='order-data'>
+                    {{today.numLinesPicked}}</td>
+                  <td class='order-data'> - {{today.numLines ? (today.numLinesPicked / today.numLines * 100).toFixed(2)
+                    + '%' : '0%'}}</td>
+                  </td>
+                </tr>
+                <tr>
+                  <td class='order-field'> Lines Short:</td>
+                  <td class='order-data'>
+                    {{today.numLinesShort}}</td>
+                  <td class='order-data'> - {{today.numLines ? (today.numLinesShort / today.numLines * 100).toFixed(2) +
+                    '%' : '0%'}}</td>
+                  </td>
+                </tr>
+                <tr>
+                  <td class='order-field'> Lines Labeled:</td>
+                  <td class='order-data'>
+                    {{today.numLinesLabeled}}</td>
+                  <td class='order-data'> - {{today.numLines ? (today.numLinesLabeled / today.numLines * 100).toFixed(2)
+                    + '%' : '0%'}}</td>
+                  </td>
+                </tr>
+                <tr>
+                  <td class='order-field'> <b>Total Containers:</b></td>
+                  <td class='order-data'>
+                    {{today.numCartons}}
+                  </td>
+                </tr>
+                <tr>
+                  <td class='order-field'> Aerosol Boom Containers:</td>
+                  <td class='order-data'>
+                    {{today.numBoomCartons}}</td>
+                  <td class='order-data'> - {{today.numCartons ? (today.numBoomCartons / today.numCartons *
+                    100).toFixed(2) + '%' : '0%'}}</td>
+                  </td>
+                </tr>
+                <tr>
+                  <td class='order-field'> Liquid Containers:</td>
+                  <td class='order-data'>
+                    {{today.numLiquidCartons}}</td>
+                  <td class='order-data'> - {{today.numCartons ? (today.numLiquidCartons / today.numCartons *
+                    100).toFixed(2) + '%' : '0%'}}</td>
+                  </td>
+                </tr>
+                <tr>
+                  <td class='order-field'> Perishable Containers:</td>
+                  <td class='order-data'>
+                    {{today.numPerishableCartons}}</td>
+                  <td class='order-data'> - {{today.numCartons ? (today.numPerishableCartons / today.numCartons *
+                    100).toFixed(2) + '%' : '0%'}}</td>
+                  </td>
+                </tr>
+                <tr>
+                  <td class='order-field'> Geek+ Containers:</td>
+                  <td class='order-data'>
+                    {{today.numGeekCartons}}</td>
+                  <td class='order-data'> - {{today.numCartons ? (today.numGeekCartons / today.numCartons *
+                    100).toFixed(2) + '%' : '0%'}}</td>
+                  </td>
+                </tr>
+                <tr>
+                  <td class='order-field'> Zone Route Containers:</td>
+                  <td class='order-data'>
+                    {{today.numZoneRouteCartons}}</td>
+                  <td class='order-data'> - {{today.numCartons ? (today.numZoneRouteCartons / today.numCartons *
+                    100).toFixed(2) + '%' : '0%'}}</td>
+                  </td>
+                </tr>
+                <tr>
+                  <td class='order-field'> Containers Picked:</td>
+                  <td class='order-data'>
+                    {{today.numCartonsPicked}}</td>
+                  <td class='order-data'> - {{today.numCartons ? (today.numCartonsPicked / today.numCartons *
+                    100).toFixed(2) + '%' : '0%'}}</td>
+                  </td>
+                </tr>
+                <tr>
+                  <td class='order-field'> Containers Short:</td>
+                  <td class='order-data'>
+                    {{today.numShortPicked}}</td>
+                  <td class='order-data'> - {{today.numCartons ? (today.numShortPicked / today.numCartons *
+                    100).toFixed(2) + '%' : '0%'}}</td>
+                  </td>
+                </tr>
+                <tr>
+                  <td class='order-field'> Containers Labeled:</td>
+                  <td class='order-data'>
+                    {{today.numCartonsLabeled}}</td>
+                  <td class='order-data'> - {{today.numCartons ? (today.numCartonsLabeled / today.numCartons *
+                    100).toFixed(2) + '%' : '0%'}}</td>
+                  </td>
+                </tr>
+                <tr>
+                  <td class='order-field'> Containers Sorted:</td>
+                  <td class='order-data'>
+                    {{today.numCartonsSorted}}</td>
+                  <td class='order-data'> - {{today.numCartons ? (today.numCartonsSorted / today.numCartons *
+                    100).toFixed(2) + '%' : '0%'}}</td>
+                  </td>
+                </tr>
+                <tr>
+                  <td class='order-field'> Full Case Containers Sorted:</td>
+                  <td class='order-data'>
+                    {{fullcase.numCartonsSorted}}</td>
+                  <td class='order-data'> - {{fullcase.numFullCaseCartons ? (fullcase.numCartonsSorted /
+                    fullcase.numFullCaseCartons * 100).toFixed(2) + '%' : '0%'}}</td>
+                  </td>
+                </tr>
+                <tr>
+                  <td class='order-field'> <b>Short Picks Unassigned:</b></td>
+                  <td class='order-data'> {{shorts.numUnassigned}}</td>
+                </tr>
+                <tr>
+                  <td class='order-field'> Short Picks Assigned:</td>
+                  <td class='order-data'> {{shorts.numAssigned}}</td>
+                </tr>
+                <tr>
+                  <td class='order-field'> Picked Chase Picks:</td>
+                  <td class='order-data'> {{shorts.numPickedChasePicks}}</td>
+                </tr>
+              </table>
+            </div>
+
+            <div flex>
+              <table>
+                <tr>
+                  <td class='order-field'>
+                    <h3>Geek+</h3>
+                  </td>
+                </tr>
+                <tr>
+                  <td class='order-field'> Geek+ Containers:</td>
+                  <td class='order-data'>
+                    {{geek.numGeekCartons}}</td>
+                </tr>
+                <tr>
+                  <td class='order-field light-cell-bg'> Containers Assigned LPN:</td>
+                  <td class='order-data'>
+                    {{geek.numCartonsAssigned}}
+                  </td>
+                  <td class='order-data'> - {{geek.numGeekCartons ? (geek.numCartonsAssigned / geek.numGeekCartons *
+                    100).toFixed(2) + '%' : '0%'}}
+                  </td>
+                </tr>
+                <tr>
+                  <td class='order-field light-cell-bg' ng-class="{'red-text': geek.numCartonsNotAssigned && geek.numCartonsNotAssigned !== 0}"> Containers Not Assigned LPN:</td>
+                  <td class='order-data' ng-class="{'red-text': geek.numCartonsNotAssigned && geek.numCartonsNotAssigned !== 0}">
+                    {{geek.numCartonsNotAssigned}}
+                  </td>
+                </tr>
+                <tr>
+                  <td class='order-field'> Containers Primary Picked:</td>
+                  <td class='order-data'>
+                    {{geek.numCartonsPrimaryPicked}}</td>
+                  <td class='order-data'> - {{geek.numGeekCartons ? (geek.numCartonsPrimaryPicked / geek.numGeekCartons *
+                    100).toFixed(2) + '%' : '0%'}}</td>
+                  </td>
+                </tr>
+                <tr>
+                  <td class='order-field light-cell-bg'> Containers Picked:</td>
+                  <td class='order-data'>
+                    {{geek.numCartonsPicked}}</td>
+                  <td class='order-data'> - {{geek.numGeekCartons ? (geek.numCartonsPicked / geek.numGeekCartons *
+                    100).toFixed(2) + '%' : '0%'}}</td>
+                  </td>
+                </tr>
+                <tr>
+                  <td class='order-field light-cell-bg' ng-class="{'red-text': geek.numCartonsCutOut && geek.numCartonsCutOut !== 0}"> Containers Waiting On Cut Out:</td>
+                  <td class='order-data' ng-class="{'red-text': geek.numCartonsCutOut && geek.numCartonsCutOut !== 0}">
+                    {{geek.numCartonsCutOut}}
+                  </td>
+                </tr>
+                <tr>
+                  <td class='order-field'> Containers Labeled:</td>
+                  <td class='order-data'>
+                    {{geek.numCartonsLabeled}}</td>
+                  <td class='order-data'> - {{geek.numGeekCartons ? (geek.numCartonsLabeled / geek.numGeekCartons *
+                    100).toFixed(2) + '%' : '0%'}}</td>
+                  </td>
+                </tr>
+                <tr>
+                  <td class='order-field'> Containers Sorted:</td>
+                  <td class='order-data'>
+                    {{geek.numCartonsSorted}}</td>
+                  <td class='order-data'> - {{geek.numGeekCartons ? (geek.numCartonsSorted / geek.numGeekCartons *
+                    100).toFixed(2) + '%' : '0%'}}</td>
+                  </td>
+                </tr>
+                <tr>
+                  <td class='order-field'> Containers Canceled:</td>
+                  <td class='order-data'>
+                    {{geek.numCartonsCanceled}}</td>
+                </tr>
+                <tr>
+                  <td class='order-field'> Containers Short:</td>
+                  <td class='order-data'>
+                    {{geek.numShortPicked}}</td>
+                </tr>
+
+                <tr>
+                  <td class='order-field'>
+                    <h3>Zone Route</h3>
+                  </td>
+                </tr>
+                <tr>
+                  <td class='order-field'> Zone Route Containers:</td>
+                  <td class='order-data'>
+                    {{zoneRoute.numZoneRouteCartons}}</td>
+                </tr>
+                <tr>
+                  <td class='order-field'> Containers Started:</td>
+                  <td class='order-data'>
+                    {{zoneRoute.numCartonsStarted}}</td>
+                  <td class='order-data'> - {{zoneRoute.numZoneRouteCartons ? (zoneRoute.numCartonsStarted /
+                    zoneRoute.numZoneRouteCartons * 100).toFixed(2) + '%' : '0%'}}</td>
+                  </td>
+                </tr>
+                <tr>
+                  <td class='order-field'> Containers Picked:</td>
+                  <td class='order-data'>
+                    {{zoneRoute.numCartonsPicked}}</td>
+                  <td class='order-data'> - {{zoneRoute.numZoneRouteCartons ? (zoneRoute.numCartonsPicked /
+                    zoneRoute.numZoneRouteCartons * 100).toFixed(2) + '%' : '0%'}}</td>
+                  </td>
+                </tr>
+                <tr>
+                  <td class='order-field'> Containers Labeled:</td>
+                  <td class='order-data'>
+                    {{zoneRoute.numCartonsLabeled}}</td>
+                  <td class='order-data'> - {{zoneRoute.numZoneRouteCartons ? (zoneRoute.numCartonsLabeled /
+                    zoneRoute.numZoneRouteCartons * 100).toFixed(2) + '%' : '0%'}}</td>
+                  </td>
+                </tr>
+                <tr>
+                  <td class='order-field'> Containers Sorted:</td>
+                  <td class='order-data'>
+                    {{zoneRoute.numCartonsSorted}}</td>
+                  <td class='order-data'> - {{zoneRoute.numZoneRouteCartons ? (zoneRoute.numCartonsSorted /
+                    zoneRoute.numZoneRouteCartons * 100).toFixed(2) + '%' : '0%'}}</td>
+                  </td>
+                </tr>
+                <tr>
+                  <td class='order-field'> Containers Canceled:</td>
+                  <td class='order-data'>
+                    {{zoneRoute.numCartonsCanceled}}</td>
+                </tr>
+                <tr>
+                  <td class='order-field'> Containers Short:</td>
+                  <td class='order-data'>
+                    {{zoneRoute.numShortPicked}}</td>
+                </tr>
+              </table>
+            </div>
+
+            <div flex>
+              <table>
+                <tr>
+                  <td class='order-field'>
+                    <h3>Carts (D&U)</h3>
+                  </td>
+                </tr>
+                <tr>
+                  <td class='order-field'> Aerosol Boom Containers:</td>
+                  <td class='order-data'>
+                    {{duCarts.numBoomCartons}}</td>
+                </tr>
+                <tr>
+                  <td class='order-field'> Containers Started:</td>
+                  <td class='order-data'>
+                    {{duCarts.numCartonsStarted}}</td>
+                  <td class='order-data'> - {{duCarts.numBoomCartons ? (duCarts.numCartonsStarted /
+                    duCarts.numBoomCartons * 100).toFixed(2) + '%' : '0%'}}</td>
+                  </td>
+                </tr>
+                <tr>
+                  <td class='order-field'> Containers Picked:</td>
+                  <td class='order-data'>
+                    {{duCarts.numCartonsPicked}}</td>
+                  <td class='order-data'> - {{duCarts.numBoomCartons ? (duCarts.numCartonsPicked /
+                    duCarts.numBoomCartons * 100).toFixed(2) + '%' : '0%'}}</td>
+                  </td>
+                </tr>
+                <tr>
+                  <td class='order-field'> Containers Labeled:</td>
+                  <td class='order-data'>
+                    {{duCarts.numCartonsLabeled}}</td>
+                  <td class='order-data'> - {{duCarts.numBoomCartons ? (duCarts.numCartonsLabeled /
+                    duCarts.numBoomCartons * 100).toFixed(2) + '%' : '0%'}}</td>
+                  </td>
+                </tr>
+                <tr>
+                  <td class='order-field'> Containers Sorted:</td>
+                  <td class='order-data'>
+                    {{duCarts.numCartonsSorted}}</td>
+                  <td class='order-data'> - {{duCarts.numBoomCartons ? (duCarts.numCartonsSorted /
+                    duCarts.numBoomCartons * 100).toFixed(2) + '%' : '0%'}}</td>
+                  </td>
+                </tr>
+                <tr>
+                  <td class='order-field'> Containers Canceled:</td>
+                  <td class='order-data'>
+                    {{duCarts.numCartonsCanceled}}</td>
+                </tr>
+                <tr>
+                  <td class='order-field'> Containers Short:</td>
+                  <td class='order-data'>
+                    {{duCarts.numShortPicked}}</td>
+                </tr>
+
+                <tr>
+                  <td class='order-field'>
+                    <h3>Carts (P&Q)</h3>
+                  </td>
+                </tr>
+                <tr>
+                  <td class='order-field'> Total P&Q Containers:</td>
+                  <td class='order-data'>
+                    {{pqCarts.numPQCartons}}</td>
+                </tr>
+                <tr>
+                  <td class='order-field'> Liquid Containers:</td>
+                  <td class='order-data'>
+                    {{pqCarts.numLiquidCartons}}</td>
+                </tr>
+                <tr>
+                  <td class='order-field'> Perishable Containers:</td>
+                  <td class='order-data'>
+                    {{pqCarts.numPerishableCartons}}</td>
+                </tr>
+                <tr>
+                  <td class='order-field'> Containers Started:</td>
+                  <td class='order-data'>
+                    {{pqCarts.numCartonsStarted}}</td>
+                  <td class='order-data'> - {{pqCarts.numPQCartons ? (pqCarts.numCartonsStarted /
+                    pqCarts.numPQCartons * 100).toFixed(2) + '%' : '0%'}}</td>
+                  </td>
+                </tr>
+                <tr>
+                  <td class='order-field'> Containers Picked:</td>
+                  <td class='order-data'>
+                    {{pqCarts.numCartonsPicked}}</td>
+                  <td class='order-data'> - {{pqCarts.numPQCartons ? (pqCarts.numCartonsPicked / pqCarts.numPQCartons *
+                    100).toFixed(2) + '%' : '0%'}}</td>
+                  </td>
+                </tr>
+                <tr>
+                  <td class='order-field'> Containers Labeled:</td>
+                  <td class='order-data'>
+                    {{pqCarts.numCartonsLabeled}}</td>
+                  <td class='order-data'> - {{pqCarts.numPQCartons ? (pqCarts.numCartonsLabeled / pqCarts.numPQCartons *
+                    100).toFixed(2) + '%' : '0%'}}</td>
+                  </td>
+                </tr>
+                <tr>
+                  <td class='order-field'> Containers Sorted:</td>
+                  <td class='order-data'>
+                    {{pqCarts.numCartonsSorted}}</td>
+                  <td class='order-data'> - {{pqCarts.numPQCartons ? (pqCarts.numCartonsSorted / pqCarts.numPQCartons *
+                    100).toFixed(2) + '%' : '0%'}}</td>
+                  </td>
+                </tr>
+                <tr>
+                  <td class='order-field'> Containers Canceled:</td>
+                  <td class='order-data'>
+                    {{pqCarts.numCartonsCanceled}}</td>
+                </tr>
+                <tr>
+                  <td class='order-field'> Containers Short:</td>
+                  <td class='order-data'>
+                    {{pqCarts.numShortPicked}}</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+          <div>
+            <br>
+            &#8226; Note: Containers canceled are <u><em>excluded</em></u> from all status counts including total.
+          </div>
+        </md-content>
+      </md-tab>
+
+      <md-tab label="Demand Zone Route" md-on-select="refresh()">
+        <md-content class="md-padding">
+          <div layout="row">
+            <div flex>
+              <table>
+                <tr>
+                  <td class='order-field'>
+                    <h3>Demand Date:</h3>
+                  </td>
+                  <td class='order-data'>
+                    <h3>{{today.demandDate | date:'shortDate'}}</h3>
+                  </td>
+                  <td class='order-field'>
+                    <h3>&nbsp;&nbsp;&nbsp;&nbsp;Daily Wave Seq:</h3>
+                  </td>
+                  <td class='order-data'>
+                    <md-input-container>
+                      <md-select aria-label="Daily Wave Seq" ng-model="dailyWaveSeq" ng-change="refresh()">
+                        <md-option value="All">All</md-option>
+                        <md-option ng-repeat="waveSeq in waveSeqs" value="{{waveSeq}}">{{waveSeq}}</md-option>
+                      </md-select>
+                    </md-input-container>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+
+          <div layout="row" layout-align="center center">
+            <h3 class="center-text">Level 1</h3>
+          </div>
+
+          <div layout="row" layout-align="center center">
+            <div>
+              <table>
+                <tr>
+                  <td class='order-field'> <div class="h4 zone-title">  Zone 8&nbsp;&nbsp;</div></td>
+                  <!-- <td class='order-field'> Total Containers:</td>
+                  <td class='order-data'> {{dzr[8].numCartons}}</td> -->
+                  <td class='order-field'> Unpicked Containers:</td>
+                  <td class='order-data'> {{dzr[8].numCartonsUnPicked}}</td>
+                  <td class='order-field'> Unpicked Lines:</td>
+                  <td class='order-data'> {{dzr[8].numLinesUnPicked}}</td>
+                </tr>
+                <tr>
+                  <td class='order-field'> <div class="h4 zone-title">  Zone 7&nbsp;&nbsp;</div></td>
+                  <!-- <td class='order-field'> Total Containers:</td>
+                  <td class='order-data'> {{dzr[7].numCartons}}</td> -->
+                  <td class='order-field'> Unpicked Containers:</td>
+                  <td class='order-data'> {{dzr[7].numCartonsUnPicked}}</td>
+                  <td class='order-field'> Unpicked Lines:</td>
+                  <td class='order-data'> {{dzr[7].numLinesUnPicked}}</td>
+                </tr>
+                <tr>
+                  <td class='order-field'> <div class="h4 zone-title">  Zone 6&nbsp;&nbsp;</div></td>
+                  <!-- <td class='order-field'> Total Containers:</td>
+                  <td class='order-data'> {{dzr[6].numCartons}}</td> -->
+                  <td class='order-field'> Unpicked Containers:</td>
+                  <td class='order-data'> {{dzr[6].numCartonsUnPicked}}</td>
+                  <td class='order-field'> Unpicked Lines:</td>
+                  <td class='order-data'> {{dzr[6].numLinesUnPicked}}</td>
+                </tr>
+                <tr>
+                  <td class='order-field'> <div class="h4 zone-title">  Zone 5&nbsp;&nbsp;</div></td>
+                  <!-- <td class='order-field'> Total Containers:</td>
+                  <td class='order-data'> {{dzr[5].numCartons}}</td> -->
+                  <td class='order-field'> Unpicked Containers:</td>
+                  <td class='order-data'> {{dzr[5].numCartonsUnPicked}}</td>
+                  <td class='order-field'> Unpicked Lines:</td>
+                  <td class='order-data'> {{dzr[5].numLinesUnPicked}}</td>
+                </tr>
+              </table>
+            </div>
+
+            <div class="spacer">&nbsp;</div>
+
+            <div>
+              <table>
+                <tr>
+                  <td class='order-field'> <div class="h4 zone-title">  Zone 4&nbsp;&nbsp;</div></td>
+                  <!-- <td class='order-field'> Total Containers:</td>
+                  <td class='order-data'> {{dzr[4].numCartons}}</td> -->
+                  <td class='order-field'> Unpicked Containers:</td>
+                  <td class='order-data'> {{dzr[4].numCartonsUnPicked}}</td>
+                  <td class='order-field'> Unpicked Lines:</td>
+                  <td class='order-data'> {{dzr[4].numLinesUnPicked}}</td>
+                </tr>
+                <tr>
+                  <td class='order-field'> <div class="h4 zone-title">  Zone 3&nbsp;&nbsp;</div></td>
+                  <!-- <td class='order-field'> Total Containers:</td>
+                  <td class='order-data'> {{dzr[3].numCartons}}</td> -->
+                  <td class='order-field'> Unpicked Containers:</td>
+                  <td class='order-data'> {{dzr[3].numCartonsUnPicked}}</td>
+                  <td class='order-field'> Unpicked Lines:</td>
+                  <td class='order-data'> {{dzr[3].numLinesUnPicked}}</td>
+                </tr>
+                <tr>
+                  <td class='order-field'> <div class="h4 zone-title">  Zone 2&nbsp;&nbsp;</div></td>
+                  <!-- <td class='order-field'> Total Containers:</td>
+                  <td class='order-data'> {{dzr[2].numCartons}}</td> -->
+                  <td class='order-field'> Unpicked Containers:</td>
+                  <td class='order-data'> {{dzr[2].numCartonsUnPicked}}</td>
+                  <td class='order-field'> Unpicked Lines:</td>
+                  <td class='order-data'> {{dzr[2].numLinesUnPicked}}</td>
+                </tr>
+                <tr>
+                  <td class='order-field'><div class="h4 zone-title">  Zone 1&nbsp;&nbsp;</div></td>
+                  <!-- <td class='order-field'> Total Containers:</td>
+                  <td class='order-data'> {{dzr[1].numCartons}}</td> -->
+                  <td class='order-field'> Unpicked Containers:</td>
+                  <td class='order-data'> {{dzr[1].numCartonsUnPicked}}</td>
+                  <td class='order-field'> Unpicked Lines:</td>
+                  <td class='order-data'> {{dzr[1].numLinesUnPicked}}</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+
+          <div layout="row" layout-align="center center">
+            <h3 class="center-text">Level 2</h3>
+          </div>
+
+          <div layout="row" layout-align="center center">
+            <div>
+              <table>
+                <tr>
+                  <td class='order-field'> <div class="h4 zone-title">  Zone 16&nbsp;&nbsp;</div></td>
+                  <!-- <td class='order-field'> Total Containers:</td>
+                  <td class='order-data'> {{dzr[16].numCartons}}</td> -->
+                  <td class='order-field'> Unpicked Containers:</td>
+                  <td class='order-data'> {{dzr[16].numCartonsUnPicked}}</td>
+                  <td class='order-field'> Unpicked Lines:</td>
+                  <td class='order-data'> {{dzr[16].numLinesUnPicked}}</td>
+                </tr>
+                <tr>
+                  <td class='order-field'> <div class="h4 zone-title">  Zone 15&nbsp;&nbsp;</div></td>
+                  <!-- <td class='order-field'> Total Containers:</td>
+                  <td class='order-data'> {{dzr[15].numCartons}}</td> -->
+                  <td class='order-field'> Unpicked Containers:</td>
+                  <td class='order-data'> {{dzr[15].numCartonsUnPicked}}</td>
+                  <td class='order-field'> Unpicked Lines:</td>
+                  <td class='order-data'> {{dzr[15].numLinesUnPicked}}</td>
+                </tr>
+                <tr>
+                  <td class='order-field'> <div class="h4 zone-title">  Zone 14&nbsp;&nbsp;</div></td>
+                  <!-- <td class='order-field'> Total Containers:</td>
+                  <td class='order-data'> {{dzr[14].numCartons}}</td> -->
+                  <td class='order-field'> Unpicked Containers:</td>
+                  <td class='order-data'> {{dzr[14].numCartonsUnPicked}}</td>
+                  <td class='order-field'> Unpicked Lines:</td>
+                  <td class='order-data'> {{dzr[14].numLinesUnPicked}}</td>
+                </tr>
+                <tr>
+                  <td class='order-field'> <div class="h4 zone-title">  Zone 13&nbsp;&nbsp;</div></td>
+                  <!-- <td class='order-field'> Total Containers:</td>
+                  <td class='order-data'> {{dzr[13].numCartons}}</td> -->
+                  <td class='order-field'> Unpicked Containers:</td>
+                  <td class='order-data'> {{dzr[13].numCartonsUnPicked}}</td>
+                  <td class='order-field'> Unpicked Lines:</td>
+                  <td class='order-data'> {{dzr[13].numLinesUnPicked}}</td>
+                </tr>
+              </table>
+            </div>
+
+            <div class="spacer">&nbsp;</div>
+
+            <div>
+              <table>
+                <tr>
+                  <td class='order-field'> <div class="h4 zone-title">  Zone 12&nbsp;&nbsp;</div></td>
+                  <!-- <td class='order-field'> Total Containers:</td>
+                  <td class='order-data'> {{dzr[12].numCartons}}</td> -->
+                  <td class='order-field'> Unpicked Containers:</td>
+                  <td class='order-data'> {{dzr[12].numCartonsUnPicked}}</td>
+                  <td class='order-field'> Unpicked Lines:</td>
+                  <td class='order-data'> {{dzr[12].numLinesUnPicked}}</td>
+                </tr>
+                <tr>
+                  <td class='order-field'> <div class="h4 zone-title">  Zone 11&nbsp;&nbsp;</div></td>
+                  <!-- <td class='order-field'> Total Containers:</td>
+                  <td class='order-data'> {{dzr[11].numCartons}}</td> -->
+                  <td class='order-field'> Unpicked Containers:</td>
+                  <td class='order-data'> {{dzr[11].numCartonsUnPicked}}</td>
+                  <td class='order-field'> Unpicked Lines:</td>
+                  <td class='order-data'> {{dzr[11].numLinesUnPicked}}</td>
+                </tr>
+                <tr>
+                  <td class='order-field'> <div class="h4 zone-title">  Zone 10&nbsp;&nbsp;</div></td>
+                  <!-- <td class='order-field'> Total Containers:</td>
+                  <td class='order-data'> {{dzr[10].numCartons}}</td> -->
+                  <td class='order-field'> Unpicked Containers:</td>
+                  <td class='order-data'> {{dzr[10].numCartonsUnPicked}}</td>
+                  <td class='order-field'> Unpicked Lines:</td>
+                  <td class='order-data'> {{dzr[10].numLinesUnPicked}}</td>
+                </tr>
+                <tr>
+                  <td class='order-field'> <div class="h4 zone-title">  Zone 9&nbsp;&nbsp;</div></td>
+                  <!-- <td class='order-field'> Total Containers:</td>
+                  <td class='order-data'> {{dzr[9].numCartons}}</td> -->
+                  <td class='order-field'> Unpicked Containers:</td>
+                  <td class='order-data'> {{dzr[9].numCartonsUnPicked}}</td>
+                  <td class='order-field'> Unpicked Lines:</td>
+                  <td class='order-data'> {{dzr[9].numLinesUnPicked}}</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+
+          <div layout="row" layout-align="center center">
+            <h3 class="center-text">Level 3</h3>
+          </div>
+
+          <div layout="row" layout-align="center center">
+            <div>
+              <table>
+                <tr>
+                  <td class='order-field'> <div class="h4 zone-title">  Zone 24&nbsp;&nbsp;</div></td>
+                  <!-- <td class='order-field'> Total Containers:</td>
+                  <td class='order-data'> {{dzr[24].numCartons}}</td> -->
+                  <td class='order-field'> Unpicked Containers:</td>
+                  <td class='order-data'> {{dzr[24].numCartonsUnPicked}}</td>
+                  <td class='order-field'> Unpicked Lines:</td>
+                  <td class='order-data'> {{dzr[24].numLinesUnPicked}}</td>
+                </tr>
+                <tr>
+                  <td class='order-field'> <div class="h4 zone-title">  Zone 23&nbsp;&nbsp;</div></td>
+                  <!-- <td class='order-field'> Total Containers:</td>
+                  <td class='order-data'> {{dzr[23].numCartons}}</td> -->
+                  <td class='order-field'> Unpicked Containers:</td>
+                  <td class='order-data'> {{dzr[23].numCartonsUnPicked}}</td>
+                  <td class='order-field'> Unpicked Lines:</td>
+                  <td class='order-data'> {{dzr[23].numLinesUnPicked}}</td>
+                </tr>
+                <tr>
+                  <td class='order-field'> <div class="h4 zone-title">  Zone 22&nbsp;&nbsp;</div></td>
+                  <!-- <td class='order-field'> Total Containers:</td>
+                  <td class='order-data'> {{dzr[22].numCartons}}</td> -->
+                  <td class='order-field'> Unpicked Containers:</td>
+                  <td class='order-data'> {{dzr[22].numCartonsUnPicked}}</td>
+                  <td class='order-field'> Unpicked Lines:</td>
+                  <td class='order-data'> {{dzr[22].numLinesUnPicked}}</td>
+                </tr>
+                <tr>
+                  <td class='order-field'> <div class="h4 zone-title">  Zone 21&nbsp;&nbsp;</div></td>
+                  <!-- <td class='order-field'> Total Containers:</td>
+                  <td class='order-data'> {{dzr[21].numCartons}}</td> -->
+                  <td class='order-field'> Unpicked Containers:</td>
+                  <td class='order-data'> {{dzr[21].numCartonsUnPicked}}</td>
+                  <td class='order-field'> Unpicked Lines:</td>
+                  <td class='order-data'> {{dzr[21].numLinesUnPicked}}</td>
+                </tr>
+              </table>
+            </div>
+
+            <div class="spacer">&nbsp;</div>
+
+            <div>
+              <table>
+                <tr>
+                  <td class='order-field'> <div class="h4 zone-title">  Zone 20&nbsp;&nbsp;</div></td>
+                  <!-- <td class='order-field'> Total Containers:</td>
+                  <td class='order-data'> {{dzr[20].numCartons}}</td> -->
+                  <td class='order-field'> Unpicked Containers:</td>
+                  <td class='order-data'> {{dzr[20].numCartonsUnPicked}}</td>
+                  <td class='order-field'> Unpicked Lines:</td>
+                  <td class='order-data'> {{dzr[20].numLinesUnPicked}}</td>
+                </tr>
+                <tr>
+                  <td class='order-field'> <div class="h4 zone-title">  Zone 19&nbsp;&nbsp;</div></td>
+                  <!-- <td class='order-field'> Total Containers:</td>
+                  <td class='order-data'> {{dzr[19].numCartons}}</td> -->
+                  <td class='order-field'> Unpicked Containers:</td>
+                  <td class='order-data'> {{dzr[19].numCartonsUnPicked}}</td>
+                  <td class='order-field'> Unpicked Lines:</td>
+                  <td class='order-data'> {{dzr[19].numLinesUnPicked}}</td>
+                </tr>
+                <tr>
+                  <td class='order-field'> <div class="h4 zone-title">  Zone 18&nbsp;&nbsp;</div></td>
+                  <!-- <td class='order-field'> Total Containers:</td>
+                  <td class='order-data'> {{dzr[18].numCartons}}</td> -->
+                  <td class='order-field'> Unpicked Containers:</td>
+                  <td class='order-data'> {{dzr[18].numCartonsUnPicked}}</td>
+                  <td class='order-field'> Unpicked Lines:</td>
+                  <td class='order-data'> {{dzr[18].numLinesUnPicked}}</td>
+                </tr>
+                <tr>
+                  <td class='order-field'> <div class="h4 zone-title">  Zone 17&nbsp;&nbsp;</div></td>
+                  <!-- <td class='order-field'> Total Containers:</td>
+                  <td class='order-data'> {{dzr[17].numCartons}}</td> -->
+                  <td class='order-field'> Unpicked Containers:</td>
+                  <td class='order-data'> {{dzr[17].numCartonsUnPicked}}</td>
+                  <td class='order-field'> Unpicked Lines:</td>
+                  <td class='order-data'> {{dzr[17].numLinesUnPicked}}</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+
+          <div layout="row" layout-align="center center">
+            <span style='font-size:50px;'>&uarr;</span>
+            <br>Plan North (Sorter)
+          </div>
+        </md-content>
+      </md-tab>
+
+    </md-tabs>
+  </md-content>
+</div>

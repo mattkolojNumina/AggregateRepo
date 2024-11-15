@@ -1,0 +1,227 @@
+package meter;
+
+use strict;
+use vars qw($VERSION @ISA @EXPORT @EXPORT_OK);
+
+require Exporter;
+require AutoLoader;
+
+@ISA = qw(Exporter AutoLoader);
+# Items to export into callers namespace by default. Note: do not export
+# names by default without a very good reason. Use EXPORT_OK instead.
+# Do not simply export all your public functions/methods/constants.
+@EXPORT = qw(
+	link,simple
+);
+$VERSION = '0.01';
+
+
+# Preloaded methods go here.
+
+
+require trakbase ;
+require timer ;
+require rp ;
+require dp ;
+# link, creates a meter belt and associated code to handle a meter belt.
+# it takes 5 parameters.
+# 0 -> name 
+# 1 -> input
+# 2 -> output
+# 3 -> preset (i.e., gap timing preset )
+# 4 -> timer (or tach to use against above preset)
+# 5 -> description
+
+# in use, the meter belt will halt all product if the name, dp is 0ff.
+# when on, product will be gapped onto the belt using preset and timer
+# indicated.
+
+# a dp name_bx will be created, which will turn on/off as cartons are 
+# released (this is different than the input in that it will go high
+# when the eye is blocked (leading edge) AND the carton is released.
+
+
+# meter_release takes meter belt on stack
+
+
+# set/retrieve meter constants
+
+@code=qw( 4 swap dp.register.get dp.value.get ) ;
+Trk::ex_compile("meter_input@","Retrieve Input Value",\@code) ;
+
+
+@code=qw( 5 swap dp.register.get dp.value.get ) ;
+Trk::ex_compile("meter_out@","Retrieve Input Value",\@code) ;
+@code=qw( 5 swap dp.register.get dp.value.set ) ;
+Trk::ex_compile("meter_out!","Retrieve Input Value",\@code) ;
+@code=qw( 7 swap dp.register.get ) ;
+Trk::ex_compile("meter_tmr@","Retrieve Timer Number",\@code) ;
+
+@code=qw ( 6 swap dp.register.get rp.value.get ) ;
+Trk::ex_compile("meter_preset@","Retrieve Input Value",\@code) ;
+
+@code= ( "dp.state.get" ) ;
+Trk::ex_compile("meter_state@","Retrieve Meter State",\@code) ;
+@code=  ( "dp.state.set" ) ;
+Trk::ex_compile("meter_state!","Set Meter State",\@code) ;
+
+@code=qw( dp.partner.get dp.value.get ) ;
+Trk::ex_compile("meter_bx@","Fetch meter box dp",\@code) ;
+
+@code=qw( dp.partner.get dp.value.set ) ;
+Trk::ex_compile("meter_bx!","Store meter box dp",\@code) ;
+
+# We will define the "real" meter_event later. We need to use it
+# now, so put goofy code and put the real code later.
+# the problem is we are defining a word
+# meter_post, but meter_post uses 
+#  meter_event, which uses  meter_release, which uses meter_post.
+# so to get around the cicularity, we define a meter_event now, and
+# replace it with the real code later.
+
+@code=( "1", "drop") ;
+Trk::ex_compile("meter_event","Event for handle metered release",\@code) ;
+
+
+@code=qw(
+	 d.set 
+	 d meter_tmr@ &meter_event d meter_preset@ d 0 0 0 ev_insert
+	 ) ;
+Trk::ex_compile("meter_post","Post Event for Meter",\@code) ;
+
+# release a parcel.
+@code=qw(
+	 dup 1 swap meter_out!
+	 dup 1 swap dp.state.set
+	 dup 1 swap meter_bx!
+	 meter_post
+	 ) ;
+Trk::ex_compile("meter_release","Release Carton",\@code) ;
+
+@code=qw(
+	 state@ 1 = 
+	 if 
+	 a meter_release
+	 then
+	 0 state!
+	 ) ;
+
+Trk::ex_compile("meter_event","Event for handle metered release",\@code) ;
+
+# On leading edge, check state, if non-zero halt box, else release.
+
+@code=qw(
+	 partner@ meter_state@
+	 if
+	 partner@ meter_release
+	 else
+	 0 partner@ meter_out!
+	 then
+	 ) ;
+Trk::ex_compile("meter_lead","Leading edge handle for Metering",\@code) ;
+
+# on trailing edge, clear bx
+@code=qw(
+	 0 partner@ meter_bx!
+	 ) ;
+Trk::ex_compile("meter_trail","Trailing edge handler for Metering",\@code) ;
+
+
+sub link {
+    my $name = @_[0] ;
+    my $input = @_[1] ;
+    my $output = @_[2] ;
+    my $preset = @_[3] ;
+    my $timer = @_[4] ;
+    my $desc = @_[5] ;
+
+    my $handle = Trk::dp_handle ($name) ;
+    if ($handle == -1) { # we need to create the meter belt controls.
+	$handle = Trk::dp_new($name,"virtual","blank",$desc) ;
+	my $bx_h = Trk::dp_new($name . "_bx","virtual","blank",
+			       $name . " Box Indicator/Counter") ;
+
+	my $i_h = Trk::dp_handle($input) ;
+	my $o_h = Trk::dp_handle($output) ;
+	my $p_h = Trk::rp_handle($preset) ;
+	my $t_h = Trk::dp_handle($timer) ;
+
+      Trk::dp_registerset($bx_h,2,$handle) ; # assign partner for dp.
+
+      Trk::dp_registerset($handle,1,0) ;
+      Trk::dp_registerset($handle,2,$bx_h) ;
+      Trk::dp_registerset($handle,4,$i_h) ;
+      Trk::dp_registerset($handle,5,$o_h) ;
+      Trk::dp_registerset($handle,6,$p_h) ;
+      Trk::dp_registerset($handle,7,$t_h) ;
+
+
+
+
+      convey::leading($input,"meter_lead",$name . " Box",
+		      $name . " Metered Release Leading Edge") ;
+
+      convey::trailing($input,"meter_trail",$name . "Box",
+		      $name . " Metered Release Trailing Edge") ;
+	
+
+      convey::leading($handle,"mtr_mstr_ld","Meter Lead",
+		      "Startup Meter Belt") ;
+      convey::trailing($handle,"mtr_mstr_trl","Meter Trail",
+		       "Disable Meter Belt") ;
+	
+    }
+    
+}
+
+
+# simple (instead of link) creates two data points
+# name and name_bx which can be used as above. However,
+# name just slaves to the output and bx from the input,
+# no control is applied.
+sub simple {
+    my $name = @_[0] ;
+    my $input = @_[1] ;
+    my $output = @_[2] ;
+    my $desc = @_[3] ;
+    
+    my $handle = Trk::dp_handle($name) ;
+    if ($handle == -1) {
+      dp::link($input,$name . "_bx",$name . "Carton DP" ) ;
+	$handle = Trk::dp_new($name,"virtual","blank",$desc) ;
+      dp::slave($output,$name) ;
+    }
+}
+
+# Autoload methods go after =cut, and are processed by the autosplit program.
+
+1;
+__END__
+# Below is the stub of documentation for your module. You better edit it!
+
+=head1 NAME
+
+meter - Perl extension for blah blah blah
+
+=head1 SYNOPSIS
+
+  use meter;
+  blah blah blah
+
+=head1 DESCRIPTION
+
+Stub documentation for meter was created by h2xs. It looks like the
+author of the extension was negligent enough to leave the stub
+unedited.
+
+Blah blah blah.
+
+=head1 AUTHOR
+
+A. U. Thor, a.u.thor@a.galaxy.far.far.away
+
+=head1 SEE ALSO
+
+perl(1).
+
+=cut

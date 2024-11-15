@@ -1,0 +1,66 @@
+stateDiagram-v2
+    [*] --> Idle
+
+
+    state getBoxLPN <<choice>>
+    Idle --> getBoxLPN: Box enters zone or manual scan.\nLookup LPN from scan value.
+    getBoxLPN --> KnownLPN: Known carton.
+    getBoxLPN --> UnknownLPN: Unknown carton or no read ("?").
+
+    state "Unknown LPN or no read.\nDisplay message.\nAllow manual scan." as UnknownLPN
+    UnknownLPN --> Reset:  User presses "Send to Exception".\nMark container for exception.
+
+    state getBoxLPNManualScan <<choice>>
+    UnknownLPN --> getBoxLPNManualScan:  Manual scan.
+    getBoxLPNManualScan --> KnownLPN: Known carton.
+    getBoxLPNManualScan --> UnknownLPN: Unknown carton.
+
+    state KnownLPN <<choice>>
+    KnownLPN --> Pack: status = Picked
+    KnownLPN --> Exception:  status IN (short, picking, canceled)\nOR audit required
+    KnownLPN --> AlreadyPacked: status = Packed
+
+    state "To Be Packed
+        Print pack list and start pack list timer.
+        Print side label and start side label timer.
+        Tell user to insert pack list, label, close and seal.
+
+        -- Allow reprint of pack list label.
+        -- Allow reprint of side label.
+        -- Allow mark to audit.
+        -- Allow mark to repack.
+        -- Allow mark as exception.
+
+        Upon successful printing of both pack list and side label\nstart idle timer.
+        " as Pack
+
+    Pack --> Pack: Reprint - Clear previous errors.\nResubmit requested print job.\nRestart timer.
+    Pack --> Exception: Mark to audit\nMark to split\nMark as exception
+    Pack --> Reset: Timer expires.
+
+    state "Exception
+        Display message.
+        (Short, Audit, Picks open, Cancel, Exception)
+        Tell user to advance box.
+        Start timer.
+        " as Exception
+
+    Exception --> Reset: Timer expires.
+
+    state "Already Packed
+        Allow reprints.
+        Tell user to check labels.
+        Start timer.
+        " as AlreadyPacked
+
+    AlreadyPacked --> Reset: Timer expires.
+
+    state "Reset
+        Clear scan value." as Reset
+
+    Reset --> Idle
+
+    Pack --> Pack: Explicit printer error or\nprinter timer expires.\nDisplay error.
+    AlreadyPacked --> AlreadyPacked: Explicit error or\nprinter timer expires.\nDisplay error.
+
+    %% look at faults

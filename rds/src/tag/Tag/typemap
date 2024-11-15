@@ -1,0 +1,1 @@
+int ( * item ) ( char * key )			T_PTROBJ

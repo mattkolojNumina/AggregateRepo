@@ -1,0 +1,13 @@
+{
+  "filename":"grammar09",
+  "key":"2",
+  "type": "standard",
+  "minAlphaNumeric": "0",
+  "maxAlphaNumeric": "0",
+  "minNumeric": "0",
+  "maxNumeric": "0",
+  "phraseMap": {
+    "CHANGE TASK": "changeTask",
+    "PLEASE LOG OFF": "logout"
+  }
+}

@@ -1,0 +1,245 @@
+<div class="container-fluid" ng-cloak>
+  <md-tabs md-dynamic-height md-selected="selected">
+
+    <md-tab label="Waves" md-on-select="refresh()">
+      <div layout="row">
+        <md-input-container class='md-block'>
+          <label>Display</label>
+          <md-select ng-model="stepSelect"
+                     ng-change="display()">
+            <md-option ng-repeat="step in steps"
+                       ng-value="step.id">
+              {{step.name}}
+            </md-option>
+          </md-select>
+        </md-input-container>
+      
+        <div ng-hide="(stepSelect<6)||(stepSelect>7)">
+          <md-input-container class="md-block">
+            <label>Allowed Time (minutes)</label>
+            <input type="number"
+                   ng-model="maxMinutes"
+                   ng-change="display()">
+          </md-input-container>
+        </div>
+          
+      </div> 
+ 
+      <md-content class="md-padding">
+         <table id="wave" class="display compact" width="100%"></table>
+      </md-content>
+    </md-tab>
+
+    <md-tab label="Error Waves" md-on-select="refresh()">
+      <md-content class="md-padding">
+         <table id="ewave" class="display compact" width="100%"></table>
+      </md-content>
+    </md-tab>
+
+    <md-tab label="Wave Details" md-on-select="refresh()">
+      <md-content class="md-padding">
+        <div layout="row">
+          <div flex>
+            <table class='detail'>
+              <tr>
+                <td class='detail-field'>Pack Wave:</td>
+                <td class='detail-data'>{{waveDetail.packWave}}</td>
+              </tr>
+              <tr>
+                <td class='detail-field'>Pod:</td>
+                <td class='detail-data'>{{waveDetail.pod}}</td>
+              </tr> 
+              <tr>
+                <td class='detail-field'>Consistent:</td>
+                <td ng-if="waveDetail.passConsistencyCheck==1"
+                    class='detail-data'>PASS</td>
+                <td ng-if="waveDetail.passConsistencyCheck==0"
+                    class='detail-data'>FAIL</td>
+              </tr> 
+            </table>
+          </div>
+          <div flex>
+            <table class='detail'>
+              <tr>
+                <td class='detail-field'>Download:</td>
+                <td class='detail-data'>
+                  {{waveDetail.downloadStamp | date:'medium'}}
+                </td>
+              </tr> 
+
+              <tr>
+                <td class='detail-field'>Assigned:</td>
+                <td class='detail-data'>
+                  {{waveDetail.assignedStamp | date:'medium'}}
+                </td>
+              </tr> 
+
+              <tr>
+                <td class='detail-field'>Put Complete:</td>
+                <td class='detail-data'>
+                  {{waveDetail.putCompleteStamp | date:'medium'}}
+                </td>
+              </tr> 
+
+              <tr>
+                <td class='detail-field'>Pack Complete:</td>
+                <td class='detail-data'>
+                  {{waveDetail.packCompleteStamp | date:'medium'}}
+                </td>
+              </tr> 
+
+              <tr>
+                <td class='detail-field'>Forced Close:</td>
+                <td class='detail-data'>
+                  {{waveDetail.forcedclosedStamp | date:'medium'}}
+                </td>
+              </tr> 
+
+              <tr>
+                <td class='detail-field'>Cleared:</td>
+                <td class='detail-data'>
+                  {{waveDetail.clearedStamp | date:'medium'}}
+                </td>
+              </tr> 
+
+              <tr>
+                <td class='detail-field'>Last Modification:</td>
+                <td class='detail-data'>
+                  {{waveDetail.stamp | date:'medium'}}
+                </td>
+              </tr> 
+
+            </table>
+          </div>
+          <div flex>
+            <form ng-submit="doWaveLookup()">
+              <md-input-container md-no-float class='md-block'>
+                <label>Lookup Wave</label>
+                <input ng-model='waveLookup'>
+              </md-input-container>
+            </form>
+          </div>
+        </div>
+        <table id="carton" class="display compact" width="100%"></table>
+      </md-content>
+    </md-tab>
+
+    <md-tab label="Carton Details" md-on-select="refresh()">
+      <md-content class="md-padding">
+        <div layout="row">
+          <div flex>
+            <table class='detail'>
+              <tr>
+                <td class='detail-field'>Carton:</td>
+                <td class='detail-data'>{{cartonDetail.carton}}</td>
+              </tr>
+              <tr>
+                <td class='detail-field'>Pack Wave:</td>
+                <td class='detail-data'>{{cartonDetail.packWave}}</td>
+              </tr>
+              <tr>
+                <td class='detail-field'>Pod:</td>
+                <td class='detail-data'>{{cartonDetail.pod}}</td>
+              </tr>
+              <tr>
+                <td class='detail-field'>Cubbies:</td>
+                <td class='detail-data'>{{cartonDetail.cubbies}}</td>
+              </tr>
+              <tr>
+                <td class='detail-field'>Autobagger:</td>
+                <td ng-if="cartonDetail.autobaggerEligible==1"
+                    class='detail-data'>Eligible</td>
+                <td ng-if="cartonDetail.autobaggerEligible==0"
+                    class='detail-data'>Not Eligible</td>
+              </tr>
+              <tr>
+                <td class='detail-field'>Packslip:</td>
+                <td ng-if="cartonDetail.packslipRequired==1"
+                    class='detail-data'>Required</td>
+                <td ng-if="cartonDetail.packslipRequired==0"
+                    class='detail-data'>Not Required</td>
+              </tr>
+              <tr>
+                <td class='detail-field'>Put Progress:</td>
+                <td class='detail-data'>{{cartonDetail.putPercent}}%</td>
+              </tr>
+            </table>
+          </div>
+          <div flex>
+            <table class='detail'>
+              <tr>
+                <td class='detail-field'>Download:</td>
+                <td class='detail-data'>
+                  {{cartonDetail.downloadStamp | date:'medium'}}
+                </td>
+              </tr> 
+              <tr>
+                <td class='detail-field'>Assigned:</td>
+                <td class='detail-data'>
+                  {{cartonDetail.assignedStamp | date:'medium'}}
+                </td>
+              </tr> 
+              <tr>
+                <td class='detail-field'>Put Complete:</td>
+                <td class='detail-data'>
+                  {{cartonDetail.putCompleteStamp | date:'medium'}}
+                </td>
+              </tr> 
+              <tr>
+                <td class='detail-field'>Pack Start:</td>
+                <td class='detail-data'>
+                  {{cartonDetail.packStartStamp | date:'medium'}}
+                </td>
+              </tr> 
+              <tr>
+                <td class='detail-field'>Pack Complete:</td>
+                <td class='detail-data'>
+                  {{cartonDetail.packCompleteStamp | date:'medium'}}
+                </td>
+              </tr> 
+              <tr>
+                <td class='detail-field'>Last Modification:</td>
+                <td class='detail-data'>
+                  {{cartonDetail.stamp | date:'medium'}}
+                </td>
+              </tr> 
+            </table>
+          </div>
+          <div flex>
+            <form ng-submit="doCartonLookup()">
+              <md-input-container md-no-float class='md-block'>
+                <label>Lookup Carton</label>
+                <input ng-model='cartonLookup'>
+              </md-input-container>
+            </form>
+          </div>
+        </div>
+
+        <div>
+          <md-tabs md-dynamic-height>
+            <md-tab label="Items">
+              <md-content class="md-padding">
+                <table id="item" class="display compact" width="100%">
+                </table>
+              </md-content>
+            </md-tab>
+            <md-tab label="Line Items">
+              <md-content class="md-padding">
+                <table id="lineitem" class="display compact" width="100%">
+                </table>
+              </md-content>
+            </md-tab>
+            <md-tab label="VAS">
+              <md-content class="md-padding">
+                <table id="vas" class="display compact" width="100%">
+                </table>
+              </md-content>
+            </md-tab>
+          </md-tabs>
+        </div>
+
+      </md-content>
+    </md-tab>
+
+  </md-tabs>
+</div>

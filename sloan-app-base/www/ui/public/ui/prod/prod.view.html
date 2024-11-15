@@ -1,0 +1,84 @@
+<div class="container-fluid" ng-cloak>
+  <md-content>
+    <section layout="row" layout-wrap layout-align="start center">
+
+      <div layout="row">
+      <md-input-container>
+      <md-button>From:</md-button> 
+      </md-input-container>
+
+      <mdp-date-picker ng-model='startDate'
+                       ng-change='changeStart()'></mdp-date-picker>
+      <mdp-time-picker ng-model='startDate'
+                       ng-change='changeStart()'></mdp-time-picker>
+      </div>
+
+      <div layout="row"> 
+      <md-input-container>
+      <md-button>To:</md-button> 
+      </md-input-container>
+      <mdp-date-picker ng-model='endDate'
+                       ng-change='changeEnd()'></mdp-date-picker>
+      <mdp-time-picker ng-model='endDate'
+                       ng-change='changeEnd()'></mdp-time-picker>
+      </div>
+
+      <md-input-container>
+      <md-button class='md-raised' ng-click='report()'>Report</md-button>
+      </md-input-container>
+
+    </section>
+
+    <div layout="row" layout-wrap>
+
+      <md-input-container>
+        <label>Operator</label>
+        <md-select ng-model="operatorSelect"
+                   ng-change="display()">
+          <md-option ng-repeat="operator in operatorChoices"
+                     ng-value="operator">
+            {{operator}}
+          </md-option>
+        </md-select>
+      </md-input-container>
+
+      <md-input-container>
+        <label>Task</label>
+        <md-select ng-model="taskSelect"
+                   ng-change="display()">
+          <md-option ng-repeat="task in taskChoices"
+                     ng-value="task">
+            {{task}}
+          </md-option>
+        </md-select>
+      </md-input-container>
+
+      <md-input-container>
+        <label>Operation</label>
+        <md-select ng-model="operationSelect"
+                   ng-change="display()">
+          <md-option ng-repeat="operation in operationChoices"
+                     ng-value="operation">
+            {{operation}}
+          </md-option>
+        </md-select>
+      </md-input-container>
+
+      <md-input-container>
+        <label>Area</label>
+        <md-select ng-model="areaSelect"
+                   ng-change="display()">
+          <md-option ng-repeat="area in areaChoices"
+                     ng-value="area">
+            {{area}}
+          </md-option>
+        </md-select>
+      </md-input-container>
+
+    </div>
+    
+    <div>
+      <table id="prod" class="display" width="100%"></table>
+    </div>
+  </md-content>
+</div>

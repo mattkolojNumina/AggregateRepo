@@ -1,0 +1,27 @@
+<html>
+<head>
+<title>Numina Group -- RDS Dashboard</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body style='background-color:ButtonFace;'>
+
+<script src="deployJava.js"></script>
+<script>
+  var attributes = {
+    codebase:'/java/',
+    code:'rdsDashboard.RDSDashboardApplet.class',
+    archive:'rdsDashboard.jar,rds.jar,rdsGraphics.jar,ui.jar,mysql.jar,datetime.jar,piccolo.jar,piccolox.jar,jcommon.jar,jfreechart.jar,jmathplot.jar',
+    width:'100%',
+    height:'100%',
+    align:'top'
+  };
+  var parameters = {};
+  var version = '1.6';
+  deployJava.runApplet( attributes, parameters, version );
+</script>
+
+
+</body>
+</html>
+

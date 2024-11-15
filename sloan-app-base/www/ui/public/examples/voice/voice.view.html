@@ -1,0 +1,193 @@
+<div class="container-fluid" ng-cloak>
+  <md-content>
+    <md-tabs md-dynamic-height md-selected='selected'>
+
+      <md-tab label="Voice Operators" md-on-select="refresh()">
+        <div layout="column">
+          <md-content class="md-padding">
+            <table id="operator" class="display" width="100%"></table>
+          </md-content>
+
+          <div layout="row">
+            <span flex></span>
+            <md-button class="md-raised" 
+                       ng-disabled="!permit('voiceEdit')"
+                       ng-click="goEdit()">New</md-button>
+           </div>
+        </div> 
+      </md-tab>
+
+      <md-tab label="Operator Details" md-on-select="refresh()">
+        <md-content class="md-padding">
+          <div layout="row">
+            <div flex>
+              <table class='voice'>
+                
+                <tr>
+                  <td class='voice-field'>Operator ID:</td>
+                  <td class='voice-data'>{{detail.operatorID}}</td>
+                </tr>
+                
+                <tr>
+                  <td class='voice-field'>Operator Name:</td>
+                  <td class='voice-data'>{{detail.operatorName}}</td>
+                </tr>
+                
+                <tr>
+                  <td class='voice-field'>Level:</td>
+                  <td class='voice-data'>{{detail.voiceLevel}}</td>
+                </tr>
+                
+                <tr>
+                  <td class='voice-field'>Allowed Tasks:</td>
+                  <td class='voice-data'>{{detail.allowedTasks}}</td>
+                </tr>
+                
+              </table>
+            </div>
+            
+            <div flex layout="column">
+              <div>
+              <md-button class="md-raised"
+                         ng-click="logoffOperator(detail.operatorID)">Logoff Operator</md-button>
+              </div>
+              <div>
+              <md-button class="md-raised"
+                         ng-disabled="!permit('voiceEdit')"
+                         ng-click="getEditValues(detail.operatorID)">Edit Operator</md-button>
+              </div>
+              <div>
+              <md-button class="md-raised"
+                         ng-disabled="!permit('voiceEdit')"
+                         ng-show="deleteButton=='preliminary'"
+                         ng-click="beginDelete()">Delete Operator</md-button>
+              <md-button class="md-ohno"
+                         ng-disabled="deleteButton=='really' || !permit('voiceEdit')"
+                         ng-show="deleteButton=='really' || deleteButton=='reallyReally'"
+                         ng-click="deleteOperator(detail.operatorID)">Really Delete</md-button>
+              <md-button class="md-separate"
+                         ng-show="deleteButton=='really' || deleteButton=='reallyReally'"
+                         ng-click="cancelDelete()">Cancel</md-button>
+              </div>
+            </div>
+            
+            <div flex>
+              <form ng-submit="doLookup()">
+                <md-input-container md-no-float class='md-block'>
+                  <label>Lookup Operator</label>
+                  <input ng-model='lookup'>
+                </md-input-container> 
+              </form>
+            </div>
+
+          </div>
+
+        <div>
+          <table id="talk" class="display" width="100%"></table>
+        </div>
+
+        </md-content>
+      </md-tab>
+      
+      <md-tab label="Edit Operators" md-on-select="">
+        <md-content class="md-padding">
+          <div layout="row">
+            <div flex layout="column">
+              <md-toolbar>
+                <span flex></span>
+                <span flex>&nbsp;&nbsp;New</span>
+                <span flex></span>
+              </md-toolbar>
+              
+              <br/>
+              <form>
+                <md-input-container>
+                  <label>Operator ID</label>
+                  <input type="text"
+                         class="form-control"
+                         ng-model="opData.id">
+                </md-input-container>
+                <md-button class="md-separate"
+                           ng-disabled="!opData.id"
+                           ng-click="newOperator(opData.id)">
+                  Create
+                </md-button>
+              </form>
+            </div>
+            <div flex>
+              <md-toolbar>
+                <span flex></span>
+                <span flex>&nbsp;&nbsp;Edit
+                  <span ng-hide="!thisOpID">
+                    &nbsp;operator {{thisOpID}}
+                  </span>
+                </span>
+                <span flex></span>
+              </md-toolbar>
+              
+              <br/>
+              <form>
+                  <div class="form-group" layout="column">
+                    <label for="editUsername">Operator name:</label>
+                    <input type="text" class="form-control" id="editUsername"
+                           ng-model="opData.userName"
+                           ng-disabled="!thisOpID">
+                    <label for="editGrammar">Grammar:</label>
+                    <input type="text" class="form-control" id="editGrammar"
+                           ng-model="opData.grammar"
+                           ng-disabled="!thisOpID">
+                    <label for="editSoundFilePath">Language file:</label>
+                    <input type="text" class="form-control" id="editSoundFilePath"
+                           ng-model="opData.soundFilePath"
+                           ng-disabled="!thisOpID">
+                    <label for="editPdaName">Voice terminal:</label>
+                    <input type="text" class="form-control" id="editPdaName"
+                           ng-model="opData.pdaName"
+                           ng-disabled="!thisOpID">
+                    <label for="editHeadsetName">Headset type:</label>
+                    <input type="text" class="form-control" id="editHeadsetName"
+                           ng-model="opData.headsetName"
+                           ng-disabled="!thisOpID">
+
+                    <label for="editMicGain">Mic gain:</label>
+                    <input type="number" min="0" max="100" class="form-control" id="editMicGain"
+                           ng-model="opData.micGain"
+                           ng-disabled="!thisOpID">
+                    <label for="editPhoneVolume">Headset volume:</label>
+                    <input type="number" min="0" max="100" class="form-control" id="editPhoneVolume"
+                           ng-model="opData.phoneVolume"
+                           ng-disabled="!thisOpID">
+
+                    <label for="editAcousticModel">Acoustic model:</label>
+                    <input type="text" class="form-control" id="editAcousticModel"
+                           ng-model="opData.acousticModel"
+                           ng-disabled="!thisOpID">
+
+                    <label for="editAgc">Auto gain control:</label>
+                    <input type="checkbox" class="form-control" id="editAgc"
+                           ng-model="opData.agc"
+                           ng-disabled="!thisOpID">
+                    <label for="editBargeIn">Barge-in mode:</label>
+                    <input type="checkbox" class="form-control" id="editBargeIn"
+                           ng-model="opData.bargeIn"
+                           ng-disabled="!thisOpID">
+                    <label for="editAdvanced">Advanced:</label>
+                    <input type="checkbox" class="form-control" id="editAdvanced"
+                           ng-model="opData.advanced"
+                           ng-disabled="!thisOpID">
+                  </div>
+                <md-button class="md-separate"
+                           ng-disabled="!thisOpID"
+                           ng-click="editOperator()">
+                  Save
+                </md-button>
+              </form>
+              
+            </div>
+          </div>
+        </md-content>
+      </md-tab>
+
+    </md-tabs>
+  </md-content>
+</div>
