@@ -1,8 +1,0 @@
-[Unit]
-Description=RDS
-After=mariadb.service
-[Service]
-ExecStart=/home/rds/app/bin/rc.all start
-[Install]
-WantedBy=multi-user.target
-

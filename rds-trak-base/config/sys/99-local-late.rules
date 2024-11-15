@@ -1,6 +1,0 @@
-# late rules (specifically, after 50-udev.rules)
-# useful for modifying permissions, etc. on existing devices
-
-# serial devices should be world-writable
-KERNEL=="ttyS*", MODE="0666"
-

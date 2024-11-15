@@ -1,1 +1,0 @@
-ACTION=="add",KERNEL=="mei0",ATTR(../../power/control)="on"
