@@ -1,2 +1,0 @@
-include ':app', ':numina-shared-library'
-project(':numina-shared-library').projectDir = new File('numina-shared-library/app')
